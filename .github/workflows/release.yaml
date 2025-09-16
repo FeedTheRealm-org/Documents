@@ -1,0 +1,27 @@
+name: Build and Release documents
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build PDFs
+        run: |
+          mkdir -p output
+          echo "Hello world" | tee output/file1.pdf
+          echo "World hello" | tee output/file2.pdf
+
+      - name: Upload PDFs as Release Assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: output/*.pdf
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
