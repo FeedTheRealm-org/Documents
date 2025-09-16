@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    tags:
+      - "v*"
 
 jobs:
   release:
@@ -16,22 +18,14 @@ jobs:
       - name: Build PDFs
         run: |
           mkdir -p output
-          echo "Hello world" | tee output/file1.pdf
-          echo "World hello" | tee output/file2.pdf
-
-      - name: Create tag
-        id: tag
-        run: |
-          TAG="v$(date +'%Y.%m.%d.%H%M%S')"
-          echo "Tagging with $TAG"
-          git tag $TAG
-          git push origin $TAG
-          echo "TAG=$TAG" >> $GITHUB_OUTPUT
+          cat README.md > output/file1.txt
+          cat README.md > output/file2.txt
 
       - name: Upload PDFs as Release Assets
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.tag.outputs.TAG }}
-          files: output/*.pdf
+          tag_name: ${{ github.ref_name }}
+          files: output/*.txt
+          overwrite_files: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
