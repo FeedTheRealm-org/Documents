@@ -1,0 +1,328 @@
+\section{Introducción}
+
+Este trabajo propone el diseño de un sistema distribuido para analizar datos de ventas de una cadena de cafeterías en Malasia. Se busca obtener información clave sobre transacciones, clientes y productos, priorizando la escalabilidad y robustez del sistema mediante conceptos y buenas prácticas de sistemas distribuidos.
+\vspace{0.25 cm}
+
+\section{Documento de arquitectura (4+1 Views)}
+
+A continuación se detallan los aspectos del diseño propuesto haciendo foco en un nivel de abstracción a la vez.
+
+\subsection{Escenarios}
+
+Para comenzar se hace un análisis de los requerimientos funcionales que el sistema debe cumplir para ser de utilidad al cliente. Para esto se escriben los posibles casos de uso del mismo, y se modelan en un simple diagrama auto-explicativo.
+
+\subsubsection{Casos de Uso}
+
+% Change for corresponding diagram
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{img/cayuyo.jpg}
+\caption{Actividades generales que el cliente debe ser capaz de realizar.}
+\end{figure}
+
+\subsection{Vista Lógica}
+
+\subsubsection{Diagrama de Estados}
+
+El siguiente diagrama tiene como objetivo explorar la estructura y funcionalidad del sistema, demostrando los distintos procesos que se hacen en el 'pipeline' del sistema.
+
+Se toman como fuente, 5 conjuntos de datos proporcionados incluyendo:
+
+\begin{itemize}
+    \item Transactions (principal)
+    \item Transaction Items (principal)
+    \item Menu Items (para tareas de 'join')
+    \item Stores (para tareas de 'join')
+    \item Users (para tareas de 'join')
+    \item Payment Methods (sin usar)
+    \item Vouchers (sin usar)
+\end{itemize}
+
+% Change for corresponding diagram
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{img/diag_estados.jpg}
+\caption{Estados por los que pasa el sistema para completar un escenario.}
+\end{figure}
+
+Para conformar esta cadena de procesos se usara la estructura 'Worker per filter', que consta de tener una unidad de procesamiento aislada para cada etapa intermedia (filter, groupby, reduce count/sum, join y aggregate). Se opto por esta división ya que en el contexto de un sistema altamente distribuido, lleva a un mejor aprovechamiento de recursos, paralelismo y menos carga por \textit{worker}, así como también mayor escalabilidad horizontal, a comparación de la división 'Worker per item'. Sin embargo, esta estructura también conlleva una mayor complejidad y necesidad de coordinación y comunicación entre nodos.
+
+\subsection{Vista de Desarrollo}
+
+\subsubsection{Diagrama de Paquetes}
+
+En esta sección se observan diagramas explicativos de la estructura tentativa de módulos y paquetes de código a popular durante la implementación del sistema.
+
+% Change for corresponding diagram
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{img/diag_paquete_common.jpg}
+\caption{Modulo común a todos los paquetes de código.}
+\end{figure}
+
+Este modulo es el que contiene comportamiento relacionado a la red, comunicaciones y protocolos (e.g. protobufs).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{img/diag_paquete_entry.jpg}
+\caption{Paquetes de cliente y gateway (punto de entrada al sistema).}
+\end{figure}
+
+El paquete de cliente contiene lógica de envió de información al servidor y recepción de datos completamente procesados, para lo que se comunica a través de la red con el servicio 'Gateway' cuyo paquete contiene comportamiento de recepción de clientes y despachado de tanto los datos crudos enviados por el cliente como los datos procesados saliendo del sistema.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{img/diag_paquete_worker.jpg}
+\caption{Paquetes de \textit{workers} de filtrado/reducción de datos.}
+\end{figure}
+
+Los paquetes de 'Filter', 'GroupBy' y 'Reducer', contienen la lógica de negocio principal del sistema, con la que se realizara el procesado completo de datos de manera distribuida.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{img/diag_paquete_report.jpg}
+\caption{Paquetes de \textit{workers} de post-procesamiento y unificación de la información.}
+\end{figure}
+
+Los dos últimos paquetes diagramados, constan del comportamiento relacionado al refinado de datos (unir con los conjuntos de datos correspondientes, e.g. Transactions + Menu Items), y unificación de la información distribuida para poder ser enviada al cliente. Estos cuentan con un \textbf{cache} en disco de los datos procesados para evitar perdida de información durante re-inicios del \textit{worker} por problemas inesperados.
+
+\subsection{Vista de Procesos}
+
+\subsubsection{Diagramas de Secuencia}
+
+En esta sección se demuestran flujos punta a punta de cada escenario mencionado en la primera vista mediante diagramas.
+
+% Change for corresponding diagram
+\begin{figure}[H]
+\centering
+\includegraphics[width=1.1\textwidth]{img/diag_sec_1.jpg}
+\caption{Filtrado de transacciones con diferentes criterios \textit{batch a batch}, y confección de respuesta por parte del sistema.}
+\end{figure}
+
+Inicialmente, se tiene un loop que representa la conformación y envío de los datos en batches desde el Client hacia el Gateway. Una vez que un batch llega al Gateway, este es recibido posteriormente por el Filter Worker. Allí se filtran las transacciones para quedarse con las realizadas entre 2024 y 2025, entre las 6AM y las 11PM, cuyo monto total es mayor o igual a 75. Finalmente, ese batch filtrado es recepcionado por el Aggregator Worker para ir unificando la información recibida y enviarla al cliente. 
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1.1\textwidth]{img/diag_sec_2.jpg}
+\caption{Obtención de productos mas vendidos y con mas profit en un periodo, y confección de respuesta por parte del sistema.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1.1\textwidth]{img/diag_sec_3.jpg}
+\caption{Obtención de TPV (total payment value) para cada semestre y sucursal, y confección de respuesta por parte del sistema.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1.1\textwidth]{img/diag_sec_4.jpg}
+\caption{Obtención de fecha de cumpleaños de los clientes con mas compras para cada sucursal, y confección de respuesta por parte del sistema.}
+\end{figure}
+
+Viendo la Figura 8, 9 y 10, notamos que los escenarios 2, 3 y 4 (respectivamente) siguen un flujo bastante similar: inician (al igual que en todos los casos) por el armado y envío de los batches desde el Client hacia el Gateway, continúan por el filtrado de los mismos aplicando ciertos criterios (que dependen del escenario en sí), y luego se realiza un Group by sobre determinadas columnas a partir de los datos filtrados. Posteriormente, esos datos pasan por al menos un Reducer Worker para finalmente realizar un Join con otros datasets y dejar los datos formateados para mostrar al cliente (después del paso de unificación en el Aggregator Worker).
+
+\subsubsection{Diagrama de Actividades (funcionamiento)}
+
+Este diagrama muestra el flujo completo de procesamiento de un escenario dentro del sistema.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{img/diag_act_full.jpg}
+\caption{Vistazo general de Actividades del sistema (segundo escenario).}
+\end{figure}
+
+Se observa cómo los datos enviados por el cliente atraviesan las diferentes etapas: Gateway, Filter, GroupBy, Reducers (Sum y Count), Joiner y finalmente el Aggregator. Cada bloque representa un worker especializado, y el flujo secuencial refleja cómo los datos son transformados progresivamente hasta obtener los resultados finales listos para ser enviados al cliente. Puntualmente, este diagrama representa el escenario 2. 
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{img/diag_act_entry.jpg}
+\caption{Actividades del punto de entrada al sistema.}
+\end{figure}
+
+Este diagrama modela el punto de entrada del sistema, compuesto por la relación entre el Cliente y el Gateway. El cliente se encarga de fragmentar los datasets en batches, adjuntar la metadata correspondiente y enviarlos al servidor. El Gateway, como punto de entrada principal, recibe estos batches y decide su destino: si se trata de datasets de referencia (utilizados únicamente para realizar los 'Joins'), los reenvía directamente al Joiner Worker. Caso contrario, los envía a los Filter Workers para continuar con el procesamiento. Este módulo asegura la correcta orquestación inicial del flujo de datos.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1.1\textwidth]{img/diag_act_worker.jpg}
+\caption{Actividades principales de procesamiento de información.}
+\end{figure}
+
+Este diagrama detalla el funcionamiento interno de los workers de procesamiento. Cada worker recibe batches provenientes del Gateway y aplica su lógica específica:
+
+\begin{itemize}
+    \item El Filter Worker selecciona datos en función de criterios definidos (por ejemplo, rango temporal).
+
+    \item El GroupBy Worker agrupa los registros según diferentes atributos, como el ID de un item o el mes del año.
+
+    \item Los Reducer Workers realizan operaciones de reducción, ya sea sumatoria o conteo.
+\end{itemize}
+
+La salida de cada uno de estos pasos es reenviada hacia los siguientes workers, ya sea el de Join o el de Aggregator.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{img/diag_act_report.jpg}
+\caption{Actividades de post-procesamiento y confección de resultados para el cliente.}
+\end{figure}
+
+En este último bloque se representan las actividades de los workers de Joiner y Aggregator. El Joiner Worker integra los resultados procesados con datasets de referencia (por ejemplo, unir transacciones con información de usuarios o productos). El Aggregator Worker consolida la información parcial proveniente de distintos nodos, aplicando operaciones de acumulación y ordenamiento. Finalmente, se genera el reporte que será enviado al cliente.
+
+\subsubsection{Diagrama de Actividades (finalizado)}
+
+Por completitud, en la siguiente figura se ilustra el comportamiento del sistema ante la finalización del \textit{input} del cliente. El diagrama inicia en el Gateway para simplificar la representación: cuando este recibe el reporte, lo devuelve de inmediato al cliente.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1.1\textwidth]{img/diag_act_EOT.jpg}
+\caption{Actividades de finalización y confección de resultados.}
+\end{figure}
+
+\subsection{Vista Física}
+
+\subsubsection{Diagrama de Despliegue}
+
+A continuación se detalla la infraestructura ideada para el funcionamiento distribuido del sistema, haciendo foco en la confiabilidad ante fallos y escalabilidad horizontal (agregando más nodos/computadores).
+
+% Change for corresponding diagram
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{img/diag_despliegue.jpg}
+\caption{Arquitectura necesaria para desplegar el sistema.}
+\end{figure}
+
+Características:
+
+\begin{itemize}
+    \item Se demuestra al cliente como un nodo aparte, que interactúa directamente con un \textit{Gateway} para subir sus conjuntos de datos a ser procesados. Este ultimo como se menciono anteriormente, cumple el rol de punto de entrada al sistema.
+    \item Entre nodos del sistema se comunican a través de un Middleware orientado a mensajes (MOM), utilizando colas.
+    \item Reafirmando lo dicho en la sección de 'Vista de Desarrollo', los \textit{worker nodes}, están separados por filtro, es decir hay un solo tipo de \textit{worker} por computador. Alternativamente se puede modelar el sistema con procesos tomando el rol de nodos, en caso de no contar con un entorno multi-computadoras.
+    \item Se toma como \textbf{único punto de falla} el servicio de colas de mensajería, proporcionado por RabbitMQ, se evalúa la posibilidad de tener replicas para mayor disponibilidad.
+    \item Los nodos de \textit{Gateway} y \textit{Aggregate} se identifican como componentes críticos del sistema, por lo que se propone en un futuro incorporar réplicas que aumenten la tolerancia a fallos.
+\end{itemize}
+
+\subsubsection{Diagrama de Robustez}
+En esta sección se presenta el diagrama de robustez, donde se ilustran las principales interacciones entre actores, fronteras y colas del sistema.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1.1\textwidth]{img/diag_robustez.jpg}
+\caption{Vistazo general de los distintos caminos y colas que traspasa la información para poder ser procesada.}
+\end{figure}
+
+Se observa que toda comunicación entre nodos (exceptuando la comunicación cliente-gateway) se realiza a través de colas de mensajes. Cada worker toma información de una cola de entrada, la procesa y la envía a una cola de salida, de la cual leerá el próximo nodo en la linea de procesamiento.
+\vspace{0.25cm}
+
+En las siguientes figuras se amplían partes de interés del anterior diagrama de robustez, de modo de demostrar un seguimiento paso a paso de las interacciones.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1.0\textwidth]{img/diag_robustez_entry.jpg}
+\caption{Punto de partida \textit{(entrypoint)} de todos los escenarios antes de bifurcarse en sus distintos escenarios.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1.0\textwidth]{img/diag_robustez_esc_1.jpg}
+\caption{Camino relacionado al escenario 1 que parte del entrypoint.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1.0\textwidth]{img/diag_robustez_esc_2.jpg}
+\caption{Camino relacionado al escenario 2 que parte del entrypoint.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1.0\textwidth]{img/diag_robustez_esc_3.jpg}
+\caption{Camino relacionado al escenario 3 que parte del entrypoint.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1.0\textwidth]{img/diag_robustez_esc_4.jpg}
+\caption{Camino relacionado al escenario 4 que parte del entrypoint.}
+\end{figure}
+
+\textit{Observación: Cabe mencionar que el cierre ordenado del sistema en su completitud sera manejado mediante el uso de una cola definida especialmente para este propósito (shutdown\_queue).}
+
+\section{Tareas a ejecutar}
+
+\subsection{Infraestructura principal}
+\begin{itemize}
+  \item Definir estructura del proyecto y paquetes de Go.
+  \item Implementación de mensajes y serializado (protobuf, mensajes, manejo de errores).
+  \item Uso de RabbitMQ e implementación de un wrapper.
+  \item Creación de \textit{worker} simple como base para los demás.
+\end{itemize}
+
+\subsection{Gateway}
+\begin{itemize}
+  \item Implementación de interfaz de usuario con manejo \textit{uploads} y \textit{responses}.
+  \item Re-envió de \textit{batches} a la cola de los datasets correspondientes.
+  \item Recolectado de datos procesados y envío al cliente.
+\end{itemize}
+
+\subsection{Workers}
+\begin{itemize}
+  \item \textbf{Filter Worker:} Lógica de filtrado con lectura, y escritura de las colas.
+  \item \textbf{GroupBy Worker:} Lógica de agrupado de batches.
+  \item \textbf{Reducer Worker:} Lógica de reducción de batches, con los tipos \textit{sum} y \textit{count}.
+  \item \textbf{Join Worker:} Lógica de unión de tablas, consumiendo datos de la cola correspondiente al dataset necesario.
+  \item \textbf{Aggregator Worker:} Lógica de ordenamiento (Top N), acumulado de datos, confección y envió de resultados.
+\end{itemize}
+
+\subsection{Middleware}
+\begin{itemize}
+  \item Configurar imagen de Docker de RabbitMQ.
+  \item Definición de colas necesarias del sistema.
+\end{itemize}
+
+\subsection{Despliegue y escalado}
+\begin{itemize}
+  \item Dockerizar cada paquete necesario para desplegar el sistema.
+  \item Configuración de despliegue (numero de workers, etc) y Docker-compose.
+  \item Plan de replicas para gateway y aggregators.
+\end{itemize}
+
+\subsection{Pruebas}
+\begin{itemize}
+  \item Pruebas de protocolo y Networking.
+  \item Pruebas punta a punta cliente-servidor.
+  \item Validación con lo esperado del notebook de Kaggle.
+\end{itemize}
+
+\subsection{División entre integrantes}
+
+División tentativa de tareas generales entre integrantes (\textbf{Sujeto a modificaciones}).
+\vspace{0.5cm}
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|p{3cm}|p{4cm}|p{4cm}|p{4cm}|}
+\hline
+\textbf{Sección} & \textbf{Máximo Utrera} & \textbf{Santiago Sevitz} & \textbf{Federico Genaro} \\
+\hline
+Infraestructura & Estructura Go, mensajes (protobuf), wrapper RabbitMQ & Worker base & -- \\
+\hline
+Gateway & API cliente, uploads/responses, batches $\rightarrow$ colas, resultados $\rightarrow$ cliente & -- & -- \\
+\hline
+Workers & -- & Filter, GroupBy, Reducer & Join, Aggregator \\
+\hline
+Middleware & Docker de RabbitMQ y definición de colas & -- & -- \\
+\hline
+Despliegue \& Escalado & -- & Dockerización de workers & Configuración y Docker-compose, réplicas gateway/aggregator \\
+\hline
+Pruebas & Protocolo y networking & -- & punta a punta, validación con Kaggle \\
+\hline
+\end{tabular}
+\caption{División de tareas entre integrantes}
+\label{tab:division-tareas}
+\end{table}
+
+\section{Referencias}
+
+\begin{enumerate}
+    \item Gerald Ooi. (2025). G Coffee Shop Transaction 202307 to 202506 [Dataset]. Kaggle. \url{https://www.kaggle.com/datasets/geraldooizx/g-coffee-shop-transaction-202307-to-202506}.
+    \item Gabriel Robles. (2025). FIUBA - Distribuidos 1 - Coffee Shop Analysis [Notebook]. Kaggle. \url{https://www.kaggle.com/code/gabrielrobles/fiuba-distribuidos-1-coffee-shop-analysis}.
+\end{enumerate}

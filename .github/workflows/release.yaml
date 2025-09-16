@@ -13,20 +13,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # Step 2: Compile LaTeX documents
       - name: Build PDFs
-        run: |
-          mkdir -p output
-          cat README.md > output/file1.txt
-          cat README.md > output/file2.txt
+        uses: dante-ev/latex-action@v2
+        with:
+          root_file: main.tex          # Change this to your main .tex file
+          compiler: latexmk
+          args: -pdf -latexoption=-file-line-error -latexoption=-interaction=nonstopmode
+          working_directory: .         # Folder containing your LaTeX files
+          extra_system_packages: texlive-latex-extra texlive-fonts-recommended texlive-lang-spanish
+          # extra_font_packages: fonts.zip  # Uncomment if you have custom fonts
 
-      - name: Upload PDFs as Release Assets
+      # Step 3: Upload PDFs as Release Assets
+      - name: Upload PDFs to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
-          files: output/*.txt
+          files: main.pdf              # Path to the compiled PDF
           overwrite_files: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
