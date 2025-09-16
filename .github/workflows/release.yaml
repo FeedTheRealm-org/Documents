@@ -19,9 +19,19 @@ jobs:
           echo "Hello world" | tee output/file1.pdf
           echo "World hello" | tee output/file2.pdf
 
+      - name: Create tag
+        id: tag
+        run: |
+          TAG="v$(date +'%Y.%m.%d.%H%M%S')"
+          echo "Tagging with $TAG"
+          git tag $TAG
+          git push origin $TAG
+          echo "TAG=$TAG" >> $GITHUB_OUTPUT
+
       - name: Upload PDFs as Release Assets
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ steps.tag.outputs.TAG }}
           files: output/*.pdf
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
