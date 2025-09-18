@@ -1,0 +1,585 @@
+\section{Introducción}
+
+Este trabajo práctico consiste en desarrollar un \textit{Firewall} personalizado para redes definidas por software (SDN) utilizando el controlador \textit{POX} como base tecnológica, aprovechando su API en Python para implementar políticas centralizadas de filtrado. La solución se implementa sobre una topología en cadena emulada con \textit{Mininet}, que permite validar el comportamiento del \textit{Firewall} en escenarios realistas con switches OpenFlow y hosts virtuales. 
+
+\vspace{0.25 cm}
+
+\subsection{Objetivos del Firewall}
+El desarrollo del \textit{Firewall} tiene como finalidad implementar una interfaz configurable por medio de un archivo de reglas, en el que se definirán inicialmente las siguientes reglas de filtrado:
+
+\begin{itemize}
+    \item[1.] Se deben descartar todos los mensajes cuyo puerto destino sea 80.
+    
+    \item[2.] Se deben descartar todos los mensajes que provengan de un host especifico, tengan como puerto destino el 5001, y estén utilizando el protocolo UDP.
+    
+    \item[3.] Se deben elegir dos hosts cualesquiera y los mismos no deben poder comunicarse de ninguna forma.
+\end{itemize}
+
+
+\section{Hipótesis y suposiciones realizadas}
+
+Aunque se asumía que la implementación del \textit{Firewall} presentaría complicaciones en el manejo del controlador, la simplicidad de \textit{POX} permitió enfocar directamente los esfuerzos en su desarrollo.
+
+\vspace{0.25cm}
+
+Inicialmente se planteó desarrollar el \textit{Firewall} en \textit{Python 2}, pero se optó por buscar compatibilidad con \textit{Python 3} debido a las ventajas de trabajar con una versión más actualizada del lenguaje. Tras realizar una investigación, se confirmó que \textit{POX} soporta \textit{Python 3}, aunque durante la implementación se detectó un bug menor que será analizado en detalle en la sección \ref{subsec:python3}.
+
+\section{Implementación}
+
+Se implemento un entorno de desarrollo en Docker estructurado en dos componentes principales:
+
+\begin{itemize}
+    \item \textbf{Módulo Mininet}:
+    \begin{itemize}
+        \item Contiene la lógica de las topologías de red utilizadas.
+        \item Contiene los archivos de configuración de dichas topologías.
+    \end{itemize}
+    
+    \item \textbf{Módulo POX}:
+    \begin{itemize}
+        \item Se clona el repositorio de POX con el arreglo para utilizar python 3.
+        \item Contiene la lógica desarrollada de firewall.
+    \end{itemize}
+\end{itemize}
+
+A pesar de que el repositorio completo de POX es relativamente liviano, se opto por esta estructura modular para:
+
+\begin{itemize}
+    \item Evitar redundancias en nuestro proyecto principal.
+    \item Mantener una organización clara de los componentes.
+    \item Facilitar actualizaciones independientes.
+\end{itemize}
+
+Esta arquitectura permitió desarrollar el firewall manteniendo una separación limpia entre la lógica de red (Mininet) y el controlador (POX).
+
+\subsection{Mininet}
+La topología confeccionada consistió en una estructura de cadena de la forma:
+\begin{itemize}
+    \item $N$ hosts en un extremo.
+    \item $M$ hosts en el extremo opuesto.
+    \item $K$ switches interconectados en el centro.
+\end{itemize}
+
+Para facilitar las pruebas con diferentes configuraciones, se creo un archivo de configuración modular en formato JSON. A continuación se muestra un ejemplo de dicho archivo:
+
+
+\begin{lstlisting}[style=json, caption={}, label=lst:topology_config]
+{
+    "amount_of_chained_switches": 4,
+    "amount_of_left_hosts": 2,
+    "amount_of_right_hosts": 2
+}
+\end{lstlisting}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{img/topo.png}
+\caption{Ejemplo de Topología}
+\label{fig:enter-label}
+\end{figure}
+
+\vspace{0.25cm}
+
+Como se puede observar, este ejemplo consiste en una topología de 2 hosts para cada extremos y 4 switches intermediarios.
+
+\subsection{Firewall} \label{subsec:firewall}
+
+Para el desarrollo del firewall, se tomo como base el ejemplo proporcionado en el curso \textit{Software Defined Networking} de Coursera\footnote{
+Coursera-SDN--\url{https://github.com/noise-lab/Coursera-SDN/blob/master/assignments/simple-controller/firewall.py}}, el cual ofrecía una implementación básica sin lógica de filtrado completa. A dicha plantilla se le tuvo que agregar principalmente lo siguiente:
+
+\begin{itemize}
+    \item \textbf{Sistema de reglas configurable}: Se diseño un archivo JSON que permite definir reglas de filtrado sin modificar el código fuente.
+    
+    \item \textbf{Lógica de filtrado}: Se implemento el mecanismo completo para aceptar/rechazar paquetes según:
+    \begin{itemize}
+        \item Direcciones IP fuente/destino.
+        \item Protocolo.
+        \item Puertos fuente/destino.
+    \end{itemize}
+    Adicionalmente se implemento la opción de aplicar dichas reglas en todos los switches ó en uno ó mas switches en particular.
+\end{itemize}
+
+Este diseño permite adaptar fácilmente el firewall a diferentes topologías y requerimientos de seguridad.
+
+\newpage
+
+\begin{lstlisting}[basicstyle=\ttfamily, frame=single, caption={Ejemplo de configuracion de reglas de Firewall}, label=lst:fw_rules]
+{
+    "switches": ["s3"],
+    "rules": {
+        "rule_1": {
+            "dst_port": [80]
+        },
+        "rule_2": {
+            "src_ip": ["10.0.0.1/32"],
+            "protocol": ["UDP"],
+            "dst_port": [5001],
+            "switches": ["s1"]
+        },
+        "rule_3": {
+            "src_ip": ["10.0.0.1/32", "10.0.0.3/32"],
+            "dst_ip": ["10.0.0.3/32", "10.0.0.1/32"],
+            "switches": ["s2"]
+        }
+    }
+}
+\end{lstlisting}
+
+\subsubsection{Descripción de la Configuración}
+La estructura del archivo de configuración consta de:
+
+\paragraph{Switches globales} \hfill \\
+El campo \texttt{switches} especifica a qué switches se aplican todas las reglas. Si está vacío, las reglas se aplican a todos los switches de la topología.
+
+\paragraph{Conjunto de reglas} \hfill \\
+El campo \texttt{rules} contiene las reglas específicas del firewall, donde cada regla (\texttt{rule\_n}) puede definir:
+
+\begin{itemize}
+    \item \texttt{src\_ip}: Bloquea paquetes originados en las IPs especificadas.
+    \item \texttt{dst\_ip}: Bloquea paquetes dirigidos a las IPs especificadas.
+    \item \texttt{protocol}: Filtra por protocolo (e.g. UPD, TCP, ICMP, etc).
+    \item \texttt{switches}: Limita la aplicación de la regla a switches específicos (adicionales al campo de switches anteriormente mencionado).
+\end{itemize}
+
+\subsubsection{Jerarquía de aplicación de reglas  a switches}
+Cuando existen switches definidos tanto a nivel global como en reglas específicas:
+\begin{itemize}
+    \item Las reglas se aplican en \textbf{ambos conjuntos} de switches
+    \item Ejemplo: En \texttt{rule\_2}, la regla se aplica tanto en \texttt{s1} (definido en la regla) como en \texttt{s3} (definido globalmente)
+\end{itemize}
+
+Esta estructura permite un control granular del filtrado, combinando reglas globales con excepciones específicas.
+
+\subsubsection{Mascaras para IPs}
+En la configuración del firewall, las direcciones IP incluyen máscaras de red (ej: \texttt{10.0.0.1/32}), lo que significa que todas las IPs que coincidan con el rango especificado por la máscara serán afectadas por la regla.
+
+Esta funcionalidad permite implementar políticas de seguridad escalables para grupos de hosts sin necesidad de enumerar cada IP individualmente.
+
+\section{Pruebas}
+
+En esta sección se hace una demostración utilizando como herramienta \textbf{Mininet} para simular un comportamiento de trafico de paquetes dentro de una red, con la topología creada de la misma manera que se explicó en la Figura 1 en el inciso 3.1, y además se utiliza la herramienta \textbf{Wireshark} para poder observar el tráfico de paquetes, y de esta forma poder corroborar que el Firewall desarrollado funciona correctamente, de forma que si se cumple una regla para el paquete que pase por el switch donde se la aplique, el switch aplicaría el drop del paquete efectivamente. 
+
+\vspace{0.25 cm}
+
+Por lo tanto se quiere mostrar en las capturas de Wireshark que los paquetes no son recibidos luego de pasar por un switch donde la regla matchea con sus condiciones, filtrando de esta manera los paquetes que no deberían pasar gracias al firewall que se configuró.
+
+\vspace{0.25 cm}
+
+A continuación se lleva a cabo la demostración con todas las reglas requeridas utilizando como ejemplo la misma configuración vista en Sección~\ref{subsec:firewall}.
+
+\vspace{0.25cm}
+
+\textit{\small{Nota: Adicionalmente a estas pruebas manuales se desarrollaron una serie de pruebas automatizadas para validar la exactitud de la implementación.}}
+
+\subsection{Caso para Rule 1} 
+
+\begin{itemize}
+    \item \textbf{Regla}: Bloqueo absoluto al puerto 80
+\end{itemize}
+
+La prueba confirma el bloqueo de todo tráfico HTTP, independiente de otros parámetros.
+
+\vspace{0.25cm}
+
+Se puede observar en la primera captura de Wireshark que se registran la entrada de varios paquetes TCP, el primer paquete enviado con flag SYN para poder establecer conexión con el servidor escuchando en puerto 80, pero no logra obtener respuesta:
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{img/switch3_intf_entrada_rule1.png}
+\caption{Captura switch 3, interfaz de entrada. Donde los paquetes tienen dst\_port=80}
+\end{figure}
+
+En esta captura, a la salida (en relación al tráfico entrante de la interfaz anterior), se observa claramente que ningún paquete ha pasado por el switch, demostrando de esta manera que el firewall actuó correctamente en el switch 3, ya que filtró los paquetes con destino a puerto 80.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{img/switch3_intf_salida_rule1.png}
+\caption{Captura switch 3, interfaz de salida.}
+\end{figure}
+
+\subsection{Caso para Rule 2}
+\label{subsec:rule2}
+\begin{itemize}
+    \item \textbf{Regla}: Bloqueo de tráfico UDP desde 10.0.0.1 al puerto 5001 (cualquier IP destino)
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]
+{rule_2.png}
+\caption{Entrada de paquetes en Switch 1 (tráfico UDP de IP 10.0.0.1 con \texttt{dst\_port} 5001   )}
+\label{fig:rule2_in}
+\end{figure}
+
+Como se observa en la Figura~\ref{fig:rule2_in}, Wireshark registra:
+\begin{itemize}
+    \item IP origen: 10.0.0.1
+    \item Protocolo: UDP
+    \item Puerto destino: 5001
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]
+{rule_2_out.png}
+\caption{Salida de paquetes en Switch 1 (tráfico bloqueado)}
+\label{fig:rule2_out}
+\end{figure}
+
+La Figura~\ref{fig:rule2_out} confirma que:
+\begin{itemize}
+    \item No hay tráfico UDP en la interfaz de salida del switch.
+    \item El firewall aplicó correctamente el bloqueo.
+\end{itemize}
+
+\subsection{Caso para Rule 3}
+\label{subsec:rule3}
+
+\begin{itemize}
+    \item \textbf{Regla:} bloqueo bidireccional entre 10.0.0.1 $\leftrightarrow$ 10.0.0.3
+\end{itemize}
+
+Como se observa en las siguientes capturas, se genera un flujo ICMP desde la IP 10.0.0.3 hacia la IP 10.0.0.1 (primera imagen) y en la interfaz de salida del switch (la segunda imagen), se observa claramente que ningún paquete ha pasado por el switch, demostrando de esta manera que el firewall actuó correctamente en el switch 3
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]
+{rule_3_in.png}
+\caption{Entrada de paquetes en Switch 3 (comunicación desde 10.0.0.3 hacia 10.0.0.1)}
+\label{fig:rule3_in}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]
+{rule_3.png}
+\caption{Salida de paquetes en Switch 3 (tráfico bloqueado)}
+\label{fig:rule3_out}
+\end{figure}
+
+Observación: Si se genera el flujo inverso, es decir de 10.0.0.1 a 10.0.0.3, los paquetes serán descartados en el switch 2, en lugar del 3, ya que a este también se le aplicaron las reglas (como se puede ver en la configuración anteriormente descrita) y es el mas cercano a 'h1' en la topología propuesta.
+
+\section{Preguntas a responder}
+
+\subsection{¿Cuál es la diferencia entre un switch y un router? ¿Qué tienen en común?}
+
+Un \textit{router} es un dispositivo con múltiples interfaces de red que opera hasta la capa de red. Su función principal es interconectar diferentes redes y dirigir el tráfico de datos entre ellas mediante el encaminamiento de paquetes. Es comúnmente utilizado en redes LAN, MAN y WAN.
+
+\vspace{0.25cm}
+
+Un \textit{switch}, por su parte, es un dispositivo de red que opera en la capa de enlace. Se encarga de establecer conexiones punto a punto temporales según sea necesario en una misma red local (LAN). Ofrece funciones como \textit{flooding}, filtrado y transmisión selectiva de frames.
+
+\vspace{0.25cm}
+
+\begin{table}[h]
+\centering
+\label{tab:router-vs-switch}
+\begin{tabular}{>{\raggedright\arraybackslash}p{6.5cm}>{\raggedright\arraybackslash}p{6.5cm}}
+\toprule
+\textbf{Router} & \textbf{Switch} \\
+\midrule
+Conecta múltiples redes entre sí. & Conecta múltiples dispositivos dentro de una misma red. \\
+\midrule
+Opera en la capa de red. & Opera en la capa de enlace. \\
+\midrule
+Utilizado en redes LAN, MAN y WAN. & Utilizado principalmente en redes LAN. \\
+\midrule
+Maneja direcciones IP para el enrutamiento. & Utiliza direcciones MAC. \\
+\midrule
+Soporta funciones como NAT, DHCP, y enrutamiento dinámico. & No implementa NAT ni enrutamiento. \\
+\midrule
+Generalmente es más costoso debido a su mayor funcionalidad. & Más económico que un router, pero más caro que un hub. \\
+\midrule
+Puede generar algo de latencia por el procesamiento de paquetes. & Ofrece baja latencia y alto rendimiento en redes locales. \\
+\midrule
+Requiere al menos dos interfaces de red. & Opera dentro de una sola red local. \\
+\bottomrule
+\end{tabular}
+\caption{Comparativa entre \texttt{Router} y \texttt{Switch}}
+\end{table}
+
+
+
+\subsection{¿Cuál es la diferencia entre un Switch convencional y un Switch OpenFlow?}
+
+\vspace{0.15cm}
+
+Los switches convencionales operan con tablas MAC aprendidas dinámicamente, mientras que los switches OpenFlow separan el plano de control del plano de datos, permitiendo un control centralizado mediante un controlador SDN.
+
+\vspace{0.25cm}
+
+Un \texttt{switch} OpenFlow es un \texttt{switch} de red basado en el protocolo OpenFlow que emplea técnicas de red definida por software (SDN) para reenviar paquetes en una red.
+
+\vspace{0.25cm}
+
+En una SDN, la función de reenvío de paquetes (plano de datos / data plane) está desagregada o disociada del plano de control, donde se toman las decisiones de enrutamiento. El plano de datos se implementa en el \texttt{switch} OpenFlow, pero recibe las instrucciones de reenvío de paquetes de un controlador SDN independiente, que toma todas las decisiones de enrutamiento.
+
+\vspace{0.25cm}
+
+Un \texttt{switch} OpenFlow utiliza tablas de flujo y una tabla de grupo para realizar la búsqueda y el reenvío de paquetes. Cada \texttt{switch} SDN se comunica con el controlador SDN mediante el protocolo OpenFlow. El controlador puede agregar, eliminar o modificar entradas en las tablas de flujo en respuesta a los paquetes o de forma proactiva, según las condiciones de la red. En ese sentido, puede tomar decisiones de enrutamiento mucho más dinámicas basándose en una combinación de factores, incluyendo políticas predefinidas y las condiciones de la red en un momento dado.
+
+\vspace{0.15cm}
+
+\begin{table}[!htbp]
+\centering
+\label{tab:switch-comparison}
+\begin{tabular}{>{\raggedright\arraybackslash}p{6cm}>{\raggedright\arraybackslash}p{6cm}}
+\toprule
+\textbf{Switch Convencional} & \textbf{Switch OpenFlow} \\
+\midrule
+Toma decisiones de reenvío localmente usando tablas MAC & Sigue reglas de flujo definidas por un controlador externo \\
+\midrule
+Arquitectura autónoma e independiente & Arquitectura desacoplada (plano de control externo) \\
+\midrule
+Protocolos de red tradicionales (STP, VLANs) & Soporte para protocolos SDN como OpenFlow \\
+\midrule
+Limitada capacidad de programación & Totalmente programable mediante APIs \\
+\midrule
+Configuración distribuida en cada dispositivo & Configuración centralizada en el controlador \\
+\midrule
+Menor visibilidad global de la red & Visibilidad completa del estado de la red \\
+\midrule
+Dificultad para implementar políticas complejas & Facilita políticas de red dinámicas y granulares \\
+\midrule
+Hardware propietario con firmware cerrado & Hardware estandarizado con interfaces abiertas \\
+\midrule
+Escalabilidad limitada por diseño distribuido & Escalabilidad mejorada mediante control centralizado \\
+\midrule
+Menor flexibilidad para virtualización & Soporte nativo para virtualización de redes \\
+\bottomrule
+\end{tabular}
+\caption{Comparativa entre \texttt{Switch Convencional} y \texttt{Switch OpenFlow}}
+\end{table}
+
+
+\subsection{¿Se pueden reemplazar todos los routers de la Intenet por Switches OpenFlow? Piense en el escenario interASes para elaborar su respuesta} 
+
+En un análisis general, no sería posible reemplazar completamente todos los routers en primera instancia debido a que,
+si bien los switches OpenFlow pueden realizar tareas de ruteo utilizando eficientemente SDN, no en todas las situaciones
+cumplirían la función de un router. OpenFlow es un protocolo que permite un control central sobre el manejo de tráfico
+en las redes, pero la parte del hardware físico presente en los routers sigue siendo necesario en muchos casos.
+
+\vspace{0.25cm}
+
+Si bien los switches OpenFlow pueden manejar funciones de enrutamiento, no siempre son efectivos en su totalidad en
+comparación a ciertos routers diseñados para alto rendimiento, compuestos por un hardware especial que no están
+presentes necesariamente en los switches. En los casos dentro de un dominio AS (Sistema Autónomo), los switches pueden
+funcionar, pero están limitados en casos críticos presentes en escenarios inter-AS (entre diferentes Sistemas Autónomos)
+de Internet.
+
+\vspace{0.25cm}
+
+A nivel global, el internet depende de BGP (Border Gateway Protocol) para el intercambio de rutas entre ASes. OpenFlow
+no podría reemplazar la lógica compleja de BGP (selección de rutas basada en políticas, atributos AS-PATH, etc.). En
+cuanto a escalabilidad, mantener tablas de flujo para el espacio completo de rutas de Internet es inviable. Los switches
+OpenFlow funcionarían dentro de un Sistema Autónomo, manejando el tráfico intra-dominio, y también en topologías donde
+se necesite un balanceo de carga.
+
+\section{Dificultades encontradas} \label{sec:section9}
+\subsection{POX en Python3} \label{subsec:python3}
+
+\textit{POX} está actualizado para la versión de \textit{Python 2.7}, pero se decidió utilizar \textit{Python3}. El único problema real surge por el archivo \textit{dns.py}. Al iniciar una topología en Mininet con el Firewall ya en ejecución, se lanza un error que no interrumpe la ejecución pero ensucia el log del firewall.
+
+\begin{minted}{bash}
+    TypeError: ord() expected string of length 1, but int found
+\end{minted}
+
+Para solucionar el problema, se modificó el archivo dns.py, aunque existía incertidumbre sobre si futuras incompatibilidades con Python3 requerirían cambios adicionales.
+
+Afortunadamente, se encontró el repositorio público pox-python3\footnote{\url{https://github.com/celuk/pox-python3}} del desarrollador celuk, que contiene versiones modificadas de POX compatibles con Python3. Por motivos de seguridad, se verificó que las modificaciones fueran mínimas y no introdujeran código malicioso.
+
+Tras revisar el repositorio, se determinó que celuk había realizado más cambios de los necesarios. Por ello, tomando como referencia sus ajustes, se creó el repositorio grupo5-pox\footnote{\url{https://github.com/Felipe-Druk/grupo5-pox}}, basado en un fork de la rama gar-experimental\footnote{\url{https://github.com/noxrepo/pox}} del proyecto original. Este repositorio incluye únicamente las modificaciones esenciales para ejecutar POX correctamente en Python3.
+
+\vspace{0.25 cm}
+
+
+\section{Conclusión}
+
+Al inicio del proyecto, la implementación generó cierta incertidumbre. El equipo se preparó para una tarea compleja, centrada en el análisis de paquetes y la gestión de múltiples handlers de eventos. Sin embargo, al comenzar a trabajar con POX, la adaptación resultó más rápida de lo esperado, permitiendo un avance eficiente en el desarrollo.
+
+OpenFlow demostró ser una herramienta útil y accesible, facilitando un mayor control sobre los mensajes de red. La integración de su funcionamiento se logró de manera exitosa, obteniendo como resultado un producto que cumple con los objetivos planteados y del cual el equipo se encuentra satisfecho.
+
+\section{Referencias}
+
+\begin{enumerate}
+    \item James F. Kurose and Keith W. Ross, \textit{Computer Networking: A Top-Down Approach}, 8th ed., Pearson, 2021.
+    \item Mininet. (n.d.). Mininet walkthrough. https://mininet.org/walkthrough/
+    \item die.net. (n.d.). iptables(8) - Linux man page. https://linux.die.net/man/8/iptables
+    \item die.net. (n.d.). iperf(1) - Linux man page. https://linux.die.net/man/1/iperf
+    \item pica8. (n.d.). OpenFlow Switch. https://www.pica8.com/openflow-switch/
+    \item POX Controller Documentation. (n.d.). https://noxrepo.github.io/pox-doc/html/
+    \item POX GitHub Repository. (n.d.). https://github.com/noxrepo/pox
+    \item Noise Lab. (n.d.). Simple Controller Firewall (Coursera SDN Assignment). https://github.com/noise-lab/Coursera-SDN/blob/master/assignments/simple-controller/firewall.py
+\end{enumerate}
+
+\vspace{0.25cm}
+
+\section{Anexo}
+
+\subsection{NAT (Network address translation)}
+
+Para esta sección, se propone lo siguiente. Crear la siguiente topología.
+La misma se compone de dos hosts y dos routers (switches de mininet configurados para permitir IP-forwarding). Los mismos se comunican entre ellos a través de un enlace.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{img/NAT-2-host-2-routers.png}
+\caption{Diagrama de la topología}
+\end{figure}
+
+Para esta, a continuación se explican algunas cuestiones de configuración de las tablas NAT. Luego se hará una prueba con \texttt{iperf} para ver cómo se hace la transformación de IPs y puertos en los routers con NAT. La idea es mandar paquetes desde el host \texttt{h1} hacia el host \texttt{h2}.
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{cc}
+\toprule
+LAN & WAN \\
+\midrule
+10.0.1.2:1100 & 181.45.32.1:4400 \\
+\bottomrule
+\end{tabular}
+\caption{Tabla NAT para el router 1}
+\end{table}
+
+Para la visualización de los paquetes se utilizara Wireshark, la propuesta es capturar los paquetes de la interfaz del router 1 conectada al host (\texttt{r1-eth0}), la interfaz del router 1 conectada al router 2 (\texttt{r1-eth1}) y la interfaz del router 2 conectada al host 2 (\texttt{r2-eth0}).  
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{cc}
+\toprule
+LAN & WAN \\
+\midrule
+10.0.2.2:2200 & 181.45.32.2:8800 \\
+\bottomrule
+\end{tabular}
+\caption{Tabla NAT para el router 2}
+\end{table}
+
+El resultado esperado es ver cómo los paquetes que salen del host 1 con dirección \texttt{10.0.1.2:1100}, terminan saliendo de router 1 con dirección \texttt{181.42.32.1:4400}. Al llegar este paquete, el destino del mismo será \texttt{181.42.32.2:8800}, pero al pasar por el router 2, este es cambiado por la dirección \texttt{10.0.2.2:2200}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{img/NAT-h1-to-h2-packet.png}
+\caption{Viaje de un paquete del host 1 al host 2}
+\end{figure}
+
+Mientras que, el resultado esperado para un paquete que va del host 2 al host 1 consiste en mandar un paquete con dirección \texttt{10.0.2.2:2200}, al pasar por el router 2 se reemplazará su dirección a la \texttt{181.45.32.2:8800}. Al llegar este paquete, su destino tendrá la dirección \texttt{181.45.32.2:4400}, al pasar por el router 1 este se reemplazará por la dirección \texttt{10.0.1.2:1100}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{img/NAT-h2-to-h1-packet.png}
+\caption{Viaje de un paquete del host 2 al host 1}
+\end{figure}
+
+Ahora se explicaran algunas cuestiones de configuración de NAT y tablas de ruteo para los distintos routers. Primero se explica cómo configurar la tabla de ruteo. Para eso se utiliza el comando \texttt{ip} en Linux. Por ejemplo, para el router 1 utilizaremos los siguientes comandos.
+
+\begin{minted}{bash}
+> ip link set dev r1-eth0 address 00:00:00:00:01:01
+> ip link set dev r1-eth1 address 00:00:00:00:01:02
+> ifconfig r1-eth0 10.0.1.1 netmask 255.255.255.252
+> ifconfig r1-eth1 181.45.32.1 netmask 255.255.255.252
+> arp -s 10.0.1.2 00:00:00:00:01:00
+> arp -s 181.45.32.2 00:00:00:00:02:02
+> ip route add default via 181.45.32.2 dev r1-eth1
+\end{minted}
+
+El primer comando (\texttt{ip link set dev}) es para establecer la dirección MAC de la interfaz \texttt{r1-eth0}. El segundo comando (\texttt{ifconfig}) es para asignar la dirección IP de la interfaz \texttt{r1-eth0} con una máscara \texttt{/30}. El siguiente comando de interés es \texttt{arp}, el cual asocia una dirección IP (\texttt{10.0.1.2}) a una dirección MAC (\texttt{00:00:00:00:01:00}). 
+
+\vspace{0.25cm}
+
+Por último, el comando \texttt{ip route add} este añade un \texttt{default} (puerta por defecto) que mande todos los paquetes al hop 181.45.32.2 por la interfaz \texttt{r1-eth1}. Esta última configuración es para mandar todos los paquetes que no cumplan por la interfaz que comunica con el router 2. 
+
+\vspace{0.25cm}
+
+Para los hosts la configuración es muy parecida, pero con una sola interfaz y la puerta por defecto es al router con el cual se comunican. Respecto a la configuración de las tablas NAT, los comandos a utilizar para el router 1 son los siguientes 
+
+\begin{minted}{bash}
+> iptables -t nat -A PREROUTING / 
+   -d 181.45.32.1 -p all --dport 4400 /
+   -j DNAT --to-destination 10.0.1.2:1100
+> iptables -t nat -A POSTROUTING /
+   -s 10.0.1.2 -p all --sport 1100 /
+   -j SNAT --to-source 181.45.32.1:4400
+> iptables -A FORWARD -d 10.0.1.2 -p all --dport 1100 -j ACCEPT
+> iptables -A FORWARD -s 10.0.1.2 -p all --sport 1100 -j ACCEPT
+\end{minted}
+
+\noindent El primer comando hace lo siguiente:
+
+\begin{itemize}
+    \item \texttt{-t NAT}: Modifica todo lo relacionado con la tabla de NAT
+    \item \texttt{-A PREROUTING}: Esto significa que el router chequea esta regla antes de que el Kernel decida donde mandar el paquete
+    \item \texttt{-d 181.45.32.1}: Aplica la regla cuando el paquete tiene está dirección IP de destino
+    \item \texttt{-p all}: Aplica la regla para cualquier protocolo (TCP, UDP, ICMP, ...)
+    \item \texttt{--dport 4400}: Aplica la regla para los paquetes que tengan este puerto de destino
+    \item \texttt{-j DNAT}: Esto significa que cambia el destino del paquete, es decir, estable que hacer con el paquete
+    \item \texttt{--to-source 181.45.32.1:4400}: Esto cambia el origen del paquete a \texttt{181.45.32.1:4400}
+\end{itemize}
+
+\noindent Para el segundo paquete, los flags faltantes son los siguientes: 
+
+\begin{itemize}
+    \item \texttt{-A POSTROUTING}: Esto significa que el router chequea esta regla después de que el Kernel decida donde mandar el paquete
+    \item \texttt{-s 10.0.1.2}: Aplica la regla cuando el paquete tiene está dirección IP de origen
+    \item \texttt{-p all}: Aplica la regla para cualquier protocolo (TCP, UDP, ICMP, ...)
+    \item \texttt{--sport 1100}: Aplica la regla para los paquetes que tengan este puerto de origen
+    \item \texttt{-j SNAT}: Esto significa que cambia el origen del paquete, es decir, estable que hacer con el paquete
+    \item \texttt{--to-destination 10.0.1.2:1100}: Esto cambia el destino del paquete a \texttt{10.0.1.2:1100}
+\end{itemize}
+
+\noindent Para los últimos comandos, los flags relevantes son los siguientes:
+
+\begin{itemize}
+    \item \texttt{-A FORWARD}: Esto significa que el router aplica la regla para el envio de paquetes
+    \item \texttt{-j ACCEPT}: Esto permite, simplemente aceptar los paquetes que tengan destino u origen 10.0.1.2:1100 con cualquier protocolo
+\end{itemize}
+
+El resumen de los cuatro comandos es el siguiente: el primero es transformar todo el tráfico entrante con paquetes de destino \texttt{181.45.32.1:4400} a \texttt{10.0.1.2:1100} de todos los protocolos, el segundo es transformar todo el tráfico saliente con paquetes de origen \texttt{10.0.1.2:1100} a \texttt{181.45.32.1:4400} de todos los protocolos y los últimos dos comandos son para aceptar, todo el tráfico entrante o saliente, hacia o desde \texttt{10.0.1.2:1100}. Para el segundo router, la idea es exactamente la misma.
+
+\vspace{0.25cm}
+
+La idea de este anexo es enviar tráfico desde el host 1 (\texttt{h1}) hacia el host 2 (\texttt{h2}) y comprobar que la NAT en ambos hosts se cambia. El comando a utilizar es \texttt{iperf}, como vamos a utilizar el protocolo TCP deberíamos ver envío de datos hacía host 2 y los ACKs hacia host 1.
+
+\vspace{0.25cm}
+
+\noindent El comando a utilizar para el host 1 es el siguiente:
+
+\begin{minted}{bash}
+> iperf -c 181.45.32.2 -p 8800 -B 10.0.1.2:1100 -t 1
+\end{minted}
+
+Este comando envía flujo hacia la dirección IP \texttt{181.45.32.2} con puerto \texttt{8800} y escucha de forma entrante con \texttt{10.0.1.2:1100}, esto es porque el comando abrirá un puerto aleatorio y queremos asegurarnos que, sea el mismo que la tabla NAT. El \texttt{-t 1} es para enviar flujo durante 1 segundo. Para el host 2, el comando es el siguiente:
+
+\begin{minted}{bash}
+> iperf -s -p 2200
+\end{minted}
+
+Este comando levantará un servidor escuchando en el puerto \texttt{2200}. Ahora pasaremos a analizar con capturas de Wireshark el flujo de los paquetes, para eso nos pararemos en 3 puntos: el primero será en la interfaz del router 1 conectada al host 1 (\texttt{r1-eth0}), el segundo será la interfaz del router 1 conectada al router 2 (\texttt{r1-eth1}), por último la interfaz del router 2 conectada al host 2 (\texttt{r2-eth0}).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{img/two-host-r1-eth0-wireshark.JPG}
+\caption{Captura en Wireshark de la interfaz \texttt{r1-eth0}}
+\end{figure}
+
+Notar que el primer paquete, que forma parte del handshake, tiene dirección de origen \texttt{10.0.1.2:1100} y destino \texttt{181.45.32.2:8800}, y el segundo paquete tiene dirección de origen \texttt{181.45.32.2:8800} y destino \texttt{10.0.1.2:1100}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{img/two-host-r1-eth1-wireshark.JPG}
+\caption{Captura en Wireshark de la interfaz \texttt{r1-eth0}}
+\end{figure}
+
+\noindent Notar que el primer paquete, que forma parte del handshake, tiene dirección de origen \texttt{181.45.32.1:4400} y destino \texttt{181.45.32.2:8800}, con lo cual al pasar por el primer router la dirección de origen cambió de forma efectiva. Por otro lado, vemos como el segundo paquete con dirección de origen \texttt{181.45.32.2:8800} y dirección de destino \texttt{181.45.32.1:4400}, veremos como antes de pasar por el router 2, cambia su dirección de origen.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{img/two-host-r2-eth0-wireshark.JPG}
+\caption{Captura en Wireshark de la interfaz \texttt{r2-eth0}}
+\end{figure}
+
+Por último, notar que el primer paquete cambia su dirección de destino a la \texttt{10.0.2.2:2200} y mantiene su dirección de origen \texttt{181.45.32.1:4400}. Mientras que para el segundo paquete su dirección de origen es la \texttt{10.0.2.2:2200} y su destino es la \texttt{181.45.32.1:4400}. 
+
+\vspace{0.25cm}
+
+Notar que el segundo paquete anterior, que se trataba de una dirección de origen distinta a la que vemos aquí, con lo cual vemos la transformación NAT del router 2. Con lo cual podemos concluir que el NAT en ambos routers funciona bien.
