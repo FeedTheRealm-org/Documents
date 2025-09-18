@@ -23,8 +23,11 @@ class Document:
     os.system(f"{self.entrypoint}/{GENERATOR_FILENAME}")
 
   def copy_pdf_to_root(self):
-    os.system(f"cp {self.entrypoint}/main.pdf ./{self.name}.pdf")
-    os.system(f"rm -f {self.entrypoint}/main.pdf")
+    pdf_path = f"{self.entrypoint}/main.pdf"
+    dest_path = f"./{self.name}.pdf"
+    if os.path.exists(pdf_path):
+      os.system(f"cp {pdf_path} {dest_path}")
+      os.system(f"rm -f {pdf_path}")
 
   def delete_generator_file(self):
     os.remove(f"{self.entrypoint}/{GENERATOR_FILENAME}")
