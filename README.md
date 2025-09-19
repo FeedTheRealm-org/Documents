@@ -16,7 +16,7 @@ git push --tags
 Additionally if a new folder was added, its necessary to add it to `files.yaml`:
 
 ```yaml
-# Exampl
+# Example
 proposal:
   name: proposal
   description: Build the proposal document using LaTeX
