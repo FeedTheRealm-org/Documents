@@ -16,6 +16,7 @@ class Document:
       generator_file.write(f"#!/bin/bash\n\n")
       generator_file.write(f"cd {self.entrypoint}\n")
       generator_file.write(f"pdflatex -interaction=nonstopmode main.tex\n")
+      generator_file.write(f"pdflatex -interaction=nonstopmode main.tex\n")
       generator_file.write(f"rm -f main.aux main.log main.out main.toc main.fls main.fdb_latexmk main.pyg\n")
 
   def run_generator(self):

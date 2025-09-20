@@ -1,8 +1,4 @@
 proposal:
-  name: proposal
+  name: Equipo169_PropuestaTrabajoProfesional_2c2025
   description: Build the proposal document using LaTeX
   entrypoint: ./proposal
-example:
-  name: example
-  description: Build the example document using LaTeX
-  entrypoint: ./example
