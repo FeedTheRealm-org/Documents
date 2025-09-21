@@ -2,7 +2,7 @@ import os
 import yaml
 
 CONFIG_FILE = "files.yaml"
-GENERATOR_FILENAME = "{GENERATOR_FILENAME}"
+GENERATOR_FILENAME = "generate_pdf.sh"
 GENERATOR_MODE = 0o755
 
 class Document:
