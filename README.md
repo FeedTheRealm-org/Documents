@@ -9,7 +9,7 @@ to be created with the format `vx.x.x`.
 
 ```bash
 # Example tagging
-git -a v1.0.0 -m "Release version 1.0.0" # Marks the latest commit with the tag
+git tag -a v1.0.0 -m "Release version 1.0.0" # Marks the latest commit with the tag
 git push --tags
 ```
 
