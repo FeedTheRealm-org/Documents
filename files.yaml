@@ -2,3 +2,7 @@ proposal:
   name: Equipo169_PropuestaTrabajoProfesional_2c2025
   description: Build the proposal document using LaTeX
   entrypoint: ./proposal
+simulate:
+  name: Equipo169_Simulacion_2c2025
+  description: Build the simulation document using LaTeX
+  entrypoint: ./simulate
