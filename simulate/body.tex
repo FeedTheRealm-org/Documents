@@ -3,9 +3,99 @@
 
 En este documento se propone la definición de un modelo que permita analizar de manera sistemática cómo las 
 modificaciones en las políticas impactan en el comportamiento de los distintos agentes económicos involucrados. 
-El objetivo principal es comprender las dinámicas que surgen a partir de estas variaciones y anticipar posibles 
-respuestas que, de no ser contempladas, podrían generar distorsiones en el sistema. Asimismo, se busca establecer 
-mecanismos que reduzcan la especulación por parte de agentes externos, factor que en muchos casos puede comprometer la 
-estabilidad y, en consecuencia, volver inviable la sostenibilidad del proyecto.
 \vspace{0.25cm}
 
+El objetivo principal es comprender las dinámicas que surgen a partir de estas variaciones y anticipar posibles 
+respuestas que, de no ser contempladas, podrían generar distorsiones en el sistema. 
+\vspace{0.25cm}
+
+Asimismo, se busca establecer mecanismos que reduzcan la especulación por parte de agentes externos, factor que en 
+muchos casos puede comprometer la estabilidad y, en consecuencia, volver inviable la sostenibilidad del proyecto.
+\vspace{0.25cm}
+
+\section{Definiciones Previas}
+\vspace{0.25cm}
+
+\subsection{Elementos Basicos}
+\vspace{0.25cm}
+
+En esta sección detallaremos los aspectos fundamentales del modelo económico que se pretende simular, principalmente
+las variables involucradas, los agentes económicos y las políticas que se desean analizar.
+\vspace{0.25cm}
+
+En primer lugar, contamos con las siguientes variables: $L$ es el número de ítems que conforman la economía, 
+$N$ es el número de \textit{players}, $M$ es el número de \textit{creators}. En esta economía, los \textit{players}
+son los agentes que consumen los ítems, mientras que los \textit{creators} son los agentes que producen los ítems.
+\vspace{0.25cm}
+
+Cada ítem dentro del juego tendrá asociado un precio $p_i$, eso permite la formación de un vector de precios de la
+economía, de forma tal que $\vec{\mathbf{P}} = [p_1, p_2, \ldots, p_L]^T$. Otro aspecto importante a considerar es que 
+todos los bienes de la economía son limitados, por lo tanto existe además una cantidad $q_i$ asociada a cada ítem $i$,
+lo que permite definir un vector de cantidades $\vec{\mathbf{Q}} = [q_1, q_2, \ldots, q_L]^T$.
+\vspace{0.25cm}
+
+\subsection{\textit{Player}}
+\vspace{0.25cm}
+
+En cuanto a los \textit{players}, tenemos que cada uno de ellos tendrá una preferencia subjetiva por cada ítem $i$, es
+decir que, desde su experiencia subjetiva, tendrá un valor subjetivo $v_i$ por cada ítem, lo que permite armar un
+vector de preferencias subjetivas $\vec{\mathbf{V}}_j = [v_1, v_2, \ldots, v_L]^T$. Donde $j$ es el $j$-ésimo 
+\textit{player}.
+\vspace{0.25cm}
+
+Por otro lado, cada \textit{player} tendrá una cantidad de dinero $w_j$ que podrá utilizar para adquirir ítems. Eso le
+añade al $j$-ésimo \textit{player} una restricción presupuestaria, es decir que la suma del dinero gastado en los ítems no 
+podrá superar su cantidad de dinero disponible $w_j$.
+\vspace{0.25cm}
+
+Ahora bien, para saber que ítems adquiere cada \textit{player}, debemos definir cual es la probabilidad de que el
+$j$-ésimo \textit{player} adquiera el ítem $i$. 
+\vspace{0.25cm}
+
+Llamaremos $T_{ji}$ al evento por el cual el $j$-ésimo \textit{player} adquiere el 
+ítem $i$. Esa probabilidad dependerá de la relación entre el valor subjetivo $v_i$ y el precio $p_i$. Por lo tanto,
+definimos la probabilidad de que el $j$-ésimo \textit{player} adquiera el ítem $i$ como:
+\vspace{0.25cm}
+
+\begin{equation}
+  \mathbf{P}(T_{ji}=1) = \frac{e^{\gamma\, v_i / p_i}}{\sum_{k=1}^{L} e^{\gamma\, v_k / p_k}}
+\end{equation}
+\vspace{0.25cm}
+
+Donde $\gamma$ es un parámetro que mide la sensibilidad del \textit{player} respecto al precio. Si $\gamma$ es muy 
+grande, el \textit{player} será muy sensible al precio, es decir que tenderá a adquirir los ítems más baratos. En 
+cambio, si $\gamma$ es muy pequeño, el \textit{player} tenderá a adquirir los ítems que más valor subjetivo le aporten, 
+sin importar tanto el precio.
+\vspace{0.25cm}
+
+Ahora bien, existe la posibilidad de que el $j$-ésimo \textit{player} no adquiera ningún ítem, es decir que no realice ninguna 
+compra. Para contemplar esa posibilidad, definimos la probabilidad de que el $j$-ésimo \textit{player} no adquiera ningún ítem 
+como el evento $\overline{T_{j}}$ y su probabilidad como:
+\vspace{0.25cm}
+
+\begin{equation}
+  \mathbf{P}(\overline{T_{j}}=1) = 1 - \sum_{i=1}^{L} \mathbf{P}(T_{ji})
+\end{equation}
+
+Esto nos permite definir, ahora si, la restricción presupuestaria del $j$-ésimo \textit{player}, dado que los eventos 
+$\overline{T_{j}}$ y $T_{ji}$ son eventos binarios, entonces la restricción queda definida como:
+\vspace{0.25cm}
+
+\begin{equation}
+  \sum_{i=1}^{L} p_i \cdot \mathbf{P}(T_{ji}=1) \leq w_j
+\end{equation}
+\vspace{0.25cm}
+
+Por otro lado, una vez que un \textit{player} adquiere un ítem, ese ítem no tendrá sentido que vuelva a ser adquirido,
+por lo tanto, si el $j$-ésimo \textit{player} adquiere el ítem $i$, entonces la probabilidad de que adquiera ese mismo ítem
+se vuelve cero.
+\vspace{0.25cm}
+
+Esto añade una temporalida a los eventos $T_{ji}$, es decir que si en el tiempo $t$ el $j$-ésimo \textit{player} adquiere el ítem
+$i$, entonces en el tiempo $t+1$ la probabilidad de que adquiera ese mismo ítem es cero. Por lo tanto, la probabilidad de que el $j$-ésimo 
+\textit{player} adquiera el ítem $i$ en el tiempo $t+1$ queda definida como:
+\vspace{0.25cm}
+
+\begin{equation}
+  \mathbf{P}(T_{ji}(t+1)) = (1 - T_{ji}(t)) \cdot \frac{e^{\gamma\, v_i / p_i}}{\sum_{k=1}^{L} e^{\gamma\, v_k / p_k}}
+\end{equation}
