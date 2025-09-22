@@ -54,186 +54,58 @@ y la robustez de arquitecturas masivas propias de los MMO RPG, lo cual abre la o
 
 \section{Problema detectado y/o faltante}
 
-\subsection{Estilo del Producto}
-
-Un aspecto fundamental para diferenciarnos de otras plataformas de creación de contenido, como por ejemplo, Minecraft o Roblox, es ofrecer un estilo visual simple,
-coherente y fácil de modificar. La simplicidad no solo debe reflejarse en la apariencia, sino también en las herramientas de personalización,
-de manera que cualquier usuario pueda personalizar los artefactos de su mundo sin barreras técnicas.
-
-\subsection{Creación de mundos por usuarios}
-Uno de los pilares del proyecto es ofrecer a los jugadores la posibilidad de crear y compartir sus propios mundos explorables.
-Sin embargo, este enfoque plantea una serie de desafíos:
-
-\begin{itemize}
-    \item \textbf{Accesibilidad de la interfaz:} ¿Cómo diseñar un editor que sea intuitivo y fácil de usar para personas sin conocimientos de programación
-    o de diseño de videojuegos, pero que al mismo tiempo ofrezca profundidad para usuarios avanzados?
-    \item \textbf{Equilibrio entre abstracción y personalización:} ¿Cómo proporcionar herramientas de creación simplificadas que permitan generar contenido rápidamente,
-    sin sacrificar la capacidad de personalización y creatividad individual?
-    \item \textbf{Limitaciones del editor:} ¿Qué restricciones tendrá el creador de mapas? ¿Será posible recrear experiencias comparables a MMOs
-    reconocidos con las herramientas disponibles, o se priorizará un alcance más reducido y específico?
-\end{itemize}
-
-\subsection{Incentivo de Jugar y Crear}
-Otro aspecto central del proyecto es definir qué motiva tanto a los creadores de mundos como a los jugadores a participar activamente en la plataforma.
-Es necesario establecer mecanismos de incentivo que fomenten la creación de contenido de calidad y la interacción constante dentro de los mundos generados. 
+En el panorama actual no existe una solución que integre, de forma accesible y robusta, la creación de mundos al estilo RPG Maker con la infraestructura masiva y persistente de un MMO. 
+Las plataformas existentes presentan limitaciones: motores como Unity o RPG Maker no contemplan de manera nativa escenarios multijugador de gran escala, 
+mientras que títulos como Roblox o Minecraft, si bien ofrecen creación comunitaria, imponen barreras técnicas o carecen de un enfoque de rol persistente.  
 \vspace{0.25cm}
 
-Entre las preguntas clave a resolver se encuentran: ¿habrá algún tipo de “premio” o recompensa por jugar?
-¿Los creadores podrán obtener un beneficio económico por sus mundos? 
-¿Qué elementos harán que los jugadores quieran permanecer en un mundo específico, garantizando que este sea atractivo, disfrutable y mantenga su calidad a lo largo del tiempo?
-
-\subsection{Mantenimiento y Monetización}
-Otro de los principales problemas es la monetización y mantenimiento a largo plazo del proyecto. La monetización es el mecanismo de sustento económico,
-por el cual se podrá mantener durante mucho tiempo funcionando el proyecto, es la base de sustentación operativa elemental del proyecto.
+Los principales problemas a resolver incluyen: desarrollar un editor intuitivo y accesible para usuarios sin experiencia en programación, 
+pero lo suficientemente potente para permitir personalización avanzada; definir incentivos claros que motiven tanto a creadores como a jugadores a participar activamente; 
+diseñar un sistema de monetización sostenible que no desincentive el uso ni genere desequilibrios económicos; 
+y establecer una arquitectura de servidores escalable, tolerante a fallos y de baja latencia, capaz de sostener múltiples mundos simultáneos con interacción en tiempo real.  
 \vspace{0.25cm}
 
-La cuestión a enfrentarse implica como cobrar dentro del proyecto, como así también qué porcentajes.
-Cómo impacta cada una de las decisiones de cobro, cómo el contexto afecta a cada una de las políticas, cómo reaccionan cada uno de los agentes ante cambios en las políticas de cobro.
-\vspace{0.25cm}
+En síntesis, el faltante identificado es la ausencia de un ecosistema que combine facilidad de creación, incentivos adecuados, monetización justa e infraestructura sólida. 
+El proyecto busca abordar estas brechas a través de un MVP que permita validar las bases técnicas y de diseño necesarias para su evolución futura.
 
-También nos enfrentamos a cuestiones relacionadas con los incentivos dentro de la plataforma.
-Los incentivos y sus cambios afectan al uso a lo largo del tiempo de la plataforma, lo que impacta en la durabilidad del MVP a largo plazo.
-Un mal cambio en las políticas de incentivo y cobros, puede llevar a la pérdida de interés en la plataforma y llevar al fin del proyecto.
-\vspace{0.25cm}
+\section{Solución Propuesta}
 
-Por eso, se hace relevante la implementación de buenas políticas de incentivos y cobros, que no impacten de forma negativa en los costos del proyecto,
-los incentivos para crear contenido dentro de la plataforma y la jugabilidad y uso del mismo por parte de los usuarios.
-
-\subsection{Arquitectura e Infraestructura}
-Uno de los principales desafíos del proyecto es definir una arquitectura capaz de soportar la complejidad de un sistema multijugador masivo 
-con mundos generados por los usuarios. A diferencia de un MMO RPG tradicional —donde existe un único mundo persistente gestionado por servidores dedicados de tipo zoning—,
-esta propuesta requiere sostener múltiples mundos de manera simultánea, cada uno con baja latencia y alto rendimiento para garantizar una experiencia de juego fluida.
-\vspace{0.25cm}
-
-Además, se deben considerar aspectos clave como:
-
-\begin{itemize}
-    \item \textbf{Escalabilidad:} ¿Cómo gestionar de manera eficiente cientos de clientes conectándose a un mismo mundo, y miles distribuidos en diferentes instancias?
-    \item \textbf{Baja latencia:} Garantizar tiempos de respuesta mínimos en un entorno de interacción en tiempo real.
-    \item \textbf{Costos de infraestructura:} ¿Qué inversión implica desplegar y mantener un sistema de estas características, considerando servidores,
-    balanceadores, bases de datos distribuidas y servicios en la nube?
-    \item \textbf{Orquestación de instancias de mundos:} Se requiere un sistema dinámico de autoescalado que levante o apague instancias según la demanda para evitar desperdicio de recursos.
-    \item \textbf{Persistencia de datos en tiempo real:} Es necesario guardar progresos e inventarios en bases de datos distribuidas equilibrando consistencia y escalabilidad.
-    \item \textbf{Tolerancia a fallos y continuidad del servicio:} La arquitectura debe ser resiliente, con replicación y recuperación automática ante caídas de servidores.
-    \item \textbf{Seguridad y prevención de abusos:} El sistema debe mitigar ataques de \textit{cheating} mediante validación de tráfico y monitoreo continuo.
-    \item \textbf{Costos operativos:} Los principales gastos estarán en servidores de baja latencia y almacenamiento persistente, requiriendo una planificación eficiente.
-    \item \textbf{Estrategias de monetización ligadas a la infraestructura:} El modelo elegido (suscripción, micropagos o marketplace) determinará la asignación de recursos 
-    por jugador y creador.
-\end{itemize}
-
-\subsection{Alcance del proyecto}
-Este proyecto es, sin duda, ambicioso, y resulta evidente que no será posible resolver todos los desafíos en un solo año.
-Sin embargo, sí es factible definir un MVP que cubra lo mínimo indispensable para abordar los problemas identificados previamente y que,
-al mismo tiempo, siente las bases para optimizar y expandir el producto en futuras iteraciones.
-
-\section{Solución propuesta}
+La propuesta combina accesibilidad en la creación de mundos con una infraestructura escalable propia de los MMO, 
+buscando un equilibrio entre simplicidad para los usuarios y robustez técnica para garantizar una experiencia fluida.
 
 \subsection{Estilo del Producto}
-El estilo visual será unificado en toda la plataforma bajo un formato 2.5D. Los objetos de fondo y del mapa estarán representados en 3D,
-mientras que los personajes y elementos animados se desarrollarán en 2D. Esta elección facilita tanto el diseño por parte del equipo como la creación de cosmeticos por los usuarios,
-ya que un cosmético puede consistir simplemente en una imagen aplicada sobre el personaje o en animaciones 2D básicas (idle, movimiento, ataque).
-De esta manera, se reduce la complejidad de implementar modelos 3D completamente animados, manteniendo al mismo tiempo un estilo visual atractivo 
-y accesible para los usuarios.
+Se adoptará un estilo visual 2.5D: escenarios en 3D simplificado y personajes en 2D animados. 
+Esto facilita la creación de contenido por usuarios y reduce la complejidad técnica, manteniendo coherencia estética.
 
-\subsection{Creación de mundos por usuarios}
-El creador de mundos será una aplicación que los usuarios podrán instalar para diseñar y personalizar mapas.
-Al iniciar un nuevo proyecto, se definirá el tamaño del mapa (pequeño, mediano o grande) y, opcionalmente, se podrá importar un \textit{template} preexistente como punto de partida.
-\vspace{0.25cm}
-
-Dentro de cada mundo existirán tres tipos principales de entidades:
-
-\begin{itemize}
-    \item \underline{Assets}: objetos posicionables directamente en el mapa.
-    \item \underline{Items:} elementos que los jugadores pueden almacenar en su inventario.
-    \item \underline{Cosméticos:} objetos destinados a la personalización del personaje del jugador.
-\end{itemize}
-
-Cada creador podrá importar sus propias entidades para su mundo y brindarle una identidad única o, en su defecto,
-utilizar las librerías de entidades pre-cargadas en la herramienta. Los mundos tendrán una estructura plana y cuadrada en entornos 3D,
-con dimensiones proporcionales al tamaño de un jugador. A modo de ejemplo, si un jugador mide una unidad, un mapa considerado “pequeño” será de 500 unidades de extensión,
-escalando dicho valor para los tamaños superiores.
-\vspace{0.25cm}
-
-Los usuarios podrán importar modelos 3D o 2D y asignarles comportamientos mediante interfaces abstractas. Por ejemplo, un modelo de criatura podrá configurarse como “Enemigo”,
-definiendo su tipo de ataque o interacción con los jugadores. Este mismo esquema será aplicable a items y cosméticos, permitiendo ampliar la lógica de personalización y funcionalidad.
-\vspace{0.25cm}
-
-Asimismo, los creadores tendrán la posibilidad de diseñar \textbf{quests} o aventuras, que incentiven la exploración y la interacción con el mundo. De forma abstracta,
-un \textit{quest} podrá dispararse mediante un disparador asociado a una acción, como recoger un objeto o interactuar con un NPC \textit{(non-playable-character)}. Al completarlo,
-los jugadores recibirán recompensas definidas por el creador, tales como ítems o monedas.
-\vspace{0.25cm}
-
-En última instancia, cada creador será responsable de diseñar la propuesta de valor de su mundo, mientras que la plataforma proveerá las herramientas necesarias
-para facilitar y potenciar dicha experiencia de creación.
-\vspace{0.25cm}
-
-Por último, se implementarán tiendas virtuales personalizables para cada mundo donde los jugadores podrán gastar sus monedas y/o gemas. 
-Esto se detalla en mayor profundidad en la sección de \textbf{Mantenimiento y Monetización}.
+\subsection{Creación de Mundos y Jugabilidad}
+Se desarrollará un editor intuitivo que permita diseñar mapas y configurar entidades como \textit{assets}, ítems, cosméticos, NPCs y enemigos.  
+Los creadores podrán definir quests, recompensas y eventos, además de implementar tiendas internas para la economía del mundo.  
+Los jugadores, por su parte, podrán explorar estos escenarios, interactuar con NPCs y otros usuarios, participar en combates, completar misiones 
+y adquirir ítems en tiendas virtuales.  
+De esta manera, cada mundo ofrecerá una experiencia única, combinando creatividad de los creadores con dinámicas multijugador persistentes.
 
 \subsection{Mantenimiento y Monetización}
-El sistema de monetización se basará en dos tipos de monedas virtuales, complementadas con un esquema de suscripciones para los creadores de mundos.
-
+El modelo económico se basará en dos monedas:
 \begin{itemize}
-    \item \textbf{Gemas:} moneda premium adquirida con dinero real, utilizable en cualquier mundo para obtener ítems y cosméticos por medio de la tienda.
-    Este sistema está orientado a incentivar a los creadores a diseñar y ofrecer contenido estéticamente atractivo.
-    \item \textbf{Oro:} moneda interna de cada mundo, no transferible entre mundos. Su generación es definida por los creadores a través de recompensas por quests,
-    combates o eventos, y se utiliza para adquirir ítems de la tienda del mundo.
+    \item \textbf{Oro} (interna de cada mundo): Se podrán obtener en las aventuras de cada jugador, y se utilizarán para la compra de items utilizables
+        solo en el mundo donde se adquieren (como parte del inventario del jugador).
+    \item \textbf{Gemas} (premium con dinero real): Su compra está ligada a la plataforma y se podrá utilizar para la compra de cosméticos.
 \end{itemize}
 
-Cada creador podrá establecer tiendas internas en su mundo, definiendo precios en oro y/o gemas, así como el stock disponible de cada ítem.
-Además, se implementará un sistema de suscripciones para creadores de mundos, que será necesario para mantener el mundo funcionando online.
-Inicialmente, se ofrecerá un período de prueba gratuito de dos semanas \textit{(periodo tentativo)}, y posteriormente,
-el costo de mantenimiento dependerá del tamaño y la demanda del mundo.
-\vspace{0.25cm}
+Los creadores podrán monetizar sus mundos mediante el agregado de cosmeticos en las tiendas, 
+mientras que la plataforma retendrá un porcentaje de las transacciones para sostener la operación.
 
-El objetivo es que los mundos estén bien diseñados, que incentiven la interacción y el consumo de ítems, de manera que puedan sostener sus propios costos gracias al gasto de los jugadores,
-reduciendo así la carga financiera directa del creador.
-\vspace{0.25cm}
-
-Finalmente, los creadores tendrán la posibilidad de convertir gemas en dinero real, regulado por umbrales que deben superar para obtener dicha conversión,
-estableciendo un esquema de ingresos directos. La plataforma retendrá un porcentaje de cada conversión como comisión por el servicio.
+Dichos cosméticos una vez comprados pasan a pertenecer al jugador que los compra y podrá mostrarlos y vestirlos en los demás mundos que conforman el universo de la plataforma.
 
 \subsection{Arquitectura e Infraestructura}
-Se diseñó una arquitectura tentativa para los servidores que se consideran necesarios y sus comunicaciones.
+La arquitectura se apoyará en servidores escalables por mundo, orquestados en la nube, 
+con comunicación a través de un \textit{gateway} central y un \textit{message broker}. 
+Los mundos se ejecutarán en servidores de diferentes clases (A, B, C) según su tamaño, 
+garantizando baja latencia, tolerancia a fallos y escalabilidad bajo demanda.
 
-Por un lado, deberá haber servidores escalables por zonas (de mundos), con el objetivo de soportar una gran cantidad de jugadores conectados en un mundo, así como también
-deberá haber conjuntos de servidores (clusters), simbolizando los múltiples mundos simultáneos.
-\vspace{0.25cm}
-
-Por otra parte, un modelo de servidor con múltiples funcionalidades de tipo monolítico, donde estarán presentes distintos sistemas, como el sistema de cobranzas,
-el manejo de datos de los mundos, el sistema del portal principal de mundos, etc.
-
-Esto se desarrollará bajo ese tipo de arquitectura simplificada debido a que la mayor dificultad del proyecto se encuentra en la otra parte mencionada 
-que llevará una arquitectura más compleja y que deberá optimizarse mucho para su correcto funcionamiento. De esta forma evitar sobre-complicar
-partes del sistema que no generan valor al usuario, y que no son la característica principal del desafío planteado.
-
-Se consideró al sistema elegido suficiente para el alcance del proyecto, y se espera crear un sistema bien elaborado y escalable.
-\vspace{0.25cm}
-
-Los usuarios cuentan con dos ejecutables principales: el cliente de juego, que les permite navegar y conectarse a distintos mundos, y el World Maker,
-una aplicación destinada a los creadores para diseñar y publicar mundos. 
-
-Ambos se comunican con la plataforma a través de un \textit{Gateway} central que actúa como punto de entrada único, manejando la seguridad y el ruteo de todas las peticiones.
-\vspace{0.25cm}
-
-Detrás del Gateway, la comunicación interna entre servicios se gestiona mediante un Message Broker. Este componente es el núcleo de la infraestructura,
-ya que permite que cada servidor se conecte de forma desacoplada, habilitando así la escalabilidad independiente de cada parte del sistema.
-Gracias a este diseño, si aumenta la cantidad de jugadores, se pueden lanzar más instancias de los servicios necesarios sin afectar al resto.
-\vspace{0.25cm}
-
-La simulación de los mundos corre en servidores de zona, que son instancias de Unity en modo headless, 
-optimizadas únicamente para procesar lógica y sincronización en tiempo real. Estos servidores están clasificados en tres tipos según el tamaño de los mapas:
-Clase A para mundos grandes, Clase B para mundos medianos y Clase C para mundos pequeños. Este esquema permite ajustar la capacidad de cómputo según la complejidad
-y el volumen de jugadores de cada mundo, a la vez que facilita la escalabilidad horizontal, ya que se pueden lanzar múltiples instancias de cada clase según la demanda.
-\vspace{0.25cm}
-
-En conjunto, esta infraestructura busca equilibrar flexibilidad, rendimiento y costos. La nube y tecnologías como Kubernetes permiten orquestar los servidores 
-de zona de manera dinámica, levantando y apagando recursos en función del tráfico. El uso de un message broker asegura que la comunicación entre servicios sea confiable 
-y tolerante a fallos. 
-El resultado es una base sólida para sostener un ecosistema de mundos creados por los usuarios, en donde la calidad de la experiencia depende tanto de la creatividad 
-de los creadores como de la solidez de la arquitectura que lo soporta.
-
-\subsection{Alcance del proyecto}
+\subsection{Alcance del Proyecto}
+El desarrollo inicial se enfocará en un MVP funcional que permita crear mundos y explorarlos mediante aventuras, batallas e interaccion con otros jugadores, 
+validando usabilidad, monetización e infraestructura, y sentando bases para iteraciones futuras.
 
 \section{Evaluación preliminar de impacto social y ambiental}
 
@@ -242,67 +114,75 @@ ya que hoy en día crear nuevo contenido de videojuegos requiere la necesidad ti
 \vspace{0.25cm}
 
 Por lo tanto, se busca que los usuarios puedan encontrarle rédito de distintas maneras, por un lado publicando el contenido en redes sociales, 
-tanto como ofreciendo su producto, como así también de cómo lo hizo y las posibilidades que puedan tener otros usuarios.
-Por otro lado, los usuarios de igual manera pueden consumir el contenido existente y publicar sus avances mediante servicios de streaming.
+tanto ofreciendo su producto, como también demostrando cómo lo hicieron y las posibilidades que puedan tener otros creadores y, por otro lado,
+los jugadores de igual manera pueden consumir el contenido existente y publicar sus avances mediante servicios de streaming.
 \vspace{0.25cm}
 
-No hay una certeza absoluta en la que este proyecto, si una vez finalizado más allá del MVP que se entregará como proyecto final,
+No hay una certeza absoluta sobre que este proyecto -una vez finalizado más allá del MVP que se entregará como proyecto final- 
 pueda a escalar más de lo esperado y se necesite continuo desarrollo de nuevo contenido bajo la demanda de la comunidad que pueda haber.
 \vspace{0.25cm}
 
-Además, todo esto depende de los usuarios creadores que utilicen el editor de nuestro proyecto para generar contenido atractivo para los usuarios,
+Además, todo esto depende de los usuarios creadores que utilicen el editor desarrollado para generar contenido atractivo para los jugadores,
 por lo tanto debemos estar al tanto de las necesidades de esos creadores y estar solucionando todos los problemas presentes en el feedback
 y demandas que se puedan disponer los usuarios.
 
 \section{Metodología}
 
-Para llevar a cabo este proyecto, se realizará una planificación bien estructurada sobre la gestión del mismo, previamente a comenzar el desarrollo,
-para poder establecer primeramente su alcance, las problemáticas que puedan llegar a surgir, enumerar las investigaciones previas y las que se llevarán durante
-el transcurso del desarrollo, y establecer puntos de entrega por iteraciones dentro de un tiempo establecido para llevar una meta concisa de los aspectos 
-principales que debe poder satisfacer el proyecto en sí, con respecto a los objetivos planteados.
-\vspace{0.25cm}
+La metodología del proyecto se centra en una planificación estructurada que permita gestionar de manera eficiente el desarrollo del MMO RPG Maker, 
+garantizando el cumplimiento de objetivos, la coordinación del equipo y la adaptación continua a los requisitos del proyecto.
 
-Esta planificación será basada en lo aprendido por las materias cursadas en la carrera de la facultad, utilizando las mejores herramientas necesarias para 
-formar una buena gestión del proyecto que se llevará a cabo, y además para poder llevar una comunicación estable tanto entre los alumnos como con el tutor designado.
-Por lo tanto, una vez establecido los objetivos principales, las características a desarrollar del proyecto y las metodologías a implementar para el desarrollo,
-se dividirá estimativamente las tareas a realizar a cada uno de los integrantes del grupo, con el fin de avanzar en el trabajo lo más organizado posible.
-\vspace{0.25cm}
+\subsection{Planificación y Gestión del Proyecto}
+Se definirá el alcance del proyecto, identificando objetivos principales, funcionalidades críticas y posibles riesgos. 
+Las tareas se dividirán entre los integrantes del equipo según su especialización, estableciendo iteraciones con entregables parciales 
+para asegurar un avance constante y medible.
 
-Utilizaremos herramientas particulares como Miro, para plantear ideas generales de forma más visual e interactiva, como por ejemplo el desarrollo de User Story Maps
-o planteos basados en imágenes y diseños en croquis. Se ha creado hasta el momento en que se escribe este documento un user story map,
-con detalles en usuarios basados como un creador de contenido y como de un usuarios jugador que consume contenidos, 
-con un par de iteraciones con el fin de ordenar y definir ideas generales de las características que poseerá nuestro proyecto y sus funcionalidades más importantes.
-\vspace{0.25cm}
+\subsection{Herramientas y Artefactos}
+Para la gestión visual y colaborativa del proyecto se utilizarán herramientas como:
+\begin{itemize}
+    \item \textbf{Miro:} Para diagramas, User Story Maps y croquis de diseño que faciliten la planificación de funcionalidades y flujo de usuarios.
+    \item \textbf{GitHub Projects:} Para organizar el backlog, asignar tareas, estimar tiempos y controlar el progreso iteración a iteración.
+    \item \textbf{Issues y Control de Versiones:} Cada problema, funcionalidad o investigación será registrado como \textit{issue}, permitiendo trazabilidad y adaptación durante el desarrollo.
+\end{itemize}
 
-Otra herramienta útil es GitHub Projects, que sirve para organizar las características por temas y plantear estimaciones semanales o bisemanales.
-Esto permite establecer un cronograma claro para monitorear los avances del proyecto.
-\vspace{0.25cm}
+\subsection{Desarrollo Iterativo}
+Se aplicará un enfoque iterativo y adaptativo:
+\begin{itemize}
+    \item \textbf{Iteraciones cortas:} Cada ciclo incluirá planificación, desarrollo, pruebas y evaluación de resultados.
+    \item \textbf{Retroalimentación:} Se incorporará feedback de posibles usuarios y del equipo para ajustar funcionalidades y priorizar mejoras.
+    \item \textbf{Validación progresiva:} Se implementarán pruebas tempranas de usabilidad, carga y funcionalidad, detectando problemas de forma anticipada.
+\end{itemize}
 
-Aunque se crearán issues para detallar problemas por resolver —ya sean funcionalidades específicas, aspectos de arquitectura o tareas de investigación—,
-estos estarán sujetos a modificaciones constantes. El objetivo es adaptarse tanto al alcance del proyecto como a la necesidad de coordinar las funcionalidades,
-de modo que las dependencias entre ellas no retrasen el desarrollo.
-\vspace{0.25cm}
+\subsection{Gestión de Riesgos}
+Se identificarán, evaluarán y monitorearán los riesgos asociados a los principales desafíos del proyecto:
 
-En cuanto a riesgos del proyecto, principalmente se tiene en cuenta que el desafío está en brindar el servicio propuesto como se ha explicado
-en el inciso de \textbf{Solución Propuesta}, donde se desarrollará un ambiente de creación \textit{amigable} a usuarios, pero esto es una estimación que para el proyecto final,
-terminará siendo subjetivo, ya que hay una proporcionalidad entre la cantidad de características que se pueden brindar al usuario con la complejidad
-que puede presentar ese editor mencionado, por lo tanto se intentará mantener la premisa de que sea un entorno de fácil uso y entendimiento,
-pero que sin tener un desarrollo avanzado esto puede llegar a perder algo de valor en el producto final.
-\vspace{0.25cm}
+\begin{itemize}
+    \item \textbf{Complejidad del editor y experiencia de usuario:} Existe riesgo de que las funcionalidades avanzadas dificulten la usabilidad del editor, 
+        afectando la accesibilidad para usuarios sin conocimientos técnicos. Se mitigará mediante pruebas de usabilidad continuas, 
+        retroalimentación de usuarios externos y ajustes iterativos del diseño de la interfaz.
+    \item \textbf{Estabilidad y escalabilidad de la infraestructura:} La plataforma debe soportar múltiples mundos y cientos de jugadores concurrentes con baja latencia.
+        Se aplicarán pruebas de rendimiento y estrés progresivas, simulaciones de carga y monitorización de servidores para detectar cuellos de botella y garantizar 
+        resiliencia frente a fallos.
+    \item \textbf{Seguridad y robustez del sistema de monetización:} Se busca prevenir fraudes, proteger la economía interna de los mundos y garantizar integridad 
+        en las transacciones. Se realizarán análisis exhaustivos y pruebas de simulación, así como validaciones automáticas de flujos 
+        de compra y mecanismos de control de abuso.
+    \item \textbf{Proporcionalidad entre funcionalidades y complejidad:} Existe riesgo de que agregar muchas características haga que el producto final pierda claridad 
+        o se vuelva difícil de mantener. Se priorizará un MVP funcional que combine las características esenciales con simplicidad, permitiendo expandir 
+        funcionalidades en iteraciones futuras sin comprometer la estabilidad.
+\end{itemize}
 
-Otro de los riesgos presentes en este proyecto, es que es un desafío sobre la temática relacionada con una estructura de servidores que pueda ser estable
-y capaz de soportar múltiples usuarios, teniendo en cuenta que no sólo depende de la calidad de desarrollo de dicho sistema,
-sino que también hay factores de recursos que debemos disponer a la hora de poner a prueba,
-por lo tanto la inversión en estos recursos es un factor a tener en cuenta para la prueba de rendimiento y estrés de nuestro sistema.
-\vspace{0.25cm}
+Las estrategias de mitigación combinan pruebas automatizadas de regresión, pruebas de simulación, revisiones periódicas del código, entre otras,
+asegurando que los riesgos se detecten tempranamente y se minimicen sus impactos en la experiencia de usuario y el desarrollo de la plataforma.
 
-Un riesgo además es que el sistema monetario que presentemos, tiene que ser robusto, no sólo para que nosotros como desarrolladores salgamos beneficiados
-y no tengamos pérdidas monetarias, sino para que los usuarios tampoco salgan perjudicados por otros usuarios con malas intenciones.
-Por lo tanto hay que realizar un análisis exhaustivo y simulaciones para evitar posibles problemas.
+\vspace{0.5cm}
+
+Este enfoque metodológico garantiza una coordinación efectiva del equipo, la entrega continua de valor y la capacidad de adaptación ante nuevos requisitos, 
+asegurando la calidad y escalabilidad del producto final.
 
 \section{Experimentación y/o validación}
 
-Este apartado describe el conjunto de pruebas validadas que se ejecutarán para verificar el cumplimiento de los objetivos técnicos y funcionales del proyecto. El plan de validación está diseñado para asegurar la robustez, escalabilidad y usabilidad del producto final, y estará sujeto a ajustes iterativos durante el desarrollo para adaptarse a la evolución del proyecto.
+Este apartado describe el conjunto de pruebas que se llevaran a cabo para verificar el cumplimiento de los objetivos técnicos y funcionales del proyecto.
+El plan de validación está diseñado para asegurar la robustez, escalabilidad y usabilidad del producto final,
+y estará sujeto a ajustes iterativos durante el desarrollo para adaptarse a la evolución del proyecto.
 
 
 \subsection{Pruebas de Rendimiento y Estrés (Load Testing)}
@@ -314,7 +194,7 @@ procesar miles de transacciones en tiempo real y garantizar la estabilidad bajo 
 Además nos servirá para determinar la carga máxima al momento que se haga la prueba en la etapa final.
 
 \begin{itemize}
-    \item \textbf{Metodología:} Se utilizarán herramientas de profiling y simuladores de carga (como k6, Locust o JMeter) para emular el comportamiento de usuarios concurrentes.
+    \item \textbf{Metodología:} Se utilizarán herramientas de profiling y simuladores de carga para emular el comportamiento de usuarios concurrentes.
     Las pruebas se realizarán de forma gradual, incrementando la carga desde decenas hasta cientos de usuarios virtuales por instancia de mundo.
 
     \item \textbf{Métricas Clave:} Se monitorizarán y documentarán rigurosamente los siguientes indicadores:
@@ -336,39 +216,32 @@ Dado que el proyecto tiene un fuerte componente comunitario y de creación de co
 de la experiencia de usuario. Para ello, se reclutará a un grupo de usuarios externos al equipo de desarrollo, representativos del target de creadores y jugadores.
 
 \begin{itemize}
-    \item \textbf{Fase Alpha (Interna):} En una etapa temprana, se probarán las funcionalidades básicas del \textbf{World Maker} 
-    (creación de mapas, importación de assets, configuración de entidades) con un grupo reducido y controlado de usuarios.
+    \item \textbf{Fase Alpha (Interna):} En una etapa temprana, se probarán las funcionalidades básicas de la plataforma con un grupo reducido y controlado de usuarios.
     El foco estará en la detección de bugs críticos y en la validación de los flujos de trabajo fundamentales.
-    \item \textbf{Fase Beta (Pública o Cerrada):} En una etapa más avanzada, se ampliará el acceso a un grupo más grande de usuarios para probar el contenido generado.
-    Los participantes crearán sus propios mundos, quests y tiendas, y otros jugadores probadores se encargarán de explorarlos. Se intentará obtener interesados 
-    conocidos para probar todas estas características.
+    \item \textbf{Fase Beta (Pública o Cerrada):} En una etapa más avanzada, se evaluará la posibilidad de dar acceso a un grupo más grande de usuarios para probar el contenido desarrollado.
+    Los participantes crearían sus propios mundos, quests y tiendas, y otros jugadores se encargarían de explorarlos. 
+    Se intentará obtener interesados (o \textit{Stake Holders}) para probar todas estas características.
     \item \textbf{Objetivo:} Esta fase busca identificar inconsistencias, bugs específicos de interacción y problemas de diseño que no son evidentes para el equipo de desarrollo.
-    El feedback se recopilará mediante formularios estructurados, sesiones de observación y herramientas de analytics integradas, 
-    permitiendo ajustar la interfaz y la lógica para garantizar una experiencia intuitiva y libre de errores.
 \end{itemize}
 
 
 \subsection{Pruebas de Integración y Comunicación entre Servicios}
 
-Para validar la solidez de la arquitectura propuesta, especialmente la comunicación entre el \textbf{Gateway}, el \textbf{Message Broker} y los distintos microservicios y servidores de zona,
-se implementarán pruebas de integración automatizadas.
+Para validar la solidez de la arquitectura propuesta, se implementarán pruebas de integración automatizadas.
 
 \begin{itemize}
     \item \textbf{Alcance:} Se simularán escenarios de fallo (ej.: caída de un servidor de zona, saturación del broker) para verificar la resiliencia del sistema 
     y su capacidad de recuperación.
-    \item \textbf{Validación de Transacciones:} Se testeará exhaustivamente el flujo de transacciones en tiempo real, 
-    como las compras en las \textbf{tiendas virtuales} de cada mundo, para garantizar la consistencia de datos entre el servidor de zona y los servicios monolíticos 
-    de backend (ej: sistema de cobranzas).
+    \item \textbf{Validación de Transacciones:} Se probará exhaustivamente el flujo de transacciones en tiempo real, 
+    como las compras en las \textbf{tiendas virtuales} de cada mundo, para garantizar la consistencia de datos entre el servidor 
+    de zona y los servicios de backend (ej: sistema de cobranzas).
 \end{itemize}
 
-\subsection{Suite de Pruebas de Regresión Automatizadas}
+\subsection{Pruebas Automatizadas de Regresión}
 
-Se desarrollará una suite automatizada de pruebas end-to-end y de unit testing que se ejecutará de forma continua con cada integración de nuevo código (CI/CD).
-Esto asegurará que los avances en el desarrollo y las nuevas funcionalidades no introduzcan errores en el código ya existente,
-manteniendo la estabilidad del producto throughout todo el ciclo de desarrollo.
-\vspace{0.25cm}
-
-Este plan de validación integral asegurará que el producto final no solo sea funcional, sino también escalable, robusto y alineado con las expectativas de su comunidad de usuarios.
+Se implementará una suite de pruebas automatizadas, incluyendo pruebas end-to-end y unitarias, que se ejecutará de manera continua en cada integración de nuevo código (CI/CD).  
+Esto garantizará que los avances en el desarrollo y la incorporación de nuevas funcionalidades no introduzcan errores en el código existente,
+preservando la estabilidad del producto a lo largo de todo el ciclo de desarrollo.
 
 \section{Plan de actividades}
 
