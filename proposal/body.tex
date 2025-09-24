@@ -98,7 +98,7 @@ mientras que la plataforma retendrá un porcentaje de las transacciones para sos
 Dichos cosméticos una vez comprados pasan a pertenecer al jugador que los compra y podrá mostrarlos y vestirlos en los demás mundos que conforman el universo de la plataforma.
 
 \subsection{Arquitectura e Infraestructura}
-La arquitectura se apoyará en servidores escalables por mundo, orquestados en la nube, 
+La arquitectura tentativa se apoyará en servidores escalables por mundo, orquestados en la nube, 
 con comunicación a través de un \textit{gateway} central y un \textit{message broker}. 
 Los mundos se ejecutarán en servidores de diferentes clases (A, B, C) según su tamaño, 
 garantizando baja latencia, tolerancia a fallos y escalabilidad bajo demanda.
@@ -114,17 +114,12 @@ ya que hoy en día crear nuevo contenido de videojuegos requiere la necesidad ti
 \vspace{0.25cm}
 
 Por lo tanto, se busca que los usuarios puedan encontrarle rédito de distintas maneras, por un lado publicando el contenido en redes sociales, 
-tanto ofreciendo su producto, como también demostrando cómo lo hicieron y las posibilidades que puedan tener otros creadores y, por otro lado,
-los jugadores de igual manera pueden consumir el contenido existente y publicar sus avances mediante servicios de streaming.
+tanto ofreciendo su mundo, como también demostrando cómo lo hicieron, y por otro lado,
+los jugadores de igual manera pueden consumir el contenido existente y publicar sus avances (e.g. mediante servicios de streaming).
 \vspace{0.25cm}
 
-No hay una certeza absoluta sobre que este proyecto -una vez finalizado más allá del MVP que se entregará como proyecto final- 
-pueda a escalar más de lo esperado y se necesite continuo desarrollo de nuevo contenido bajo la demanda de la comunidad que pueda haber.
-\vspace{0.25cm}
-
-Además, todo esto depende de los usuarios creadores que utilicen el editor desarrollado para generar contenido atractivo para los jugadores,
-por lo tanto debemos estar al tanto de las necesidades de esos creadores y estar solucionando todos los problemas presentes en el feedback
-y demandas que se puedan disponer los usuarios.
+No hay una certeza absoluta sobre que este proyecto -más allá del MVP que se entregará como proyecto final- 
+pueda escalar más de lo esperado y se necesite continuo desarrollo de nuevo contenido bajo la demanda de la comunidad que pueda haber.
 
 \section{Metodología}
 
@@ -147,7 +142,7 @@ Para la gestión visual y colaborativa del proyecto se utilizarán herramientas 
 \subsection{Desarrollo Iterativo}
 Se aplicará un enfoque iterativo y adaptativo:
 \begin{itemize}
-    \item \textbf{Iteraciones cortas:} Cada ciclo incluirá planificación, desarrollo, pruebas y evaluación de resultados.
+    \item \textbf{Iteraciones cortas:} Cada ciclo tendrá una duración de dos semanas, e incluirá planificación, desarrollo, pruebas y evaluación de resultados.
     \item \textbf{Retroalimentación:} Se incorporará feedback de posibles usuarios y del equipo para ajustar funcionalidades y priorizar mejoras.
     \item \textbf{Validación progresiva:} Se implementarán pruebas tempranas de usabilidad, carga y funcionalidad, detectando problemas de forma anticipada.
 \end{itemize}
@@ -162,9 +157,9 @@ Se identificarán, evaluarán y monitorearán los riesgos asociados a los princi
     \item \textbf{Estabilidad y escalabilidad de la infraestructura:} La plataforma debe soportar múltiples mundos y cientos de jugadores concurrentes con baja latencia.
         Se aplicarán pruebas de rendimiento y estrés progresivas, simulaciones de carga y monitorización de servidores para detectar cuellos de botella y garantizar 
         resiliencia frente a fallos.
-    \item \textbf{Seguridad y robustez del sistema de monetización:} Se busca prevenir fraudes, proteger la economía interna de los mundos y garantizar integridad 
-        en las transacciones. Se realizarán análisis exhaustivos y pruebas de simulación, así como validaciones automáticas de flujos 
-        de compra y mecanismos de control de abuso.
+    \item \textbf{Seguridad y robustez del sistema monetario:} Se busca prevenir fraudes y garantizar integridad 
+        en las transacciones. Se realizarán análisis exhaustivos y pruebas de simulación, así como también validaciones automáticas de flujos 
+        de compra.
     \item \textbf{Proporcionalidad entre funcionalidades y complejidad:} Existe riesgo de que agregar muchas características haga que el producto final pierda claridad 
         o se vuelva difícil de mantener. Se priorizará un MVP funcional que combine las características esenciales con simplicidad, permitiendo expandir 
         funcionalidades en iteraciones futuras sin comprometer la estabilidad.
@@ -202,12 +197,9 @@ Además nos servirá para determinar la carga máxima al momento que se haga la 
         \item \textbf{Latencia:} Tiempo de respuesta del servidor para acciones clave (movimiento, interacciones, chat).
         \item \textbf{Uso de CPU y Memoria:} Consumo de recursos de las instancias de los servidores de zona.
         \item \textbf{Tasa de Errores:} Porcentaje de requests fallidos o desconexiones bajo carga.
-        \item \textbf{Escalabilidad:} Capacidad del sistema de orquestación para escalar automáticamente los servidores de zona según la demanda.
+        \item \textbf{Escalabilidad:} Capacidad del sistema de orquestación para escalar los servidores de zona según la demanda.
     \end{itemize}
 
-    \item \textbf{Enfoque Iterativo:} Si bien las pruebas masivas se planifican para cuando se tenga un desarrollo sostenible del núcleo de networking,
-    se implementará un protocolo de pruebas de carga progresivas (progressive load testing) desde las fases iniciales del desarrollo de esta feature.
-    Esto permitirá detectar cuellos de botella y problemas de concurrencia de forma temprana.
 \end{itemize}
 
 \subsection{Pruebas de Usabilidad y Control de Calidad con Usuarios Externos (Alpha/Beta Testing)}
@@ -233,8 +225,8 @@ Para validar la solidez de la arquitectura propuesta, se implementarán pruebas 
     \item \textbf{Alcance:} Se simularán escenarios de fallo (ej.: caída de un servidor de zona, saturación del broker) para verificar la resiliencia del sistema 
     y su capacidad de recuperación.
     \item \textbf{Validación de Transacciones:} Se probará exhaustivamente el flujo de transacciones en tiempo real, 
-    como las compras en las \textbf{tiendas virtuales} de cada mundo, para garantizar la consistencia de datos entre el servidor 
-    de zona y los servicios de backend (ej: sistema de cobranzas).
+    como las compras en las tiendas de cada mundo, para garantizar la consistencia de datos entre el servidor 
+    de zona y los servicios (e.g. sistema de cobranzas).
 \end{itemize}
 
 \subsection{Pruebas Automatizadas de Regresión}
