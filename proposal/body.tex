@@ -237,6 +237,76 @@ preservando la estabilidad del producto a lo largo de todo el ciclo de desarroll
 
 \section{Plan de actividades}
 
+Para este proyecto adoptamos una metodología ágil híbrida, combinando Scrum y Extreme Programming (XP), dado que Scrum 
+aporta la organización del trabajo y la planificación iterativa, mientras que XP refuerza las prácticas técnicas y la 
+calidad del software. Esta combinación asegura un proceso adaptativo y a la vez sustentable en el tiempo.
+\vspace{0.25cm}
+
+Tras la etapa de Lean Inception, construiremos el USM (User Story Mapping) y, en base a este, definiremos las User 
+Stories (US) que alimentarán el product backlog inicial. En cada iteración se seleccionará un conjunto reducido de 
+ítems, los cuales serán estimados mediante Planning Poker y priorizados según el valor que aportan al producto.
+\vspace{0.25cm}
+
+El proceso de desarrollo de features seguirá el siguiente flujo:
+
+\begin{itemize}
+    \item Selección del ítem del backlog.
+    \item Creación de rama y Pull Request (en draft).
+    \item Implementación con commits breves siguiendo los lineamientos de Conventional Commits.
+    \item Revisión de la PR por al menos un integrante responsable y un copiloto que aporte feedback.
+    \item Aprobada la PR, la issue se marca como completada.
+\end{itemize}
+
+\vspace{0.25cm}
+
+Durante las iteraciones realizaremos reuniones internas tres veces por semana para discutir avances, obstáculos y 
+coordinación del equipo, además de reuniones quincenales con el tutor para validar avances. Cada reunión tendrá su 
+minuta registrada por un integrante y, como respaldo, se utilizará una herramienta de IA para generar resúmenes 
+automáticos.
+
+\vspace{0.25cm}
+
+Cada issue del backlog incluirá tags de clasificación (ej.: world creator, networking, etc.), lo que permitirá filtrar 
+y analizar la distribución de tareas por componente.
+
+\vspace{0.25cm}
+
+Para asegurar la calidad del producto, aplicaremos:
+
+\begin{itemize}
+    \item Revisiones de código (PR con feedback obligatorio).
+    \item Pruebas automatizadas y validación continua.
+    \item Integración continua para detectar errores tempranos.
+\end{itemize}
+
+\vspace{0.25cm}
+
+En cuanto a la división de responsabilidades, el sistema se distribuye en cuatro componentes principales, con un 
+responsable y un subresponsable por cada uno, garantizando redundancia y evitando dependencias críticas. Sin embargo, 
+mantenemos el principio de \textit{Collective Ownership}, donde todo el equipo puede contribuir en cualquier área.
+
+\vspace{0.25cm}
+
+Indicadores de seguimiento: número de issues completadas vs planificadas por iteración, cobertura de tests, defectos 
+reportados, y velocidad del equipo.
+
+\vspace{0.25cm}
+
+Gestión de riesgos: se monitorearán riesgos relacionados a retrasos en entregas, falta de comunicación, baja cobertura 
+de pruebas y sobrecarga de trabajo. Los riesgos se mitigarán mediante reuniones frecuentes, documentación continua y 
+revisiones constantes.
+
+\vspace{0.25cm}
+
+Documentación: el proyecto contará con:
+
+\begin{itemize}
+    \item Documentación funcional: USM, user stories y backlog.
+    \item Documentación técnica: arquitectura, APIs, y detalles de implementación.
+    \item Documentación de diseño: diagramas y decisiones arquitectónicas.
+    \item Actas y minutas: registro de todas las reuniones de equipo e interacciones con stakeholders.
+\end{itemize}
+
 \section{Referencias}
 
 \input{refs}
