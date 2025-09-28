@@ -2,23 +2,25 @@
 
 Este proyecto consiste en el desarrollo de un producto de software en forma de juego \textbf{MMO RPG Maker},
 que permitirá a los usuarios crear o unirse a mundos explorables diseñados por otros jugadores.
-El principal desafío radica en construir una infraestructura escalable y robusta, capaz de sostener la conexión simultánea de cientos de jugadores en una misma instancia,
+El principal desafío radica en brindar la habilidad de crear mundos complejos a través de una herramienta intuitiva y accesible para personas sin 
+experiencia técnica. Adicionalmente, el producto debe proveer una infraestructura escalable y robusta, capaz de sostener la conexión simultánea de cientos de jugadores en una misma instancia,
 procesar miles de transacciones en tiempo real y garantizar la estabilidad frente a un gran volumen de conexiones concurrentes,
 manteniendo siempre una experiencia de juego fluida y confiable.
 \vspace{0.25cm}
 
 \textit{This project consists of developing a software product in the form of an \textbf{MMO RPG Maker} game,
 which will allow users to create or join explorable worlds designed by other players.
-The main challenge lies in building a scalable and robust infrastructure capable of supporting the simultaneous connection of hundreds of players within the same instance,
+The main challenge lies in providing the ability to create complex worlds using an intuitive tool that is accessible to people with no technical experience.
+Additionally, the product must provide a scalable and robust infrastructure capable of supporting the simultaneous connection of hundreds of players within the same instance,
 processing thousands of transactions in real time, and ensuring stability under a high volume of concurrent connections,
 while always maintaining a smooth and reliable gameplay experience.}
 
 \section{Palabras clave - Keywords}
 
-Multijugador, online, crear contenido, concurrencia, MMO.
+Videojuego, Multijugador, online, crear contenido, concurrencia, MMO.
 \vspace{0.25cm}
 
-\textit{Multiplayer, online, content creation, concurrency, MMO.}
+\textit{Videogame, Multiplayer, online, content creation, concurrency, MMO.}
 
 \section{Introducción}
 
@@ -59,9 +61,11 @@ Las plataformas existentes presentan limitaciones: motores como Unity o RPG Make
 mientras que títulos como Roblox o Minecraft, si bien ofrecen creación comunitaria, imponen barreras técnicas o carecen de un enfoque de rol persistente.  
 \vspace{0.25cm}
 
-Los principales problemas a resolver incluyen: desarrollar un editor intuitivo y accesible para usuarios sin experiencia en programación, 
-pero lo suficientemente potente para permitir personalización avanzada; definir incentivos claros que motiven tanto a creadores como a jugadores a participar activamente; 
-diseñar un sistema de monetización sostenible que no desincentive el uso ni genere desequilibrios económicos; 
+Los principales problemas a resolver incluyen: \textbf{desarrollar un editor intuitivo y accesible} para usuarios sin experiencia en programación, 
+pero lo suficientemente potente para permitir personalización avanzada. En este entorno, los creadores deben poder diseñar ítems, \textit{quests},
+NPCs con comportamientos interactivos y enemigos con dinámicas de combate, asegurando variedad y evitando experiencias 
+monótonas o repetitivas.; \textbf{definir incentivos} claros que motiven tanto a creadores como a jugadores a participar activamente; 
+diseñar un \textbf{sistema de monetización} sostenible que no desincentive el uso, ni genere desequilibrios económicos; 
 y establecer una arquitectura de servidores escalable, tolerante a fallos y de baja latencia, capaz de sostener múltiples mundos simultáneos con interacción en tiempo real.  
 \vspace{0.25cm}
 
@@ -107,6 +111,37 @@ garantizando baja latencia, tolerancia a fallos y escalabilidad bajo demanda.
 El desarrollo inicial se enfocará en un MVP funcional que permita crear mundos y explorarlos mediante aventuras, batallas e interaccion con otros jugadores, 
 validando usabilidad, monetización e infraestructura, y sentando bases para iteraciones futuras.
 
+\subsection{Tecnologías y Lenguajes de Desarrollo}
+Para la implementación técnica del proyecto se ha definido un stack de tecnologías orientado a equilibrar rendimiento, escalabilidad y facilidad de desarrollo.
+Dado que se trata de una plataforma de tipo MMO con necesidades tanto gráficas como de infraestructura en tiempo real, se han seleccionado herramientas y lenguajes 
+con antecedentes sólidos en la industria del desarrollo de videojuegos y sistemas distribuidos.
+\vspace{0.25cm}
+
+\textbf{Motor de desarrollo:}
+Se utilizará Unity como motor gráfico principal para el cliente del juego. Unity proporciona un entorno versátil y ampliamente documentado que permite trabajar con gráficos
+en 2D y 3D, facilita la exportación a múltiples plataformas, y cuenta con un amplio ecosistema de herramientas y assets.
+La elección se alinea con el estilo visual propuesto (2.5D) y con la necesidad de integrar un editor de mundos personalizables por parte de los usuarios.
+\vspace{0.25cm}
+
+\textbf{Back-end y servicios:}
+Para los servicios que gestionen la lógica del servidor (exceptuando el hosting de instancias de mundos, que dependerá de la infraestructura de nube),
+se utilizará Go (Golang). Este lenguaje destaca por su rendimiento en sistemas concurrentes, su simplicidad sintáctica y su facilidad de mantenimiento,
+siendo ideal para aplicaciones distribuidas de alto rendimiento, como gateways de red, autenticación de usuarios, persistencia de datos y brokers de mensajes.
+\vspace{0.25cm}
+
+\textbf{Otras tecnologías tentativas (a definir y evaluar en etapas posteriores del MVP):}
+\begin{itemize}
+    \item \textbf{gRPC o WebSocket:} como mecanismos de comunicación en tiempo real entre cliente y servidor, particularmente útiles para actualizaciones del estado del juego y
+        sincronización de usuarios en partidas multijugador.
+    \item \textbf{PostgreSQL y/o MongoDB:} para la persistencia de datos relacionada con cuentas de usuarios, mundos creados, progresos e inventarios.
+        La elección entre bases relacionales y/o documentales se evaluará según las necesidades de escalabilidad horizontal y consultas complejas.
+    \item \textbf{Docker y Kubernetes:} como base de una estrategia de orquestación de contenedores, permitiendo la escalabilidad automática de instancias de mundos y servicios según la demanda.
+    \item \textbf{CI/CD con GitHub Actions:} para facilitar el despliegue automatizado de versiones del servidor y cliente durante el desarrollo iterativo.
+\end{itemize}
+
+Esta selección de herramientas y tecnologías será validada y ajustada a lo largo del desarrollo del MVP, en función de los requerimientos que surjan en la implementación concreta,
+el rendimiento observado en las primeras pruebas de carga y la facilidad de integración entre componentes.
+
 \section{Evaluación preliminar de impacto social y ambiental}
 
 Se espera que el impacto social pueda generar una comunidad que se dedique a crear contenido innovador, que bajo otras circunstancias no podría darse,
@@ -124,7 +159,9 @@ pueda escalar más de lo esperado y se necesite continuo desarrollo de nuevo con
 \section{Metodología}
 
 La metodología del proyecto se centra en una planificación estructurada que permita gestionar de manera eficiente el desarrollo del MMO RPG Maker, 
-garantizando el cumplimiento de objetivos, la coordinación del equipo y la adaptación continua a los requisitos del proyecto.
+garantizando el cumplimiento de objetivos, la coordinación del equipo y la adaptación continua a los requisitos del proyecto. Para esto se adoptó una metodología ágil híbrida,
+combinando Scrum y Extreme Programming (XP), dado que Scrum aporta la organización del trabajo y la planificación iterativa, mientras que XP refuerza las prácticas técnicas y la 
+calidad del software. Esta combinación asegura un proceso adaptativo y a la vez sustentable en el tiempo.
 
 \subsection{Planificación y Gestión del Proyecto}
 Se definirá el alcance del proyecto, identificando objetivos principales, funcionalidades críticas y posibles riesgos. 
@@ -167,8 +204,11 @@ Se identificarán, evaluarán y monitorearán los riesgos asociados a los princi
 
 Las estrategias de mitigación combinan pruebas automatizadas de regresión, pruebas de simulación, revisiones periódicas del código, entre otras,
 asegurando que los riesgos se detecten tempranamente y se minimicen sus impactos en la experiencia de usuario y el desarrollo de la plataforma.
-
 \vspace{0.5cm}
+
+Se detallan \textbf{todos los riesgos analizados} (tanto funcionales como no funcionales) en la sección \textbf{Riesgos identificados y planes de respuesta} del apéndice,
+incluyendo sus causas, consecuencias, probabilidades, impacto y planes de respuesta y contingencia.
+\vspace{0.25cm}
 
 Este enfoque metodológico garantiza una coordinación efectiva del equipo, la entrega continua de valor y la capacidad de adaptación ante nuevos requisitos, 
 asegurando la calidad y escalabilidad del producto final.
@@ -205,7 +245,9 @@ Además nos servirá para determinar la carga máxima al momento que se haga la 
 \subsection{Pruebas de Usabilidad y Control de Calidad con Usuarios Externos (Alpha/Beta Testing)}
 
 Dado que el proyecto tiene un fuerte componente comunitario y de creación de contenido, es crucial validar la usabilidad de las herramientas y la coherencia 
-de la experiencia de usuario. Para ello, se reclutará a un grupo de usuarios externos al equipo de desarrollo, representativos del target de creadores y jugadores.
+de la experiencia de usuario. Para ello, se reclutará a un grupo de usuarios externos al equipo de desarrollo, representativos del target de creadores y jugadores. Los mismos
+inicialmente serán personas \textbf{conocidas por el equipo} (para la fase \textit{alpha}) y eventualmente usuarios reales, conseguidos de manera \textbf{orgánica} por medio de redes sociales
+(para la fase \textit{beta}).
 
 \begin{itemize}
     \item \textbf{Fase Alpha (Interna):} En una etapa temprana, se probarán las funcionalidades básicas de la plataforma con un grupo reducido y controlado de usuarios.
@@ -236,11 +278,6 @@ Esto garantizará que los avances en el desarrollo y la incorporación de nuevas
 preservando la estabilidad del producto a lo largo de todo el ciclo de desarrollo.
 
 \section{Plan de actividades}
-
-Para este proyecto adoptamos una metodología ágil híbrida, combinando Scrum y Extreme Programming (XP), dado que Scrum 
-aporta la organización del trabajo y la planificación iterativa, mientras que XP refuerza las prácticas técnicas y la 
-calidad del software. Esta combinación asegura un proceso adaptativo y a la vez sustentable en el tiempo.
-\vspace{0.25cm}
 
 Tras la etapa de Lean Inception, construiremos el USM (User Story Mapping) y, en base a este, definiremos las User 
 Stories (US) que alimentarán el product backlog inicial. En cada iteración se seleccionará un conjunto reducido de 
@@ -331,6 +368,12 @@ y finalmente usando todas las ideas propuestas, se confeccionó un MVP canvas.
 \caption{Que es el producto, que hace y que no.}
 \end{figure}
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{./img/mvp_canvas.jpg}
+\caption{MVP Canvas de Feed the Realm (conclusion del Lean Inception).}
+\end{figure}
+
 \subsection{Gráficos de plan de actividades}
 
 Se complementa lo dicho en la sección \textbf{Plan de actividades}, con una vista general de la gestión del equipo, teniendo en cuenta, alcance, riesgos, tiempos, calidad, entre otras
@@ -371,12 +414,4 @@ evolutivo es tener en claro las decisiones que se deben tomar en caso de que ocu
 \centering
 \includegraphics[width=1\textwidth]{./img/riesgos_2.jpg}
 \caption{Tabla resumen de los principales riesgos y como respondería el equipo.}
-\end{figure}
-
-\subsection{MVP Canvas}
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=1\textwidth]{./img/mvp_canvas.jpg}
-\caption{MVP Canvas de Feed the Realm.}
 \end{figure}
