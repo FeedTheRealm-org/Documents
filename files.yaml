@@ -6,3 +6,8 @@ simulate:
   name: Equipo169_Simulacion_2c2025
   description: Build the simulation document using LaTeX
   entrypoint: ./simulate
+report:
+  # idk if this is the correct name for the report, don't specify it at the email. 
+  name: Equipo169_InformeFinalTrabajoProfesional_2c2025 
+  description: Build the report document using LaTeX
+  entrypoint: ./report
