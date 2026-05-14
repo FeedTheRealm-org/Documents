@@ -84,6 +84,152 @@ El proyecto busca abordar estas brechas a través de un MVP que permita validar 
 
 \section{Metodología aplicada}
 
+En la primera etapa del proyecto se concretaron múltiples reuniones con todos los integrantes del grupo para unificar 
+las ideas principales tanto de los primeros pasos para comenzar con el diseño de arquitectura, los servicios necesarios 
+y los repositorios a crear junto a sus \textit{templates} de directorios y \textit{pipelines} necesarios. En esta etapa 
+también se logró estimar las fases del proyecto, como dividir módulos por lógica, features en las fases, y realizar un 
+\textit{brainstorming} sobre features obligatorias y secundarias que existirían en la totalidad del proyecto.
+\vspace{0.25cm}
+
+Para esto utilizamos múltiples herramientas, las principales fueron:
+\vspace{0.25cm}
+
+\textbf{\underline{Miro}}: para la creación y visualización más ``amigable" de las user stories propuestas, creando un 
+\textit{User Story Map} (USM) y un \textit{Work Breakdown Structure} (WBS) para realizar un mapeo general, dividirlos 
+en módulos/etapas y sea más fácil de explicar a nuestro tutor con el fin de exponer la planificación a lo largo del tiempo 
+y mostrar las modificaciones si las hubiera. Dentro de estos esquemas lo más utilizado por nosotros y el tutor, fue tener 
+un seguimiento de las versiones y su progreso en el tiempo, y poder estimar mejor que features habría que darle más prioridad, 
+cuáles se pueden aplazar y cuáles descartar en caso de no llegar para la entrega del producto. Junto a las \textit{User Stories} 
+(US) dentro de cada versión, se agregó características con mayor nivel de complejidad que afectan todo o la mayor parte 
+del proyecto que son primordiales y deben ser completadas en cada versión, ya que son características troncales y 
+requeridas para cumplir los objetivos del proyecto en sí.
+\vspace{0.25cm}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.85\textwidth]{img/miro.jpg}
+    \caption{Ejemplo de cómo se utilizó Miro para organizar las US en un \textit{User Story Map}, con sus respectivas versiones.}
+    \label{fig:miro}
+\end{figure}
+
+\textbf{\underline{Github projects}}: En la primera etapa del proyecto, una vez que se revisaron y confirmaron la mayoría de las user stories 
+entre el grupo y el tutor, se empezó a migrar las mismas user stories del USM diagramado en el Miro. Luego en el comienzo 
+de cada iteración, de duración de dos semanas, se revisa que las user stories que deben estar en progreso en esa iteración 
+o si existe una siguiente en la misma versión, todas ellas deben tener una estimación aproximada de dificultad, si supera un 
+cierto umbral de valor de estimación, debe dividirse en otra/s o en substories. 
+\vspace{0.25cm}
+
+También se corrobora con consenso grupal cuáles son los criterios de aceptación (CA) utilizando el formato o método 
+\textbf{Given-When-Then} para cada user story, para evitar confusiones de nombres similares pero diferentes tareas 
+dependiendo del repositorio correspondiente. Cumpliendo lo anterior, si una US no llegó a iniciarse o quedó parcialmente 
+completa, en la reunión a fin de iteración se llega a un consenso si debe pasarse a siguiente iteración o almacenarse a 
+futuro junto con otras para determinar si entra en el alcance del proyecto.
+\vspace{0.25cm}
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.85\textwidth]{img/github-projects.jpg}
+    \caption{Ejemplo de la organización de las US en Github Projects, con su respectiva prioridad y estado.}
+    \label{fig:github-projects}
+\end{figure}
+
+Por lo general se define un solo asignado a cada user story pero hubo casos donde se requirió suplantar al asignado 
+principal por diferentes motivos que no pudo continuar, o se agregó un asignado más ya sea por una dificultad inesperada 
+o que otra US quedó parcialmente acoplada/relacionada a la dicha. La metodología implementada en todos los casos con la 
+salvedad en alguna excepción de prioridades en las US, tomar una US implicaría que el asignado a ella debe implementar 
+todas las características que se requieran en los distintos servicios para que esté correctamente funcionando. Tomamos 
+por tema de seguridad la regla de que un pull request antes de ser completado debe ser probado por otro integrante del 
+grupo que no sea el asignado a la US relacionada, ya que la herramienta de Unity al versionar sus archivos pueden generar 
+incongruencias o errores y puede llegar a no funcionar sin las configuraciones locales del integrante asignado, por 
+distintos motivos.
+\vspace{0.25cm}
+
+\textbf{\underline{Excalidraw}}: para realizar esquemas, croquis, posibles diseños de UI y diagramas de funcionamiento 
+del flujo de sistemas más complejos. Algunos son públicos para complementar la documentación y otros son privados con el 
+fin de visualizar ideas entre los integrantes. 
+\vspace{0.25cm}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.85\textwidth]{img/excalidraw.jpg}
+    \caption{Ejemplo de cómo se utilizó Excalidraw.}
+    \label{fig:excalidraw}
+\end{figure}
+
+\textbf{\underline{Discord}}: para compartir guías, tareas pendientes, información de spikes, comandos relevantes para 
+ejecuciones y variables de entorno locales o temporales para comunicar cambios en entorno de desarrollo de los distintos 
+sistemas del proyecto.
+\vspace{0.25cm}
+
+Relacionado a estas metodologías que tomamos como gestión, se estableció ya desde el principio de desarrollo del proyecto, 
+que deben haber 3 reuniones semanales fijas en cierto horario, generalmente a las 14hrs los dias lunes, miercoles y viernes, 
+con el fin de actualizar los avances de todos los integrantes del grupo, hacer consenso de decisiones de diseño en las 
+diferentes US y hacer tareas de planificación como se ha nombrado antes en fechas de comienzo/fin de iteración y 
+comienzo/fin de nueva versión.
+\vspace{0.25cm}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.85\textwidth]{img/discord.jpg}
+    \caption{\textit{Screenshot} de Discord, herramienta utilizada para comunicación rápida y compartir información relevante.}
+    \label{fig:discord}
+\end{figure}
+
+También como se ha nombrado las versiones las hemos separado aproximadamente una por mes, para poder tener parámetros del 
+estado del proyecto a lo largo del tiempo y poder establecer un avance de él de forma incremental, ya que hay US que son 
+dependientes una de otras y deben realizarse en cierto orden. Además, cada versión contiene dos iteraciones de dos semanas 
+de duración aproximadamente, pudo llegar a extenderse la duración debido a problemas de demora general del equipo por 
+cuestiones las materias cursadas en paralelo al proyecto, o que un paquete de US esté casi por desplegarse y/o terminar 
+de probar su integración.
+\vspace{0.25cm}
+
+La herramienta principal utilizada para reflejar el progreso más actualizado día a día fue Github Projects. Por lo tanto 
+si se detecta algún bug relacionado a una US fuera de su etapa de desarrollo por lo general se informa informalmente al 
+asignado de ella en las reuniones. En el caso que involucre un cambio complejo su solución o se requiere registrar como 
+replicar el bug, se crea un ticket en esta plataforma para ser solucionado dentro de la iteración o para la etapa final 
+de solución de bugs y pulido de features y UI, dependiendo de la gravedad del bug, si es necesario mitigar riesgos o si 
+ese bug puede afectar otra US y desencadenar fallas difíciles de detectar.
+\vspace{0.25cm}
+
+Cómo se mencionó anteriormente se decidió que las últimas dos iteraciones del total de ellas, sean destinadas a la última 
+etapa de pulir últimos cambios y desarrollo de informe. Con últimos cambios se infiere a soluciones de Bugs pendientes, 
+desarrollar aspectos a mejorar que en su momento se obviaron para tener US con funcionalidad suficiente, mejoras en la 
+UI pendientes o para perfeccionar, features opcionales que mejoran la jugabilidad de los clientes y optimizaciones 
+importantes para mejorar el rendimiento ya sea de los clientes como de los servidores.
+\vspace{0.25cm}
+
+Queda a aclarar que todas las US que fueron limitadas en su alcance fueron o diagramadas de tal forma previamente al 
+momento de crear los CA al comienzo de iteración, o en las reuniones al ver qué la dificultad de la US fue subestimada 
+y/o se extendió mucho la entrega completa de tal US con respecto a los tiempos de la iteración. Entonces o bien se crea 
+una nueva US con las características a desarrollar pendientes en la próxima iteración o se crea una US para asignarse en 
+la última etapa del proyecto.
+\vspace{0.25cm}
+
+Con respecto a las etapas del proyecto, se organizaron de forma de que para al entrega intermedia se tenga algunas o las 
+mayorías características principales del proyecto funcionando y también la mayor parte de lo pactado con el tutor y lo 
+escrito en la propuesta entregada antes de comenzar el proyecto. Se podría decir que logró un buen resultado con gestión 
+implementada, ya que se llegó a la etapa final con todas las características y funcionalidades principales esperadas 
+completadas. Y además las US desestimadas no fueron en general features determinantes o muy relevantes con respecto a 
+las realizadas sino más bien extras o complementarias.
+\vspace{0.25cm}
+
+Con respecto al tema de grado de automatización de despliegue, en nuestro caso hubo complicaciones en ciertos aspectos 
+como en el caso específico de la automatización de despliegue del sistema de servidores, ya que como se requiere de la 
+compilación de código mediante la herramienta de Unity, eso dificulta el flujo en el \textit{pipeline} para que con solo 
+integrar los cambios en una rama se actualicen los servidores automáticamente.
+\vspace{0.25cm}
+
+En su momento se investigó y Unity ofrece un sistema para compilar en la nube pero es propia de Unity y otros flujos de 
+entrega de ejecutable compilado, pero son todos sistemas pagos y nos excedería en presupuesto para este proyecto.
+Por lo tanto se pactó con el tutor que para este entregable sería suficiente que se realice solo la parte de compilación 
+del ejecutable del servidor manualmente, y el resto del \textit{pipeline} automatizado. En la cual, nosotros generamos
+la imagen en Docker con el ejecutable del servidor ya compilado, y luego se realiza un tag con la versión correspondiente,
+todo este mecanismo activa el \textit{pipeline} para subir la imagen a la nube y actualizar los servidores con la nueva imagen.
+Por otro lado los microservicios y el backend involucrado se encuentran efectivamente automatizados, una vez integrado 
+los cambios a la rama principal, se ejecuta el \textit{pipeline} necesario para subir/actualizar en la nube los cambios 
+realizados, y dejar el sistema funcionando correctamente.
+
 \section{Herramientas externas utilizadas}
 
 \section{Experimentación y/o validación}
