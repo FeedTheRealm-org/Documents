@@ -510,6 +510,80 @@ aproximaciones estan atadas a \textit{papers} cientificos y diversos articulos.
 
 \section{Trabajo futuro}
 
+En esta seccion detallaremos, que se puede realizar para mejorar el proyecto y pueda impactar positivamente para mejorar
+sus funcionalidades ya existentes. Algunas de estas mejoras y funcionalidades son:
+\vspace{0.25cm}
+
+\textbf{\underline{Moderacion de contenido y estrategias de \textit{baneo}}}: Si bien existe la posibilidad de crear
+mundos con extrema libertad y lo mismo ocurre con el chat, esto es un problema, ya que podria existir la posibilidad
+de que determinados actores creen mundos que fomenten odio de forma racial, etnica o genero. Asi como tambien la
+creacion de mundos con contenido ilegal o herotico. O utilizar el chat para fomentar el odio o incurrir en practicas
+de \textit{bullying} o \textit{grooming}.
+\vspace{0.25cm}
+
+Para este MVP, asumimos que esas cosas no pasan, la realidad es muy adversa y es posible encontrarse con estas prácticas
+indebidas. Eso por ello que pensando para un lanzamiento al mercado de nuestro producto, es necesario mitigar estas
+practicas a través de moderación y censurar de contenido indebido. Esto puede ser mediante análisis de los contenidos de 
+los chats, utilizando herramientas de \textit{Natural Language Processing} (NLP) y moderando los \textit{assets} que se 
+suben al juego de forma manual o utilizando herramientas de detección automática con el entrenamiento de modelos.
+\vspace{0.25cm}
+
+Para la moderación en chats, tambien pueden ser creados canales de prevención para evitar prácticas de \textit{bullying} 
+o \textit{grooming}. Ya se mediante avisos en los chats o interactuando directamente para clausurar el chats a los actores 
+que insistan con estas prácticas. Ante la reiterando de acciones malintencionadas en nuestro videojuego. Es necesario utilizar 
+estrategias de \textit{baneo} de forma temporal o permanente a los jugadores que insistan con estas practicas. Ya se 
+mediante de forma manual o con la detección para las diferentes acciones que mencionamos anteriormente.
+\vspace{0.25cm}
+
+\textbf{\underline{Herramientas de AI para la generacion de mundos}}: La idea es fomentar la creación organica de mundos,
+pero eso puede volverse una tarea tediosa si el mundo es muy grande o muy complejo. Es por eso, que nos pareció una
+buena idea integrar modelos de AI para que los jugadores puedan crear mundos, utilizando estos modelos. Los jugadores 
+escriben prompts y los agentes se encargan de crear los mundos en base a los assets disponibles, como asi también crear 
+de forma rapida: diálogos de NPCs, ítems dentro del juego o spawns a lo largo del mundo.
+\vspace{0.25cm}
+
+De esa forma, se facilitaría la creación de mundos por parte de los creadores. Igualmente hay que destacar que añadir
+estas herramientas tiene un consumo energético e hídrico alto, asi que es necesario evaluar esta posibilidad antes
+de implementarla.
+\vspace{0.25cm}
+
+\textbf{\underline{Detección de fraudes}}: Dado que la viabilidad del proyecto, viene dada por como se maneja su economia. 
+Es importante garantizar que la cantidad de fraudes y estafas sea mínimo para asegurar el beneficio del proyecto y de los 
+creadores de mundos. Es por eso que se plantea la posibilidad de añadir modelos preentrenados para facilitar y mitigar la 
+detección automáticade fraudes y estafas dentro del videojuego. Detectada estas practicas indebidas, proceder de forma automatica 
+y manual con el \textit{baneo} de los jugadores que realizan estas practicas y el resarcimiento económico para los jugadores 
+y creadores afectados.
+\vspace{0.25cm}
+
+\textbf{\underline{Migracion del \textit{core-service} hacia microservicios}}: Actualmente, el coreservice esta separado 
+en diferentes microservicios, pero lejos estas de ser una arquitectura de microservicios. Ya que se encuentra desplegado 
+como un monolito. Esto puede ser un problema para la \textit{avalability} de nuestra arquitectura. Es por eso que pensamos 
+en un futuro, transformar al \textit{core-service} en una verdadera arquitectura de microservicios.
+\vspace{0.25cm}
+
+De esta forma, podremos mejorar cuestiones como la \textit{avalability} de nuestra aplicación a través del uso de replicacion
+de las diferentes entidades. Facilitaría el desarrollo de nuevos servicios o el mantenimiento de los actuales, sin alterar 
+los demás microservicios. Por otro lado, ante una caída de uno de los microservicios, no se alteraria la aplicacion, como 
+pasa actualmente con el monolito.
+\vspace{0.25cm}
+
+Además de que cada microservicio, necesita una comunicación con los demás servicios, se podrían utilizar herramientas
+como: \textit{Kafka} o \textit{RabbitMQ} para persistir los mensajes en caso de caídas y se tiene un mayor auditoria 
+sobre los mensajes que pasan entre microservicios. Fomentando la tolerancia a fallos y la seguridad.
+\vspace{0.25cm}
+
+\textbf{\underline{Migracion de los servidores de mundos}}: Durante el diseño y la implementacion nos dimos cuenta que
+\textit{Unity} y \textit{Mirror} no son las herramientas indicadas para el desarrollo óptimo de herramientas de servidores 
+de MMOs. Es por ello que pensamos que seria una mejor idea, desarrollar el servidor utilizando directamente un lenguaje de
+programación para la correcta optimizacion de los servidores. Las opciones pueden ser: C++, Go o Rust.
+\vspace{0.25cm}
+
+A su vez, utilizar alguna libreria para la simulación de físicas en los servidores. Al utilizar esto, se podría abstraer 
+correctamente las dependencia con estra libreria, permitiendo fácilmente migrar entre las futuras opciones. Como la 
+comunicación fue desarrollada con la libreria \textit{protobuf} de \textit{Google}, la migración de la comunicacion entre 
+el codigo existe del cliente y el nuevo servidor se realizaría de una forma bastante sencilla y de casi automática.
+\vspace{0.25cm}
+
 \newpage
 
 \section{Conclusiones}
