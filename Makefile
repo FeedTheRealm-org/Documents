@@ -5,5 +5,5 @@ image:
 .PHONY: image
 
 run:
-	docker run -v $(shell pwd):/workspace --rm feed-docs:latest python3 generar_docs.py
+	docker run -v $(shell pwd):/workspace --rm feed-docs:latest python3 generate_docs.py
 .PHONY: run
