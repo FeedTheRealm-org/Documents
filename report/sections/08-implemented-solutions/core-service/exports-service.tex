@@ -1,0 +1,61 @@
+\subsubsection{\textit{Exports service}}
+
+El \textit{exports service} es el encargado de gestionar las versiones exportadas de las aplicaciones del ecosistema.
+Concretamente, administra los archivos comprimidos en formato ZIP correspondientes a las dos aplicaciones del sistema:
+\texttt{ftr\_world\_editor} y \texttt{ftr\_game}, para los sistemas operativos soportados, \textit{Linux} y
+\textit{Windows}. Cada versión se identifica mediante un número de versión con formato semántico \texttt{vX.Y.Z} y
+puede ser marcada como la versión más reciente (\textit{latest}) para su combinación de aplicación y sistema operativo.
+\vspace{0.25cm}
+
+La subida de una nueva versión se realiza mediante una petición \textit{multipart/form-data} a
+\texttt{PUT /exports/zip}. La petición debe incluir los campos \texttt{app}, \texttt{version} y \texttt{os}, junto
+con el archivo comprimido bajo el campo \texttt{file}. El sistema valida que el nombre de la aplicación y el sistema
+operativo correspondan a valores permitidos, que la versión cumpla el formato \texttt{vX.Y.Z} y que el archivo sea
+efectivamente un ZIP. Si ya existe una entrada para la misma combinación de aplicación, versión y sistema operativo,
+el sistema retorna un error de conflicto. De lo contrario, el archivo se almacena y se persiste el \textit{path}
+resultante en la base de datos.
+\vspace{0.25cm}
+
+El sistema ofrece dos mecanismos para consultar versiones existentes. Por un lado, \texttt{GET /exports/zip} permite
+obtener el \textit{path} de una versión específica indicando los parámetros \texttt{app}, \texttt{version} y
+\texttt{os}; el parámetro \texttt{version} es opcional, en cuyo caso el sistema retorna el \textit{path} de la
+versión marcada como \textit{latest} para esa combinación. Por otro lado, \texttt{GET /exports/zip/versions} retorna el 
+listado completo de versiones disponibles, pudiendo filtrarse opcionalmente por \texttt{app} y \texttt{os}.
+\vspace{0.25cm}
+
+Para marcar una versión como la más reciente, se utiliza \texttt{PATCH /exports/zip/latest}, enviando en el cuerpo
+de la petición los campos \texttt{app}, \texttt{version} y \texttt{os}. El sistema valida que la versión indicada
+exista previamente y, de ser así, la marca como \textit{latest} para esa combinación de aplicación y sistema
+operativo. Finalmente, una versión puede eliminarse mediante \texttt{DELETE /exports/zip}, indicando los parámetros 
+\texttt{app}, \texttt{version} y \texttt{os}, los tres obligatorios.
+\vspace{0.25cm}
+
+\underline{\textbf{Endpoints}}
+ 
+\renewcommand{\arraystretch}{1.4}
+\begin{longtable}{|p{2cm}|p{7cm}|p{5.5cm}|}
+\hline
+\textbf{Verbo HTTP} & \textbf{Path} & \textbf{Descripción} \\
+\hline
+\endfirsthead
+ 
+\hline
+\textbf{Verbo HTTP} & \textbf{Path} & \textbf{Descripción} \\
+\hline
+\endhead
+ 
+\endfoot
+
+\texttt{PUT}    & \texttt{/exports/zip}          & Sube un archivo zip para una app, versión y OS dados. \\
+\hline
+\texttt{GET}    & \texttt{/exports/zip}          & Retorna el path del zip para una app, versión y OS dados. \\
+\hline
+\texttt{GET}    & \texttt{/exports/zip/versions} & Retorna todas las versiones de exports, opcionalmente filtradas por app y OS. \\
+\hline
+\texttt{DELETE} & \texttt{/exports/zip}          & Elimina una versión de export específica. \\
+\hline
+\texttt{PATCH}  & \texttt{/exports/zip/latest}   & Marca una versión de export como la latest para su app y OS. \\
+\hline
+\caption{\textit{Endpoints} del \textit{exports service}}
+\label{tab:exports-endpoints}
+\end{longtable}
