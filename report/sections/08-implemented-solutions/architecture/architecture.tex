@@ -1,0 +1,57 @@
+\subsection{Arquitectura}
+
+\subsubsection{Resumen}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{img/architecture.png}
+  \caption{Diagrama de arquitectura del sistema}
+  \label{fig:architecture}
+\end{figure}
+
+El sistema sigue una arquitectura orientada a servicios: los clientes de juego y editor de mundos, desarrollados en Unity, 
+se comunican con un único servicio central (Core Service) a través de un API Gateway que centraliza la autenticación, 
+autorización y enrutamiento de solicitudes. El Core Service coordina la comunicación entre los clientes, el clúster de 
+mundos y los sistemas de almacenamiento, y gestiona además el despliegue dinámico de instancias de mundo mediante Nomad. 
+Para la administración interna del sistema se desarrolló una aplicación web (Back Office), y como punto de entrada para 
+usuarios finales se cuenta con una Landing Page que brinda información general del proyecto y facilita la descarga del 
+cliente de juego y el editor de mundos. Ambas aplicaciones web se comunican con el sistema a través del API Gateway, 
+siguiendo el mismo patrón de acceso que los clientes Unity. Por último, el monitoreo del sistema se delega a Datadog, 
+que centraliza métricas y logs de los distintos componentes de forma continua.
+\subsubsection{Componentes del sistema}
+
+\begin{itemize}
+  \item \textbf{Back Office}: Aplicación web desarrollada en React. Permite la administración interna del sistema.
+  \item \textbf{Landing Page}: Aplicación web desarrollada en React, con el fin de brindar a los usuarios finales un primer acercamiento al proyecto. Permite conocer una vista general de la propuesta y descargar el cliente de juego y el editor de mundos.
+  \item \textbf{World Editor}: Cliente de Unity destinado a la edición de mundos del juego.
+  \item \textbf{Client}: Cliente Unity que representa la sesión de juego del jugador.
+  \item \textbf{API Gateway}: Punto de entrada único al sistema. Recibe todas las solicitudes entrantes de los clientes, aplica autenticación, autorización y enrutamiento antes de derivarlas al Core Service.
+  \item \textbf{Core Service}: Servicio backend central que coordina todas las solicitudes entre clients, world servers y sistemas de almacenamiento.
+  \item \textbf{Worlds Cluster}: Clúster de instancias de mundo escalables (World 1 - Zone 1 hasta World N - Zone M) que representan zonas activas del juego y se comunican bidirecionalmente con el Core Service.
+  \item \textbf{Monitoring Service}: Servicio de monitoreo basado en Datadog. Observa el Core Service mediante métricas y alertas.
+  \item \textbf{Core Service Database}: Base de datos relacional (PostgreSQL) asociada al Core Service.
+  \item \textbf{Cosmetics Bucket}: Almacenamiento de objetos (S3-compatible) para assets cosméticos.
+  \item \textbf{Content Bucket}: Almacenamiento de objetos para contenido general del juego.
+  \item \textbf{Player Persistence}: Base de datos (MongoDB) para el almacenamiento del estado persistente de los jugadores.
+\end{itemize}
+
+\subsubsection{Patrones de diseño}
+
+\begin{itemize}
+  \item \textbf{API Gateway}: Todas las solicitudes externas pasan por un gateway centralizado que concentra las responsabilidades transversales del sistema: autenticación, autorización, rate limiting y enrutamiento, desacoplando estas preocupaciones del Core Service.
+  \item \textbf{Fachada central (Core Service)}: El Core Service actúa como fachada interna que unifica el acceso a los distintos subsistemas y mecanismos de persistencia, ocultando la complejidad de la infraestructura a los clientes.
+  \item \textbf{Separación de almacenamiento por tipo de dato}: Se utilizan distintos mecanismos de persistencia según la naturaleza del dato: base de datos relacional para datos estructurados del servicio, base de datos de documentos para el estado del jugador, y object storage para assets binarios.
+  \item \textbf{Clúster de instancias escalables}: Los mundos del juego se modelan como instancias independientes dentro de un clúster, permitiendo escalar horizontalmente la carga de sesiones activas.
+  \item \textbf{Observabilidad externa}: El monitoreo está desacoplado del Core Service mediante un agente Datadog, siguiendo el patrón \textit{observer} sin intrusión en la lógica de negocio.
+\end{itemize}
+
+\subsubsection{Detalles de implementación}
+
+\begin{itemize}
+  \item Los clientes web (Back Office y Landing Page) están implementados con React y se comunican con el sistema a través del API Gateway vía HTTP/REST.
+  \item Los clientes de juego (World Editor y Client) están desarrollados en Unity y acceden al sistema mediante el API Gateway, utilizando WebSockets o HTTP según el tipo de operación.
+  \item El API Gateway se ubica delante del Core Service y concentra la validación de tokens, el control de acceso y el enrutamiento de solicitudes.
+  \item El Worlds Cluster expone un punto de entrada propio que distribuye el tráfico entre las instancias de zona activas.
+  \item El Core Service es el único componente con acceso directo a todos los sistemas de almacenamiento, centralizando el control de acceso a datos.
+  \item El Monitoring Service recibe métricas del Core Service de forma asíncrona, sin afectar el flujo principal de solicitudes.
+\end{itemize}
