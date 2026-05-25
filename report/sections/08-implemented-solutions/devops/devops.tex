@@ -6,7 +6,16 @@ el presupuesto del equipo y las necesidades actuales, a su vez permitiendo el es
 Por otro lado, se especifica el proceso de integración y despliegue de código de forma continua y por versiones,
 como también las revisiones automatizadas de errores de código, inconsistencia de formatos y de filtrado de credenciales.
 
+\subsubsection{Proveedor de infraestructura como servicio (IaaS) elegido}
+
 \subsubsection{CI/CD \& Workflows}
+
+En el caso del backend web 'core-service' se tiene un flujo de trabajo que inicia cuando se efectiviza una acción de \textit{Merge}
+de código desde la rama de desarrollo (\textit{dev}) hacia la rama de despliegue (\textit{main}).
+
+Como se puede apreciar en la figura a continuación se comienza por la ejecución de las pruebas, luego si estas son exitosas se pasa
+al siguiente paso donde se construye la imagen de docker del servicio y finalmente si esta etapa también se completa con éxito
+se lleva a cabo el despliegue en \textit{AWS EC2}.
 
 \begin{figure}[H]
 \centering
@@ -14,11 +23,33 @@ como también las revisiones automatizadas de errores de código, inconsistencia
 \caption{Visión general del 'workflow' de integración y despliegue continuo del \textit{core-service}.}
 \end{figure}
 
+En la etapa de pruebas se lleva a cabo la ejecución de un \textbf{docker-compose} y de tests de aceptacion haciendo
+uso de la libreria de python \textbf{'Behave'} para \textbf{'Gherkin'} con el objetivo de validar el comportamiento
+del servicio de manera externa, y tambien se ejecutan tests unitarios con el objetivo de asegurar el correcto funcionamiento
+de cada una de las partes individualmente.
+
+Luego se calcula el cubrimiento o \textit{'coverage'} del codigo utilizando la herramienta \textbf{CodeCov}
+y de esta forma obtener un porcentaje descriptivo de la confiabilidad del codigo (frente a lo esperado),
+asi como tambien visualizar las partes del codigo con menor cubrimiento por medio de gráficos varios.
+
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.75\textwidth]{img/08-implemented-solution/devops/test-pipeline.jpg}
 \caption{Pipeline de ejecución de Tests.}
 \end{figure}
+
+En la etapa de construcción (una vez concluyó exitosamente la etapa de testing) se realizan dos tareas bloqueantes antes
+de subir la imagen al registro de contenedores, estas son las siguientes:
+
+\begin{itemize}
+    \item \textbf{Build}: Se realiza la construcción per-se de la imagen utilizando docker y el \textit{Dockerfile}
+        con el objectivo o \textit{'target'} correspondiente.
+    \item \textbf{ECR Login}: Se realiza la obtencion de un token \textit{OIDC (OpenID connect)} utilizando 
+        a \textit{Github} como proveedor, para de esta forma poder utilizar \textit{AWS STS (security token service)}
+        y verificar la identidad del pipeline obteniendo asi acceso al corresponiente rol de 
+        \textit{IAM (identity access management)} que permite realizar la operacion de subida de la imagen al registro
+        de contenedores de AWS, \textbf{ECR}.
+\end{itemize}
 
 \begin{figure}[H]
 \centering
@@ -26,11 +57,36 @@ como también las revisiones automatizadas de errores de código, inconsistencia
 \caption{Pipeline de construcción de la imagen de docker y subida a ECR.}
 \end{figure}
 
+Finalmente, se llega a la etapa de despliegue (una vez conluida la anterior sin errores).
+En esta etapa se lleva a cabo la misma configuración para tener acceso al rol IAM que permite también enviar comandos
+\textit{SSM (systems manager)} cuyo propósito es comunicarse de manera segura con una de las instancias de \textbf{EC2} objetivo,
+sin exponer puertos para comunicación por \textit{SSH}, y de esta manera ejecutar un script que consiste en la obtención de la imagen
+desde \textbf{ECR} y la ejecución el contenedor por medio de \textit{docker run}.
+
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.8\textwidth]{img/08-implemented-solution/devops/deploy-pipeline.jpg}
 \caption{Pipeline de despliegue del contenedor y ejecución en EC2.}
 \end{figure}
+
+Por otro lado, en el caso de los \textir{zoning servers} o \textit{ftr-servers} se tiene un flujo de trabajo que inicia cuando 
+se crea y se sube al repositorio una nueva etiqueta o \texit{tag} de versión con el formato de versionamiento semántico \textbf{vX.Y.Z}.
+
+Sin embargo, al tratarse de una aplicación confeccionada en \textif{Unity}, esta debe ser compilada utilizando el correspondiente compilador
+propietario y haciendo uso de una licencia que lo permita.
+Esto impone una serie de trabas al momento de realizar un pipeline de integración y despliegue continuo, no solo por la inexistencia
+de herramientas oficiales para la compilación en un entorno de \textit{'Github actions'} siendo la única herramienta oficial para
+este propósito, una externa al control de versiones utilizado lo que forzaría al equipo a mantener dos controles de 
+versiones (git y \textit{Unity version control}), sino también por la necesidad de obtener y descargar paquetes de dependencias
+(cada uno con su licencia) adentro del entorno de compilación.
+
+Es por esto que se optó por la compilación local de los ejecutables y su contenerización incluyendo el ejecutable optimizado
+para servidores \textit{Linux} en la imagen de docker, para ser subida a \textit{GHCR (Github container registry)}.
+
+Una vez que dicha imagen se encuentra alojada en el registro de contenedores, se realiza el etiquetado del \textit{commit} a desplegar
+y se ejecuta automaticamente el \textit{pipeline} que obtiene la imagen de dicho alojamiento y (haciendo el mismo procedimiento del core-service explicado anteriormente)
+la sube a \textbf{ECR}, para finalmente notificar por medio de un \textbf{webhook} al core-service que se deben actualizar todos
+los zoning servers (ftr-server) que se encuentran activos en ese momento.
 
 \begin{figure}[H]
 \centering
