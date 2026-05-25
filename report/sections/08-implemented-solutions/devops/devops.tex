@@ -8,6 +8,29 @@ como también las revisiones automatizadas de errores de código, inconsistencia
 
 \subsubsection{Proveedor de infraestructura como servicio (IaaS) elegido}
 
+Se optó por \textit{AWS (Amazon web services)} como plataforma principal para la infraestructura (o \textit{Cloud provider}) de \textit{Feed the Realm}
+debido a la flexibilidad frente a soluciones PaaS, alcance global, madurez del ecosistema y familiaridad por parte del equipo con sus herramientas.
+Durante la elección del proveedor también se consideraron alternativas como \textit{Linode}, \textit{Hetzner}, 
+\textit{GCP (Google cloud platform)} y \textit{Microsoft Azure}.
+
+Uno de los factores más relevantes fue la capacidad de construir una infraestructura altamente modular y flexible.
+En lugar de depender de un entorno excesivamente administrado o centrado únicamente en plataformas PaaS,
+se priorizó mantener control directo sobre la orquestación, el networking y el ciclo de despliegue de servicios.
+
+Otro punto importante fue la capa de almacenamiento y distribución de contenido, ya que el juego debía permitir
+a los creadores subir un volumen importante de modelos 3D y cosméticos 2D, y a los jugadores descargar los mismos sin
+altos tiempos de descarga. Para esto se eligió combinar el servicio de Amazon S3 junto con CloudFront como 
+\textit{CDN (content delivery network)} por la sencilla integración que ofrece.
+
+En comparación con Linode y Hetzner, AWS ofrecía un ecosistema considerablemente más completo en términos de automatización,
+segmentación de infraestructura, seguridad y herramientas operativas. Aunque proveedores como Hetzner destacan por sus bajos precios
+no cuentan con componentes críticos como políticas IAM \textit{(identity access management)}, registros de contenedores, entre otros,
+lo que significaría un mayor esfuerzo operativo.
+
+La decisión también estuvo influenciada por criterios de escalabilidad a largo plazo, ya que si bien el proyecto no
+requiere inicialmente una infraestructura masiva, se buscó una plataforma que permitiera crecer progresivamente 
+sin necesidad de rediseñar componentes fundamentales.
+
 \subsubsection{CI/CD \& Workflows}
 
 En el caso del backend web 'core-service' se tiene un flujo de trabajo que inicia cuando se efectiviza una acción de \textit{Merge}
@@ -84,7 +107,7 @@ Es por esto que se optó por la compilación local de los ejecutables y su conte
 para servidores \textit{Linux} en la imagen de docker, para ser subida a \textit{GHCR (Github container registry)}.
 
 Una vez que dicha imagen se encuentra alojada en el registro de contenedores, se realiza el etiquetado del \textit{commit} a desplegar
-y se ejecuta automaticamente el \textit{pipeline} que obtiene la imagen de dicho alojamiento y (haciendo el mismo procedimiento del core-service explicado anteriormente)
+y se ejecuta automaticamente el \textit{pipeline} que como se ve en la siguiente figura, obtiene la imagen de dicho alojamiento y (haciendo el mismo procedimiento del core-service explicado anteriormente)
 la sube a \textbf{ECR}, para finalmente notificar por medio de un \textbf{webhook} al core-service que se deben actualizar todos
 los zoning servers (ftr-server) que se encuentran activos en ese momento.
 
