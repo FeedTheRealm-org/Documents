@@ -117,6 +117,8 @@ los zoning servers (ftr-server) que se encuentran activos en ese momento.
 \caption{Visión general del 'workflow' de actualización de la imagen de los \textit{ftr-server}.}
 \end{figure}
 
+\subsubsection{Actualización de las aplicaciones 'Cliente'}
+
 \subsubsection{Infraestructura}
 
 A continuación se explica el estado actual de la infraestructura cuya especificación y configuración pertenece al repositorio
@@ -139,6 +141,8 @@ Las partes principales de la infraestructura son:
     \item \textbf{Registro de contenedores  - ECR}: Utilizado para almacenar las imágenes de docker de cada versión lanzada
         de cada servidor desplegable, y para el escaneo general automatizado de vulnerabilidades en las mismas.
     \item \textbf{PostgresDB - Supabase}: Base de datos PostgresSQL alojada en \textit{Supabase} a ser utilizada por el core-service.
+    \item \textbf{MongoDB - Mongo Atlas}: Base de datos Mongo utilizada por los 'zoning servers' para persistir información de los jugadores
+        en los mundos. Se crea una base de datos por mundo dentro del mismo \textit{cluster}.
     \item \textbf{Firewall - Security Groups}: Whitelist de puertos que permiten tráfico entrante o saliente para cada tipo de nodo.
     \item \textbf{Permisos \& Roles - IAM}: Configuración de roles para cada tipo de nodo o usuario y permisos específicos
         y mínimos para los mismos.
@@ -146,11 +150,34 @@ Las partes principales de la infraestructura son:
         lanzados al inicio de cada nodo.
 \end{itemize}
 
+En la siguiente figura se puede apreciar algunos de los componentes mencionados, como están separados a nivel físico, qué servicios alojan y como se conectan entre sí.
+
+También se puede notar la intercomunicación de los nodos de tipo 'nomad client', esto es crucial para el funcionamiento del descubrimiento de
+servicios por nombre. Tanto esto como el flujo de despliegue de nuevos 'zoning servers' se aborda en detalle a continuación.
+
 \begin{figure}[H]
 \centering
 \includegraphics[width=1\textwidth]{img/08-implemented-solution/devops/deployment.jpg}
 \caption{Vista general de la infraestructura desplegada.}
 \end{figure}
+
+Los clientes interactuan con los servicios desplegados de dos formas principales:
+\begin{enumerate}
+    \item A través de un \textit{API Gateway} (\textit{Nginx} en este caso) que se encarga de gestionar las conexiones seguras mediante TLS
+        utilizando certificados administrados y renovados por \textit{Certbot}, de validar el tamaño de los archivos enviados,
+        y de enrutar los requests al core-service.
+    \item Por socket para una comunicación directa con los servidores del juego con el objetivo de disminuir la latencia/\textit{overhead}
+        de un 'gateway' o balanceador de carga.
+\end{enumerate}
+
+En cuanto al servicio backend web \textbf{core-service}, este recibe peticiones de parte de los usuarios ya sea tanto jugadores como administradores,
+y utiliza para resolver las mismas una serie de dependencias como lo son:
+\begin{itemize}
+    \item Base de datos PostgresSQL alojada en Supabase y contra la cual se ejecutan las consultas relacionales.
+    \item Buckets de \textbf{'cosmetics'} y \textbf{'content'} para almacenamiento de imágenes png y modelos 3D cuyas URIs
+        son guardadas en la base de datos por el core-service. A su vez utiliza archivos temporales para evitar mantener en memoria
+        los archivos siendo subidos en su totalidad.
+\end{itemize}
 
 \begin{figure}[H]
 \centering
@@ -158,11 +185,38 @@ Las partes principales de la infraestructura son:
 \caption{Diagrama del uso del core-service y sus dependencias.}
 \end{figure}
 
+Por otro lado, el despliegue de nuevos 'zoning servers' inicia cuando un cliente de tipo 'creador' activa una o varias zonas pertenecientes a un mundo
+a través del core-service.
+Cuando core-service recibe esta request (luego de hacer las validaciones corresponientes), genera una especificación de \textit{Nomad Job} a partir de un
+template detallado preliminarmente, para luego comunicarse de forma interna con el servicio de \textbf{Nomad server} el cual se encuentra ejecutandose 
+en el mismo nodo (aunque no necesariamente) y enviarle dicha especificación.
+Una vez el Nomad server obtiene el \textit{Job}, este consulta su registro de nodos cliente (quienes envian heartbeats periodicamente para notificar su estado al server)
+y decide por medio de un proceso de \textit{scheduling} el nodo que debe alojar el nuevo servidor.
+El nodo cliente seleccionado, entonces obtiene la imagen de docker desde el registro de contenedores y lo ejecuta con los parametros necesarios
+como el \textit{ID} del mundo y de la zona activada.
+
+Este proceso se podria hacer mas tolerante a fallos agregando nuevos \textit{Nomad servers}, ya que en el caso donde hay más de estos,
+se utiliza el algoritmo \textit{RAFT} para mantener un consenso de los \textit{schedules} y las asignaciones.
+
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.6\textwidth]{img/08-implemented-solution/devops/nomad-robust.jpg}
 \caption{Flujo de despliegue e inicio de zone server.}
 \end{figure}
+
+Para llevar a cabo el descubrimiento de las direcciones de los 'zoning servers' una vez ya estan desplegados se utiliza la herramienta \textbf{Consul}.
+
+La misma requiere de la existencia de al menos un \textit{Consul server} (desplegado en el mismo nodo donde está el Nomad server) y de \textit{Consul clients}.
+Los Consul clients utilizan un algoritmo de comunicación por \textit{Gossip} o 'Chisme', seleccionando aleatoriamente nodos de Consul a los que les enviara
+la información del estado y la dirección (IP y puerto) de los servicios que conoce por nombre, y de esta forma la información se propaga exponencialmente en la red interna 
+de Consul y llegan a su vez a los Consul servers, quienes mantienen un registro de los cambios de estado de los servicios desplegados.
+
+Esta es la razon porque en la primera figura de esta sección se mencionó la intercomunicación de nodos de tipo \textit{'Nomad client node (N)'}, y de
+esta forma se logra tener una fuente confiable de \textit{Service Discovery} para poder resolver las peticiones de los usuarios por direcciones
+de los zoning servers utilizando el \textit{ID} del mundo y la zona como nombre de servicio.
+
+Similarmente con los \textit{Nomad servers}, se podria mejorar la tolerancia a fallos del sistema de descubrimiento agregando nuevos \textit{Consul servers},
+ya que los mismos también usan el algoritmo \textit{RAFT} para mantener consenso entre ellos.
 
 \begin{figure}[H]
 \centering
@@ -170,10 +224,15 @@ Las partes principales de la infraestructura son:
 \caption{Flujo de descubrimiento de dirección de zone server (por mundo y zona).}
 \end{figure}
 
+Finalmente, una vez que el jugador ya obtiene la dirección del servidor en el que desea jugar, este se comunica con el mismo
+a través de la capa de red del juego (Utilizando UDP como base).
+A partir de ese momento el jugador envía sus comandos y el servidor le responde con estados de juego o eventos (tal como se menciona en la sección de \textit{Netwoking} del juego),
+a su vez el zoning server almacena la información del jugador en la base de datos Mongo perteneciente al mundo y alojada en \textit{Mongo Atlas}.
+
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.65\textwidth]{img/08-implemented-solution/devops/game-robust.jpg}
 \caption{Diagrama de uso de zone server y sus dependencias \textit{(cliente in-game)}.}
 \end{figure}
 
-\subsubsection{Actualización de las aplicaciones 'Cliente'}
+\subsubsection{Manejo de secretos y credenciales privadas}
