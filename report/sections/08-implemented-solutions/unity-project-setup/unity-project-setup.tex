@@ -1,0 +1,40 @@
+Unity es el motor de desarrollo utilizado para ambos módulos principales del proyecto. El \textit{World Editor} (Creador de mundos) y el \textit{Game}
+(proyecto de juego), que agrupa el cliente y el servidor en un mismo proyecto Unity. Se desarrollan como 
+proyectos independientes, cada uno con su propia configuración, assets y código. Para compartir estructuras 
+de datos comunes entre ambos proyectos, se utiliza un submódulo compartido denominado \textit{Shared Package}, 
+que centraliza los DTOs e implementaciones de servicios que realizan llamadas externas al \textit{Core Service}, 
+evitando la duplicación de código.
+
+Internamente, cada proyecto se divide en módulos independientes mediante Assembly Definitions 
+(\textit{asmdef}), que son unidades de compilación separadas. Esta separación reduce los tiempos de 
+compilación, ya que Unity solo recompila los módulos afectados por un cambio, y establece límites explícitos 
+de dependencia entre módulos, evitando acoplamientos no deseados.
+
+\subsubsection{Build Assembly Definitions}
+
+Ambos proyectos se estructuran en tres módulos: \textit{Core}, \textit{Gameplay} y \textit{User Interface}, 
+cada uno compilado como un assembly independiente. En el caso del proyecto de juego, esta estructura se 
+duplica para el cliente y el servidor, resultando en seis assemblies en total. Esta separación garantiza 
+que la lógica del cliente y la del servidor permanezcan aisladas, evitando dependencias cruzadas entre ambos.
+
+\begin{itemize}
+  \item \textbf{Core}: Contiene la lógica central del editor, incluyendo la gestión de repositorios internos, 
+  la comunicación con el Core Service y las definiciones de interfaces compartidas.
+  \item \textbf{Gameplay}: Contiene la lógica de edición de mundos, como la manipulación de objetos, 
+  configuración de zonas y reglas de juego.
+  \item \textbf{User Interface}: Incluye todos los elementos visuales del editor, como ventanas, paneles, 
+  menús y herramientas de edición.
+\end{itemize}
+
+Esta estructura modular establece una clara separación de responsabilidades, facilitando el mantenimiento y 
+la escalabilidad del editor. El mismo patrón de organización se replicó en el cliente y el servidor del juego, 
+manteniendo una arquitectura coherente en todo el sistema.
+
+\subsubsection{Injección de dependencias con VContainer}
+
+\item \textbf{VContainer}: Librería de inyección de dependencias para Unity utilizada como contenedor 
+  de inversión de control (IoC) del sistema. Permite declarar y resolver dependencias de forma explícita, 
+  desacoplando la construcción de objetos de su lógica de negocio. Esto facilita la testabilidad de los 
+  componentes, reduce el acoplamiento entre módulos y centraliza la configuración del ciclo de vida de 
+  los objetos, reemplazando el uso de singletons y referencias estáticas propias de proyectos Unity 
+  sin arquitectura definida.
