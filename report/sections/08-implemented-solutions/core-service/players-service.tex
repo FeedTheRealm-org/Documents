@@ -1,4 +1,4 @@
-\subsubsection{\textit{Player service}}
+\subsubsection{\textit{Players service}}
 
 El \textit{players service} es el encargado de gestionar la información de los jugadores y su acceso a los mundos.
 El servicio se divide en dos componentes principales: la gestión de la información del personaje y el mecanismo
@@ -38,6 +38,7 @@ Una vez emitido, el token es consumido por el servidor del mundo mediante
 que el token exista, no haya expirado y no haya sido consumido previamente; cualquiera de estas condiciones
 retorna un error específico. Si el token es válido, se marca como consumido y se retorna el identificador del
 usuario y del mundo asociados, de modo que el servidor pueda autenticar al jugador que intenta conectarse.
+\vspace{0.25cm}
 
 \underline{\textbf{Endpoints}}
 
