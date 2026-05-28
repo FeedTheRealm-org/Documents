@@ -7,3 +7,23 @@ report:
   name: Equipo169_InformeFinalTrabajoProfesional_2c2025 
   description: Build the report document using LaTeX
   entrypoint: ./report
+pps-report-grupal:
+  name: Informe_PPS_Equipo169
+  description: Build the PPS group report template using LaTeX
+  entrypoint: ./pps-report/grupal
+pps-report-student-barbalase:
+  name: Informe_PPS_Equipo169_Barbalase
+  description: Build the PPS individual report template using LaTeX
+  entrypoint: ./pps-report/student-barbalase
+pps-report-student-sanchez:
+  name: Informe_PPS_Equipo169_Sanchez
+  description: Build the PPS individual report template using LaTeX
+  entrypoint: ./pps-report/student-sanchez
+pps-report-student-sevitz:
+  name: Informe_PPS_Equipo169_Sevitz
+  description: Build the PPS individual report template using LaTeX
+  entrypoint: ./pps-report/student-sevitz
+pps-report-student-utrera:
+  name: Informe_PPS_Equipo169_Utrera
+  description: Build the PPS individual report template using LaTeX
+  entrypoint: ./pps-report/student-utrera

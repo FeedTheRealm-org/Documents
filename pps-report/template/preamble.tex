@@ -1,0 +1,35 @@
+\usepackage[spanish]{babel}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{array}
+\usepackage{setspace}
+\usepackage{hyperref}
+
+\geometry{
+    a4paper,
+    top=1in,
+    bottom=1in,
+    left=1in,
+    right=1in
+}
+
+\setlength{\parindent}{0pt}
+\onehalfspacing
+
+\newcommand{\signatureImage}[3]{%
+  \IfFileExists{#1}{\includegraphics[width=#2,height=#3,keepaspectratio]{#1}}{\fbox{\parbox[c][#3][c]{#2}{Firma pendiente}}}%
+}
+
+\newcommand{\signatureBox}[3]{%
+  \begin{minipage}[c][#3][c]{#2}
+    \centering
+    \signatureImage{#1}{#2}{#3}
+  \end{minipage}%
+}
+
+\newcommand{\signatureBoxCentered}[3]{%
+  \begin{minipage}[c][#3][c]{\linewidth}
+    \centering
+    \signatureImage{#1}{#2}{#3}
+  \end{minipage}%
+}
