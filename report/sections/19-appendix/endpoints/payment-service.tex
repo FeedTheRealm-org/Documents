@@ -1,0 +1,71 @@
+\subsubsection{\textit{Payment service}}
+
+\renewcommand{\arraystretch}{1.4}
+\begin{longtable}{|p{2cm}|p{7cm}|p{5.5cm}|}
+\hline
+\textbf{Verbo HTTP} & \textbf{Path} & \textbf{Descripción} \\
+\hline
+\endfirsthead
+
+\hline
+\textbf{Verbo HTTP} & \textbf{Path} & \textbf{Descripción} \\
+\hline
+\endhead
+
+\endfoot
+
+\multicolumn{3}{|l|}{\textit{Gem Balances}} \\
+\hline
+\texttt{GET}    & \texttt{/payments/gems/balances}                              & Retorna el balance de gemas del usuario autenticado. Crea uno si no existe. \\
+\hline
+\texttt{PUT}    & \texttt{/payments/gems/balances/\{id\}}                       & Actualiza el balance de gemas de un usuario. Solo administradores. \\
+\hline
+\texttt{POST}   & \texttt{/payments/gems/balances/purchase/} \newline \texttt{\{cosmetic\_id\}} & Deduce gemas y registra la compra de un cosmético para el usuario autenticado. \\
+\hline
+\texttt{POST}   & \texttt{/payments/checkout}                                   & Crea una sesión de checkout de Stripe para comprar un gem pack. \\
+\hline
+\texttt{POST}   & \texttt{/payments/webhook/stripe}                             & Procesa eventos de webhook de Stripe para pagos completados. \\
+\hline
+\multicolumn{3}{|l|}{\textit{Gem Packs}} \\
+\hline
+\texttt{GET}    & \texttt{/payments/gems/packs}                                 & Retorna todos los gem packs disponibles. \\
+\hline
+\texttt{GET}    & \texttt{/payments/gems/packs/\{id\}}                          & Retorna el detalle de un gem pack por su ID. \\
+\hline
+\texttt{POST}   & \texttt{/payments/gems/packs}                                 & Crea un nuevo gem pack. Solo administradores. \\
+\hline
+\texttt{PUT}    & \texttt{/payments/gems/packs/\{id\}}                          & Actualiza un gem pack existente. Solo administradores. \\
+\hline
+\texttt{DELETE} & \texttt{/payments/gems/packs/\{id\}}                          & Elimina un gem pack por su ID. Solo administradores. \\
+\hline
+\multicolumn{3}{|l|}{\textit{Gem Metrics}} \\
+\hline
+\texttt{GET}    & \texttt{/payments/gems/metrics}                               & Retorna métricas agregadas de gemas. Solo administradores. \\
+\hline
+\multicolumn{3}{|l|}{\textit{Creator Balances}} \\
+\hline
+\texttt{GET}    & \texttt{/payments/balances/creators}                          & Retorna el balance de creador del usuario autenticado. \\
+\hline
+\texttt{GET}    & \texttt{/payments/balances/creators/all}                      & Retorna todos los balances de creadores. Solo administradores. \\
+\hline
+\multicolumn{3}{|l|}{\textit{Subscriptions}} \\
+\hline
+\texttt{POST}   & \texttt{/subscriptions/checkout}                              & Crea una sesión de checkout de Stripe para una suscripción de zonas. \\
+\hline
+\texttt{PUT}    & \texttt{/subscriptions/slots}                                 & Actualiza la cantidad de slots de la suscripción activa del usuario. \\
+\hline
+\texttt{DELETE} & \texttt{/subscriptions}                                       & Cancela la suscripción activa del usuario si no tiene slots en uso. \\
+\hline
+\texttt{GET}    & \texttt{/subscriptions/status}                                & Retorna el estado de la suscripción activa del usuario. \\
+\hline
+\texttt{GET}    & \texttt{/subscriptions/pricing}                               & Retorna el precio por slot y la próxima fecha de facturación. \\
+\hline
+\texttt{POST}   & \texttt{/subscriptions/webhook/stripe}                        & Procesa eventos de webhook de Stripe para cambios y cancelaciones de suscripciones. \\
+\hline
+\texttt{GET}    & \texttt{/subscriptions/internal/users/} \newline \texttt{\{user\_id\}/status} & Verifica disponibilidad de slots para un usuario. Uso interno entre servicios. \\
+\hline
+\texttt{PUT}    & \texttt{/subscriptions/internal/users/} \newline \texttt{\{user\_id\}/used-slots} & Actualiza los slots consumidos de un usuario. Uso interno entre servicios. \\
+\hline
+\caption{\textit{Endpoints} del \textit{payment service}}
+\label{tab:payment-endpoints}
+\end{longtable}
