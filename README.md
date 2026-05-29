@@ -1,28 +1,42 @@
-# Documents
+# Feed the Realm — Documents
 
-Repository for Latex-based documentation.
+LaTeX-based academic and technical documentation for the Feed the Realm project. PDFs are automatically compiled and published as GitHub Releases on every version tag.
 
-## How to release
+## Releasing a Document
 
-Once the latex is written and you want to compile and release it, a `tag` needs
-to be created with the format `vx.x.x`.
+Once the LaTeX source is ready, create a version tag to trigger the build-and-release pipeline:
 
 ```bash
-# Example tagging
-git tag -a v1.0.0 -m "Release version 1.0.0" # Marks the latest commit with the tag
+git tag -a v1.0.0 -m "Release version 1.0.0"
 git push --tags
 ```
 
-Additionally if a new folder was added, its necessary to add it to `files.yaml`:
+The compiled PDFs will be available at:
+
+```
+https://github.com/FeedTheRealm-org/Documents/releases/tag/v1.0.0
+```
+
+## Adding a New Document
+
+1. Create a new folder with the LaTeX source (a `main.tex` as entrypoint).
+2. Register it in `files.yaml`:
 
 ```yaml
 # Example
 proposal:
-  name: proposal
+  name: your_document_name
   description: Build the proposal document using LaTeX
-  entrypoint: ./proposal
+  entrypoint: ./your-folder
 ```
 
-On this push, the *build-release pipeline* will start running and contents will
-be found at `https://github.com/FeedTheRealm-org/Documents/releases/tag/v1.0.0`.
+3. Tag and push to trigger the release pipeline.
 
+## Makefile Commands
+
+Compilation runs inside Docker to avoid requiring a local LaTeX installation.
+
+```bash
+make image   # Build the Docker image with the LaTeX environment
+make run     # Compile all documents defined in files.yaml
+```
