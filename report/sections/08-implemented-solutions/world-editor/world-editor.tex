@@ -5,7 +5,6 @@ patrón de acceso que el cliente de juego.
 El editor permite a los desarrolladores y diseñadores crear nuevos mundos,
 modificar la configuración de zonas existentes, gestionar assets y probar cambios en un entorno controlado antes de su despliegue en producción.
 
-
 \subsubsection{Estructura de un Mundo}
 
 Un mundo se compone de tres elementos principales.
@@ -13,12 +12,12 @@ Un mundo se compone de tres elementos principales.
   \item \textbf{Zones} (Zonas): Subdivisiones de un mundo, cada una alojada en una instancia de servidor independiente. 
   Esta separación permite escalar horizontalmente y distribuir la carga entre múltiples servidores, mientras el estado 
   del jugador se preserva de forma consistente al cambiar de zona.
-\item \textbf{Creatables} (Objetos Creables): Objetos instanciados dinámicamente en tiempo de ejecución, como NPCs, 
-enemigos o ítems. A diferencia de los Placeables, no pueden ser posicionados manualmente durante la fase de diseño, 
-sino que son generados por la lógica del juego.
-\item \textbf{Placeables} (Objetos Colocables): Objetos posicionados manualmente en el editor durante la fase de diseño, 
-que permanecen estáticos en tiempo de ejecución. Se clasifican en estructuras (\textit{Structures}), generadores 
-(\textit{Spawners}) y objetos diversos (\textit{Miscellaneous Objects}).
+  \item \textbf{Creatables} (Objetos Creables): Objetos instanciados dinámicamente en tiempo de ejecución, como NPCs, 
+  enemigos o ítems. A diferencia de los Placeables, no pueden ser posicionados manualmente durante la fase de diseño, 
+  sino que son generados por la lógica del juego.
+  \item \textbf{Placeables} (Objetos Colocables): Objetos posicionados manualmente en el editor durante la fase de diseño, 
+  que permanecen estáticos en tiempo de ejecución. Se clasifican en estructuras (\textit{Structures}), generadores 
+  (\textit{Spawners}) y objetos diversos (\textit{Miscellaneous Objects}).
 \end{itemize}
 
 \subsubsection{Zones (Zonas)}
@@ -35,27 +34,29 @@ Portales (Portals).
 
 \subsubsection{Placeable Objects (Objetos Colocables)}
 
-Los Placeables son objetos posicionados manualmente en el editor durante la fase de diseño y permanecen estáticos en 
+Los Placeables son objetos posicionados manualmente en el editor durante la fase de diseño y permanecen estáticos en
 tiempo de ejecución. Se clasifican en tres categorías principales:
 
 \begin{itemize}
-  \item \textbf{Structures (Estructuras)}: Objetos estáticos que forman parte del entorno del juego, como edificios, 
-  árboles o rocas. Al ser colocados, su posición, rotación y escala pueden editarse mediante \textit{Gizmos} o a través 
-  de su panel de configuración. Cada estructura permite configurar sus \textit{Colliders} (Colisionadores), que definen 
-  las interacciones físicas con el jugador y otros elementos del juego. Adicionalmente, cualquier estructura puede 
-  configurarse como \textit{Shop} (Tienda), habilitando la compra de ítems por parte de los jugadores.
+\item \textbf{Structures (Estructuras)}: Objetos estáticos que forman parte del entorno del juego, como edificios,
+  árboles o rocas. Al ser colocados, su posición, rotación y escala pueden editarse mediante \textit{Gizmos} o a través
+  de su panel de configuración. Cada estructura permite configurar sus \textit{Colliders} (Colisionadores), que definen
+  las interacciones físicas con el jugador y otros elementos del juego. Actualmente se soportan dos tipos de colisionador:
+  \textit{Cube} (Cubo), de uso general, y \textit{Slope} (Rampa), un colisionador de forma piramidal diseñado para
+  superficies inclinadas que permiten al jugador desplazarse hacia zonas de mayor altura. Adicionalmente, cualquier
+  estructura puede configurarse como \textit{Shop} (Tienda), habilitando la compra de ítems por parte de los jugadores.
 
-  \item \textbf{Spawners (Generadores)}: Objetos que instancian entidades en tiempo de ejecución, como enemigos o NPCs. 
-  Pueden configurarse con parámetros como frecuencia de aparición, rango y tipo de entidad a generar. Actualmente se 
-  encuentran disponibles tres tipos: \textit{Enemy Spawner} (Generador de Enemigos), \textit{NPC Spawner} (Generador 
-  de NPCs) y \textit{Player Spawner} (Generador de Jugadores).
+\item \textbf{Spawners (Generadores)}: Objetos que instancian entidades en tiempo de ejecución, como enemigos o NPCs.
+Pueden configurarse con parámetros como frecuencia de aparición, rango y tipo de entidad a generar. Actualmente se
+encuentran disponibles tres tipos: \textit{Enemy Spawner} (Generador de Enemigos), \textit{NPC Spawner} (Generador
+de NPCs) y \textit{Player Spawner} (Generador de Jugadores).
 
-\item \textbf{Miscellaneous Objects (Objetos Diversos)}: Elementos que no se ajustan a las categorías anteriores pero 
+\item \textbf{Miscellaneous Objects (Objetos Diversos)}: Elementos que no se ajustan a las categorías anteriores pero
   contribuyen a la composición del mundo. Actualmente se encuentran disponibles dos variantes:
   \begin{itemize}
     \item \textbf{Cofres}: Objetos interactuables que los jugadores pueden abrir para obtener recompensas.
     Configurables con distintos tipos de botín, tiempo de reseteo y apariencia en estado abierto y cerrado.
-    \item \textbf{Portales}: Objetos que permiten transportar al jugador a otra ubicación, incluso entre zonas distintas 
+    \item \textbf{Portales}: Objetos que permiten transportar al jugador a otra ubicación, incluso entre zonas distintas
     del mundo. Al interactuar con un portal, el jugador es teletransportado a la zona de destino configurada,
     conservando su estado y progresión.
   \end{itemize}
@@ -63,56 +64,56 @@ tiempo de ejecución. Se clasifican en tres categorías principales:
 
 \subsubsection{Creatable Objects (Objetos Creables)}
 
-Los Creatables son objetos instanciados dinámicamente en tiempo de ejecución. A diferencia de los Placeables, no se 
+Los Creatables son objetos instanciados dinámicamente en tiempo de ejecución. A diferencia de los Placeables, no se
 posicionan directamente en el mundo, sino que se configuran y gestionan a través de paneles de edición dedicados.
 Actualmente se encuentran disponibles los siguientes tipos:
 
 \begin{itemize}
-  \item \textbf{Passive NPC} (Personaje No Jugable Pasivo): Personajes no hostiles con los que el jugador puede 
-  interactuar mediante diálogos, como aldeanos o comerciantes. El creador puede asignarles diálogos predefinidos 
+  \item \textbf{Passive NPC} (Personaje No Jugable Pasivo): Personajes no hostiles con los que el jugador puede
+  interactuar mediante diálogos, como aldeanos o comerciantes. El creador puede asignarles diálogos predefinidos
   para que el jugador obtenga información, inicie \textit{Quests} o simplemente enriquezca la ambientación del mundo.
 
-  \item \textbf{Aggressive NPC} (Personaje No Jugable Agresivo): Personajes hostiles que atacan al jugador al 
-  detectarlo dentro de un rango determinado. Configurables con estadísticas de salud, tipos de armas que utilizan 
+  \item \textbf{Aggressive NPC} (Personaje No Jugable Agresivo): Personajes hostiles que atacan al jugador al
+  detectarlo dentro de un rango determinado. Configurables con estadísticas de salud, tipos de armas que utilizan
   y tabla de botín que sueltan al ser derrotados.
 
-  \item \textbf{Consumable Items} (Objetos Consumibles): Ítems que el jugador puede recoger y utilizar durante 
-  el juego, como pociones de salud o comida. Se consumen al ser utilizados y pueden otorgar distintos efectos 
+  \item \textbf{Consumable Items} (Objetos Consumibles): Ítems que el jugador puede recoger y utilizar durante
+  el juego, como pociones de salud o comida. Se consumen al ser utilizados y pueden otorgar distintos efectos
   según su configuración.
 
-  \item \textbf{Weapon Items} (Armas): Ítems que el jugador puede recoger y equipar para atacar NPCs agresivos 
-  u otros jugadores. Configurables con tipo de arma (cuerpo a cuerpo o a distancia), daño, alcance, velocidad 
+  \item \textbf{Weapon Items} (Armas): Ítems que el jugador puede recoger y equipar para atacar NPCs agresivos
+  u otros jugadores. Configurables con tipo de arma (cuerpo a cuerpo o a distancia), daño, alcance, velocidad
   de ataque y textura.
 
-  \item \textbf{Loot Tables} (Tablas de Botín): Configuraciones que definen qué ítems y qué cantidad de oro 
-  se obtienen al interactuar con un elemento del juego. Se asignan a enemigos y cofres, donde cada ítem de la 
-  tabla tiene una probabilidad de aparición determinada.
+  \item \textbf{Loot Tables} (Tablas de Botín): Configuraciones que definen qué ítems y qué cantidad de oro
+  se obtienen al interactuar con un elemento del juego. Se asignan a enemigos y cofres, donde cada ítem de la
+  tabla tiene una probabilidad de aparición determinada
 
-  \item \textbf{Dialogs} (Diálogos): Conjuntos de mensajes asignables a NPCs pasivos que habilitan la 
-  interacción con el jugador. Permiten estructurar flujos de conversación y vincular \textit{Quests} a mensajes 
+  \item \textbf{Dialogs} (Diálogos): Conjuntos de mensajes asignables a NPCs pasivos que habilitan la
+  interacción con el jugador. Permiten estructurar flujos de conversación y vincular \textit{Quests} a mensajes
   específicos, posibilitando mostrar distintos diálogos según el progreso del jugador.
 
-  \item \textbf{Quests} (Misiones): Misiones asignables a NPCs que el jugador puede completar para obtener 
-  recompensas. Los objetivos disponibles actualmente incluyen eliminar una cantidad determinada de enemigos o 
+  \item \textbf{Quests} (Misiones): Misiones asignables a NPCs que el jugador puede completar para obtener
+  recompensas. Los objetivos disponibles actualmente incluyen eliminar una cantidad determinada de enemigos o
   interactuar con NPCs específicos. Al completarse, el jugador puede recibir experiencia, oro o ítems especiales.
 
-  \item \textbf{Shop} (Tienda): Configuración asignable a estructuras que habilita la compra de ítems al 
-  interactuar con ellas. Soporta dos tipos de productos: ítems consumibles y armas, adquiribles con oro 
+  \item \textbf{Shop} (Tienda): Configuración asignable a estructuras que habilita la compra de ítems al
+  interactuar con ellas. Soporta dos tipos de productos: ítems consumibles y armas, adquiribles con oro
   obtenido durante el juego, y cosméticos, adquiribles con gemas.
 
-  \item \textbf{Cosmetics} (Cosméticos): Objetos de personalización estética como ropa, accesorios o skins 
-  que no afectan la jugabilidad. Se adquieren con gemas, una moneda premium obtenida con dinero real, y 
+  \item \textbf{Cosmetics} (Cosméticos): Objetos de personalización estética como ropa, accesorios o skins
+  que no afectan la jugabilidad. Se adquieren con gemas, una moneda premium obtenida con dinero real, y
   pueden configurarse en tiendas con distintos precios y cantidades disponibles.
 \end{itemize}
 
 \subsubsection{Gestión de Mundos}
 
-El editor cuenta con un sistema de guardado y apertura de mundos similar al de otros programas de edición, 
+El editor cuenta con un sistema de guardado y apertura de mundos similar al de otros programas de edición,
 permitiendo retomar la edición en distintas sesiones de trabajo.
 
-Los mundos se persisten localmente utilizando el \textit{Application.persistentDataPath} de Unity, una ruta 
-del sistema de archivos gestionada por el motor que garantiza permisos de escritura en todas las plataformas 
-soportadas. Cada mundo se almacena como un directorio independiente con el nombre del mundo, con la 
+Los mundos se persisten localmente utilizando el \textit{Application.persistentDataPath} de Unity, una ruta
+del sistema de archivos gestionada por el motor que garantiza permisos de escritura en todas las plataformas
+soportadas. Cada mundo se almacena como un directorio independiente con el nombre del mundo, con la
 siguiente estructura:
 
 \begin{verbatim}
@@ -135,6 +136,35 @@ siguiente estructura:
   Se genera un archivo por cada zona que compone el mundo.
 \end{itemize}
 
+\subsection{Personalización del Mundo}
+
+El editor permite a los creadores personalizar la apariencia de cada zona mediante la importación de contenido 
+propio, incluyendo modelos 3D, texturas de ítems, texturas de suelo, skyboxes y cosméticos personalizados 
+para el jugador.
+\vspace{0.25cm}
+Para quienes no deseen importar contenido propio, el editor ofrece la posibilidad de descargar un conjunto 
+de assets predeterminados que incluye modelos 3D para estructuras, enemigos, NPCs, ítems y cosméticos, 
+así como texturas de suelo y cielo para las zonas.
+\vspace{0.25cm}
+La importación de modelos 3D en tiempo de ejecución, funcionalidad no soportada nativamente por Unity, 
+se resolvió mediante la integración de la librería \textit{GLTFast} % TODO(reference)
+, que permite cargar modelos en formato \texttt{.glb} durante la ejecución del editor, facilitando 
+la incorporación de assets personalizados por parte de los creadores de mundos.
+
+\subsubsection{Economía}
+
+El sistema cuenta con paneles de gestion económica destinada a los creadores de mundos, que centraliza 
+el seguimiento de sus mundos publicados. Desde esta sección, el creador puede visualizar el 
+estado de cada mundo publicado, ver la fecha de renovación de su período de suscripción y 
+administrar sus publicaciones.
+\vspace{0.25cm}
+Adicionalmente, existe un panel de ingresos que permite a los creadores recaudar las 
+ganancias generadas en sus mundos. Dichos ingresos provienen de las compras realizadas por jugadores 
+con gemas dentro del mundo, correspondientes a la adquisición de cosméticos disponibles en las tiendas 
+configuradas por el creador.
+
+Mas informacion de esto se encuenta en la sección de \texttt{Economy}, en el apartado de economía. % TODO(reference)
+
 \subsubsection{Gestión de Recursos en Memoria}
 
 La gestión de recursos en memoria se organiza mediante un sistema de managers y repositorios internos. 
@@ -142,21 +172,21 @@ El \textit{DataPersistenceManager} centraliza las operaciones de guardado y carg
 persistencia de cada tipo de dato a un repositorio especializado: \textit{ZonesRepository}, 
 \textit{WorldRepository} y \textit{CreatablesRepository}, entre otros. Cada repositorio encapsula 
 la lógica de serialización y acceso a disco de su dominio correspondiente.
-
+\vspace{0.25cm}
 Para los Placeables, cada objeto colocado en el mundo existe como una instancia rastreada en la jerarquía
 de la escena de Unity. Mediante un sistema de eventos, cada instancia notifica al manager correspondiente
 cuando su estado ha sido modificado, determinando así si debe ser incluida en el próximo ciclo de guardado.
-
+\vspace{0.25cm}
 Los Creatables, al no tener representación física en la escena, son gestionados por un 
 \textit{CreatablesManager} dedicado que mantiene en memoria el conjunto de objetos creables del mundo, 
 permitiendo su consulta, modificación y persistencia de forma centralizada.
-
-Cada Placeable del mundo es un \texttt{MonoBehaviour} que hereda de la clase abstracta genérica 
-\texttt{Placeable<T>}, donde \texttt{T} representa el modelo de datos asociado al objeto, definido 
-en el \textit{Shared Package}. Esta clase base implementa dos interfaces clave: \texttt{IPersistent<ZoneData>}, 
-que obliga a cada Placeable a definir cómo serializa su estado en los datos de la zona mediante 
-\texttt{SaveData}, e \texttt{ILoadable<T>}, que define cómo reconstruye su estado a partir de los 
-datos cargados mediante \texttt{LoadData}.
+\vspace{0.25cm}
+Cada Placeable del mundo es un objeto instanciado y rastreado en la escena del juego, que hereda de la 
+clase abstracta genérica \texttt{Placeable<T>}, donde \texttt{T} representa el modelo de datos asociado 
+al objeto, definido en el \textit{Shared Package}. Esta clase base implementa dos interfaces clave: 
+\texttt{IPersistent<ZoneData>}, que obliga a cada Placeable a definir cómo serializa su estado en los 
+datos de la zona mediante \texttt{SaveData}, e \texttt{ILoadable<T>}, que define cómo reconstruye su 
+estado a partir de los datos cargados mediante \texttt{LoadData}.
 
 Al ser instanciado en la escena, cada Placeable se registra en el sistema mediante el método 
 \texttt{RegisterPlaceable}, que emite un evento (\texttt{ZoneDataRegistryEvent}) capturado por el 
@@ -185,15 +215,5 @@ se inicia una secuencia  de carga hacia el Core Service que sigue el siguiente o
   \item \textbf{Assets de Entorno}: Las texturas de suelo (\textit{ground textures}) y cielos 
   (\textit{skybox textures}) asociadas a cada zona del mundo.
 \end{enumerate}
-
-\subsubsection{Gestión de Recursos}
-
-La gestión eficiente de recursos en términos de almacenamiento y rendimiento se resolvió mediante un sistema de 
-gestión de assets compuesto por múltiples repositorios internos que abstraen la lógica de persistencia y carga.
-
-% TODO(reference): add GLTFast reference
-La importación de modelos 3D en tiempo de ejecución, funcionalidad no soportada nativamente por Unity, se implementó 
-mediante la integración de la librería \textit{GLTFast}, que permite cargar modelos en formato \texttt{.glb} durante 
-la ejecución del editor, facilitando la incorporación de assets personalizados por parte de los creadores de mundos.
 
 
