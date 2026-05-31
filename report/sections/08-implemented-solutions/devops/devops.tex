@@ -150,6 +150,27 @@ de \textbf{IaC}, el cual define la misma por medio de la herramienta \textbf{Ter
 \textit{on-demand} de mundos y zoning servers, y para el \textit{discovery} de servicios de forma dinámica que tiene
 como objetivo que los jugadores puedan establecer una conexión directa con el servidor en el que desean jugar.
 
+\paragraph{Elección del orquestador de servicios}
+
+La elección de \textbf{HashiCorp Nomad} como orquestador de cargas de trabajo respondió tanto a criterios operativos como económicos.
+
+Si bien \textbf{Kubernetes} constituye actualmente el estándar de facto para la orquestación de contenedores, muchas de sus capacidades están orientadas a entornos
+de gran escala y alta complejidad operativa, en el caso de \textit{Feed the Realm}, donde los servidores de juego representan sesiones activas con jugadores conectados
+en tiempo real, se priorizó un modelo de \textit{scheduling} más predecible y controlado.
+Kubernetes puede realizar procesos automáticos de re-balanceo, reprogramación o reemplazo de \textit{pods} cuando detecta cambios en la disponibilidad de recursos del clúster, y
+si bien este comportamiento resulta beneficioso para aplicaciones web sin estado (\textit{stateless}), puede provocar la finalización y recreación 
+de una instancia de servidor de juego durante una partida, desconectando a todos los jugadores conectados a la misma.
+Nomad, por el contrario, adopta una filosofía más simple y conservadora respecto de la reasignación de cargas, permitiendo mantener los procesos ejecutándose 
+en el nodo asignado hasta que exista una razón explícita para migrarlos o reiniciarlos.
+
+Asimismo, desde la perspectiva de costos, Nomad presenta una ventaja significativa al requerir una cantidad considerablemente menor de componentes de control para operar.
+Un clúster básico puede ejecutarse con pocos servicios y un consumo reducido de memoria y CPU, mientras que Kubernetes suele requerir una mayor cantidad de procesos 
+auxiliares y, en entornos administrados como \textit{EKS (Elastic Kubernetes Service)}, implica además costos asociados al plano de control independientemente 
+de la carga real del sistema.
+
+Dado que la infraestructura de \textit{Feed the Realm} busca desplegar servidores bajo demanda y optimizar el uso de recursos disponibles,
+se consideró que Nomad ofrecía una mejor relación entre simplicidad operativa, previsibilidad del comportamiento y costo de mantenimiento, sin sacrificar las capacidades 
+necesarias para el crecimiento futuro del proyecto.
 
 \paragraph{Componentes principales}
 
