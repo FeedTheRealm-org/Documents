@@ -99,9 +99,9 @@ Sin embargo, al tratarse de una aplicación confeccionada en \textif{Unity}, est
 propietario y haciendo uso de una licencia que lo permita.
 Esto impone una serie de trabas al momento de realizar un pipeline de integración y despliegue continuo, no solo por la inexistencia
 de herramientas oficiales para la compilación en un entorno de \textit{'Github actions'} siendo la única herramienta oficial para
-este propósito, una externa al control de versiones utilizado lo que forzaría al equipo a mantener dos controles de 
-versiones (git y \textit{Unity version control}), sino también por la necesidad de obtener y descargar paquetes de dependencias
-(cada uno con su licencia) adentro del entorno de compilación.
+este propósito, una externa al control de versiones utilizado, lo que forzaría al equipo a mantener dos controles de 
+versiones (git y \textit{Unity versión control}), sino también por la necesidad de obtener y descargar paquetes de dependencias
+(cada uno con su licencia) desde dentro del entorno de compilación.
 
 Es por esto que se optó por la compilación local de los ejecutables y su contenerización incluyendo el ejecutable optimizado
 para servidores \textit{Linux} en la imagen de docker, para ser subida a \textit{GHCR (Github container registry)}.
@@ -235,4 +235,29 @@ a su vez el zoning server almacena la información del jugador en la base de dat
 \caption{Diagrama de uso de zone server y sus dependencias \textit{(cliente in-game)}.}
 \end{figure}
 
-\subsubsection{Manejo de secretos y credenciales privadas}
+\subsubsection{Seguridad informática}
+
+Es importante para una aplicación productiva que se tenga presente la importancia de la seguridad informática,
+y que se tomen medidas para proteger los sistemas, datos y usuarios frente a posibles amenazas o ataques.
+
+Los cuidados que se tuvieron en cuenta para el desarrollo de los sistemas asociados a \textit{Feed the Realm} son:
+
+\begin{itemize}
+    \item \textbf{TLS}: Encriptado de las comunicaciones con el servicio web para garantizar la seguridad
+        de los datos en tránsito.
+    \item \textbf{Privilegios mínimos}: Se apunta a crear roles con permisos específicos para cada necesidad,
+        siendo seguro (sin permisos) por defecto. También se mantiene un usuario administrador de AWS (utilizado para operaciones de despliegue) separado del usuario
+        \textit{root} (el cual tiene el método de pago).
+    \item \textbf{Firewall}: Como se mencionó anteriormente, se tiene una definición a modo de \textit{Whitelist} de los puertos que se exponen al público para cada nodo,
+        definiendo solamente los puertos necesarios. Se evita exponer puertos utilizados por servicios como \textit{Nomad} o \textit{Consul}.
+    \item \textbf{Reporte de bugs}: Además de los errores que pueden ocurrir y detectarse a nivel del juego, también se reportan en \textit{github issues}
+        errores de código y lógica detectados que llevan a posibles \textit{exploits} o \textit{cheats}.
+    \item \textbf{Almacenamiento de credenciales}: Las variables no secretas se guardan en texto plano en el repositorio de \textit{IaC}, mientras que
+        las que requieren un manejo cauteloso por ser críticas para las comunicaciones con servicios externos o para firmas internas se suben a través de
+        terraform como \textit{SecureString} a \textit{AWS SSM Parameter Storage}, desde donde se toman para inyectar a los contenedores como variables de entorno.
+        También, como parte de los \textit{Pipelines} ejecutados en cada push a cada repositorio y los \textit{Precommit hooks} se analiza el posible filtrado de credenciales con \textbf{gitleaks}.
+    \item \textbf{Escaneo de imagenes de docker}: Al subir las imágenes de docker al registro de contenedores se escanean las mismas en búsqueda de vulnerabilidades
+        haciendo referencia al paquete que tiene la vulnerabilidad, la severidad y el detalle del \textit{CVE} reportado.
+    \item \textbf{Terraform state}: Se guarda el estado de terraform luego de aplicar cambios en un bucket asegurado con bloqueo de acceso público y cifrado de los datos
+        en tránsito y en reposo.
+\end{itemize}
