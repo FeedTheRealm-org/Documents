@@ -119,6 +119,25 @@ los zoning servers (ftr-server) que se encuentran activos en ese momento.
 
 \subsubsection{Actualización de las aplicaciones 'Cliente'}
 
+En el caso de las aplicaciones 'Cliente', es decir, el editor de mundos y el juego (\textit{front-end}), al igual que con la imagen de docker de los servidores (\textit{ftr-server})
+estas no se compilan en un \textit{Pipeline} de integración continua debido a las limitaciones impuestas por \textit{Unity},
+sino que son compiladas por un miembro del equipo con sus diferentes perfiles de construcción, estos perfiles son:
+
+\begin{itemize}
+    \item Feed the Realm - Game
+    \begin{itemize}
+        \item Windows
+        \item Linux
+    \end{itemize}
+    \item Feed the Realm - World Editor
+    \begin{itemize}
+        \item Windows
+        \item Linux
+    \end{itemize}
+\end{itemize}
+
+Luego de ser compiladas, se comprimen y se realiza un \textit{Release} de la nueva versión a través del sistema \textbf{backoffice} que se abordara en la corresponiente sección.
+
 \subsubsection{Infraestructura}
 
 A continuación se explica el estado actual de la infraestructura cuya especificación y configuración pertenece al repositorio
