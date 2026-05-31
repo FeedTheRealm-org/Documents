@@ -33,6 +33,8 @@ sin necesidad de rediseñar componentes fundamentales.
 
 \subsubsection{CI/CD \& Workflows}
 
+\paragraph{Core-service}
+
 En el caso del backend web 'core-service' se tiene un flujo de trabajo que inicia cuando se efectiviza una acción de \textit{Merge}
 de código desde la rama de desarrollo (\textit{dev}) hacia la rama de despliegue (\textit{main}).
 
@@ -91,6 +93,8 @@ desde \textbf{ECR} y la ejecución el contenedor por medio de \textit{docker run
 \includegraphics[width=0.8\textwidth]{img/08-implemented-solution/devops/deploy-pipeline.jpg}
 \caption{Pipeline de despliegue del contenedor y ejecución en EC2.}
 \end{figure}
+
+\paragraph{Zoning servers o ftr-servers}
 
 Por otro lado, en el caso de los \textir{zoning servers} o \textit{ftr-servers} se tiene un flujo de trabajo que inicia cuando 
 se crea y se sube al repositorio una nueva etiqueta o \texit{tag} de versión con el formato de versionamiento semántico \textbf{vX.Y.Z}.
