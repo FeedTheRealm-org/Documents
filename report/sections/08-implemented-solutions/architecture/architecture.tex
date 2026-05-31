@@ -9,11 +9,15 @@
 
 El sistema sigue una arquitectura orientada a servicios: los clientes de juego y editor de mundos, desarrollados en Unity, 
 se comunican con un único servicio central (Core Service) a través de un API Gateway que centraliza la autenticación, 
-autorización y enrutamiento de solicitudes. El Core Service coordina la comunicación entre los clientes, el clúster de 
-mundos y los sistemas de almacenamiento, y gestiona además el despliegue dinámico de instancias de mundo mediante Nomad. 
+autorización y enrutamiento de solicitudes. 
+\vspace{0.25cm}
+El Core Service coordina la comunicación entre los clientes, el clúster de mundos y los sistemas de almacenamiento, y gestiona además el despliegue dinámico de instancias de mundo mediante Nomad. 
+\vspace{0.25cm}
 Para la administración interna del sistema se desarrolló una aplicación web (Back Office), y como punto de entrada para 
 usuarios finales se cuenta con una Landing Page que brinda información general del proyecto y facilita la descarga del 
-cliente de juego y el editor de mundos. Ambas aplicaciones web se comunican con el sistema a través del API Gateway, 
+cliente de juego y el editor de mundos. 
+\vspace{0.25cm}
+Ambas aplicaciones web se comunican con el sistema a través del API Gateway, 
 siguiendo el mismo patrón de acceso que los clientes Unity. Por último, el monitoreo del sistema se delega a Datadog, 
 que centraliza métricas y logs de los distintos componentes de forma continua.
 \subsubsection{Componentes del sistema}

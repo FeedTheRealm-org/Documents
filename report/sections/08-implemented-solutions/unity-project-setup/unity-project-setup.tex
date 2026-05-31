@@ -14,9 +14,9 @@ de dependencia entre módulos, evitando acoplamientos no deseados.
 
 Ambos proyectos se estructuran en tres módulos: \textit{Core}, \textit{Gameplay} y \textit{User Interface}, 
 cada uno compilado como un assembly independiente. En el caso del proyecto de juego, esta estructura se 
-duplica para el cliente y el servidor, resultando en seis assemblies en total. Esta separación garantiza 
-que la lógica del cliente y la del servidor permanezcan aisladas, evitando dependencias cruzadas entre ambos.
-
+separa en 3 assemblies para el cliente (\textit{Core}, \textit{Gameplay}, \textit{User Interface}) y 
+2 assemblies para el servidor (\textit{Core} y \textit{Gameplay}), ya que el servidor no requiere elementos visuales.
+A continuacion se describen las responsabilidades de cada módulo:
 \begin{itemize}
   \item \textbf{Core}: Contiene la lógica central del editor, incluyendo la gestión de repositorios internos, 
   la comunicación con el Core Service y las definiciones de interfaces compartidas.
