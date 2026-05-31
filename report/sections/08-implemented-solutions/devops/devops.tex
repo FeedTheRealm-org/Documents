@@ -324,8 +324,10 @@ Los cuidados que se tuvieron en cuenta para el desarrollo de los sistemas asocia
         las que requieren un manejo cauteloso por ser críticas para las comunicaciones con servicios externos o para firmas internas se suben a través de
         terraform como \textit{SecureString} a \textit{AWS SSM Parameter Storage}, desde donde se toman para inyectar a los contenedores como variables de entorno.
         También, como parte de los \textit{Pipelines} ejecutados en cada push a cada repositorio y los \textit{Precommit hooks} se analiza el posible filtrado de credenciales con \textbf{gitleaks}.
-    \item \textbf{Escaneo de imagenes de docker}: Al subir las imágenes de docker al registro de contenedores se escanean las mismas en búsqueda de vulnerabilidades
-        haciendo referencia al paquete que tiene la vulnerabilidad, la severidad y el detalle del \textit{CVE} reportado.
+    \item \textbf{Escaneo de vulnerabilidades}: Se realizan controles automáticos para detectar vulnerabilidades tanto en las imágenes de contenedores 
+        como en las dependencias (paquetes)  utilizadas por los proyectos. 
+        Las imágenes de Docker se analizan al ser publicadas en el registro de contenedores, mientras que las dependencias son verificadas mediante \textbf{OSV-Scanner},
+        identificando paquetes afectados, la severidad de las vulnerabilidades y el detalle de los \textit{CVE} reportados.
     \item \textbf{Terraform state}: Se guarda el estado de terraform luego de aplicar cambios en un bucket asegurado con bloqueo de acceso público y cifrado de los datos
         en tránsito y en reposo.
 \end{itemize}
