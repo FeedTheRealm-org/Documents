@@ -1,7 +1,7 @@
 El World Editor es una herramienta de desarrollo destinada a la creación y edición de mundos dentro del juego. 
 Está construido como un cliente de Unity que se comunica con el Core Service a través del API Gateway, siguiendo el mismo 
 patrón de acceso que el cliente de juego.
-
+\vspace{0.25cm}
 El editor permite a los desarrolladores y diseñadores crear nuevos mundos,
 modificar la configuración de zonas existentes, gestionar assets y probar cambios en un entorno controlado antes de su despliegue en producción.
 
@@ -21,14 +21,14 @@ que permanecen estáticos en tiempo de ejecución. Se clasifican en estructuras 
 (\textit{Spawners}) y objetos diversos (\textit{Miscellaneous Objects}).
 \end{itemize}
 
-\subsubsection{Zonas}
+\subsubsection{Zones (Zonas)}
 
 En los juegos MMORPG es habitual distribuir el mundo entre múltiples 
 servidores para poder sostener entornos de gran escala y una alta cantidad de jugadores simultáneos. Para abordar este 
 desafío, cada mundo se divide en zonas independientes, cada una ejecutándose en su propia instancia de servidor dentro 
 del clúster. El estado del jugador, incluyendo su inventario y progresión, se mantiene consistente a través de todas 
 las zonas de un mismo mundo, permitiendo que el jugador transite entre ellas sin perder información.
-
+\vspace{0.25cm}
 Los creadores de mundos pueden crear nuevas zonas dentro del editor, configurando parámetros como la textura
 del terreno, la textura del cielo (Skybox) y también configurar como un jugador transporta de una zona a otra mediante
 Portales (Portals).
@@ -107,8 +107,67 @@ Actualmente se encuentran disponibles los siguientes tipos:
 
 \subsubsection{Gestión de Mundos}
 
-El editor cuenta con un sistema de guardado y apertura de mundos similar al de otros programas de edición. 
-Los mundos se persisten localmente en el equipo del usuario, permitiendo retomar la edición en distintas sesiones de trabajo.
+El editor cuenta con un sistema de guardado y apertura de mundos similar al de otros programas de edición, 
+permitiendo retomar la edición en distintas sesiones de trabajo.
+
+Los mundos se persisten localmente utilizando el \textit{Application.persistentDataPath} de Unity, una ruta 
+del sistema de archivos gestionada por el motor que garantiza permisos de escritura en todas las plataformas 
+soportadas. Cada mundo se almacena como un directorio independiente con el nombre del mundo, con la 
+siguiente estructura:
+
+\begin{verbatim}
+<mundo>/
+├── world.data
+├── creatables.data
+└── zone_1.world
+    zone_2.world
+    ...
+    zone_n.world
+\end{verbatim}
+
+\begin{itemize}
+  \item \texttt{world.data}: Contiene la configuración general del mundo, incluyendo nombre, descripción 
+  e identificador asignado al momento de su publicación.
+  \item \texttt{creatables.data}: Almacena la definición de todos los objetos creables configurados 
+  para el mundo, como NPCs, enemigos, ítems y misiones.
+  \item \texttt{zone\_\{n\}.world}: Representa el estado de una zona independiente, almacenando todos 
+  los Placeables colocados en ella junto con su posición, rotación, escala y propiedades configuradas. 
+  Se genera un archivo por cada zona que compone el mundo.
+\end{itemize}
+
+\subsubsection{Gestión de Recursos en Memoria}
+
+La gestión de recursos en memoria se organiza mediante un sistema de managers y repositorios internos. 
+El \textit{DataPersistenceManager} centraliza las operaciones de guardado y carga, delegando la 
+persistencia de cada tipo de dato a un repositorio especializado: \textit{ZonesRepository}, 
+\textit{WorldRepository} y \textit{CreatablesRepository}, entre otros. Cada repositorio encapsula 
+la lógica de serialización y acceso a disco de su dominio correspondiente.
+
+Para los Placeables, cada objeto colocado en el mundo existe como una instancia rastreada en la jerarquía
+de la escena de Unity. Mediante un sistema de eventos, cada instancia notifica al manager correspondiente
+cuando su estado ha sido modificado, determinando así si debe ser incluida en el próximo ciclo de guardado.
+
+Los Creatables, al no tener representación física en la escena, son gestionados por un 
+\textit{CreatablesManager} dedicado que mantiene en memoria el conjunto de objetos creables del mundo, 
+permitiendo su consulta, modificación y persistencia de forma centralizada.
+
+Cada Placeable del mundo es un \texttt{MonoBehaviour} que hereda de la clase abstracta genérica 
+\texttt{Placeable<T>}, donde \texttt{T} representa el modelo de datos asociado al objeto, definido 
+en el \textit{Shared Package}. Esta clase base implementa dos interfaces clave: \texttt{IPersistent<ZoneData>}, 
+que obliga a cada Placeable a definir cómo serializa su estado en los datos de la zona mediante 
+\texttt{SaveData}, e \texttt{ILoadable<T>}, que define cómo reconstruye su estado a partir de los 
+datos cargados mediante \texttt{LoadData}.
+
+Al ser instanciado en la escena, cada Placeable se registra en el sistema mediante el método 
+\texttt{RegisterPlaceable}, que emite un evento (\texttt{ZoneDataRegistryEvent}) capturado por el 
+\textit{DataPersistenceManager}. De esta forma, el manager mantiene un registro actualizado de todos 
+los objetos presentes en la zona sin necesidad de búsquedas en la jerarquía de la escena, delegando 
+la lógica de serialización a cada objeto.
+
+Como ejemplo concreto, \texttt{StructureObject} extiende \texttt{Placeable<StructureData>} y define 
+en \texttt{SaveData} cómo persiste su posición, rotación, escala y configuración de colisionadores 
+en el \texttt{ZoneData} de la zona activa, mientras que \texttt{LoadData} reconstruye el objeto en 
+la escena a partir de los datos almacenados.
 
 \subsubsection{Publicación de Mundos}
 
