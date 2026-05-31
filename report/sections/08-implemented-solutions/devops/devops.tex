@@ -146,7 +146,8 @@ de \textbf{IaC}, el cual define la misma por medio de la herramienta \textbf{Ter
 \textit{on-demand} de mundos y zoning servers, y para el \textit{discovery} de servicios de forma dinámica que tiene
 como objetivo que los jugadores puedan establecer una conexión directa con el servidor en el que desean jugar.
 
-\vspace{0.25cm}
+
+\paragraph{Componentes principales}
 
 Las partes principales de la infraestructura son:
 \begin{itemize}
@@ -183,6 +184,8 @@ servicios por nombre. Tanto esto como el flujo de despliegue de nuevos 'zoning s
 \includegraphics[width=1\textwidth]{img/08-implemented-solution/devops/deployment.jpg}
 \caption{Vista general de la infraestructura desplegada.}
 \end{figure}
+
+\paragraph{Orquestación, Descubrimiento y Comunicación de Servicios}
 
 Los clientes interactuan con los servicios desplegados de dos formas principales:
 \begin{enumerate}
@@ -257,6 +260,23 @@ a su vez el zoning server almacena la información del jugador en la base de dat
 \includegraphics[width=0.65\textwidth]{img/08-implemented-solution/devops/game-robust.jpg}
 \caption{Diagrama de uso de zone server y sus dependencias \textit{(cliente in-game)}.}
 \end{figure}
+
+\paragraph{Configuración de DNS}
+
+La resolución de nombres del sistema se implementó mediante \textit{Amazon Route 53}, definiendo tanto una zona pública para el dominio \textbf{feedtherealm.world}
+como una zona privada interna utilizada exclusivamente por los servicios desplegados dentro de la VPC (\textit{virtual private cloud}).
+
+En la zona pública se configuraron registros que permiten acceder a los distintos componentes de la plataforma,
+incluyendo el dominio raíz (apex), los subdominios \textbf{www}, \textbf{admin} y \textbf{core}, además de un conjunto dinámico de registros 
+(\textbf{s1}, \textbf{s2}, \dots) asociados a las direcciones IP públicas de los nodos clientes de Nomad que pueden alojar servidores de juego.
+Asimismo, se añadieron los registros TXT y CNAME requeridos para la autenticación y validación del servicio de correo electrónico utilizado por 
+la plataforma, los cuales se envian desde \textbf{'noreply@feedtherealm.world'}.
+
+Por otro lado, la zona privada \textbf{internal} proporciona un mecanismo de resolución de nombres para la comunicación entre servicios dentro de la infraestructura.
+En ella se registran direcciones internas para componentes como \textbf{nomad.internal}, \textbf{consul.internal} y \textbf{core-service.internal},
+evitando la dependencia de direcciones IP estáticas y simplificando la configuración de los servicios.
+Esta separación entre DNS público e interno permite exponer únicamente los componentes necesarios hacia Internet mientras que la comunicación entre servicios permanece 
+aislada dentro de la red privada.
 
 \subsubsection{Seguridad informática}
 
