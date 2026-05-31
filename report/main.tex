@@ -54,6 +54,10 @@
 % Line spacing
 \onehalfspacing % 1.5 interline
 
+% Set section numbering and TOC depth to 5
+\setcounter{secnumdepth}{5}
+\setcounter{tocdepth}{5}
+
 % Section title formatting
 \titleformat{\section}
   {\bfseries\fontsize{16pt}{16pt}\selectfont} % Title font
@@ -63,6 +67,11 @@
 \titleformat{\subsection}
   {\bfseries\fontsize{14pt}{14pt}\selectfont} % Subtitle font
   {\thesubsection}{1em}{}
+\titlespacing*{\subsection}{0pt}{14pt plus 2pt minus 2pt}{10pt plus 2pt minus 2pt} % No space before/after
+
+\titleformat{\paragraph}
+{\normalfont\normalsize\bfseries}
+{\theparagraph}{1em}{}
 \titlespacing*{\subsection}{0pt}{14pt plus 2pt minus 2pt}{10pt plus 2pt minus 2pt} % No space before/after
 
 % horizontal rule
