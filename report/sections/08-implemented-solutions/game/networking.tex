@@ -1,23 +1,40 @@
-En esta sección, se resume cómo se comunican las partes principales del proyecto entre cliente y servidor, tomando como hilo conductor el recorrido de una acción del jugador desde la captura de \textit{input}, la acción que se envía al servidor, y luego procesada, la respuesta impacta como reacción visual en el cliente.
+\subsubsection{Networking}
+
+En esta sección, se resume cómo se comunican las partes principales del proyecto entre cliente y servidor, tomando 
+como hilo conductor el recorrido de una acción del jugador desde la captura de \textit{input}, la acción que se envía
+ al servidor, y luego procesada, la respuesta impacta como reacción visual en el cliente.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{img/08-implemented-solution/networking/networking.jpg}
+\caption{Visión general del flujo de comunicación entre cliente y servidor.}
+\end{figure}
 
 El flujo está dividido en dos direcciones:
 
 \begin{itemize}
-    \item \textbf{Cliente → Servidor}: el jugador ejecuta una acción, el cliente la convierte en un \textit{command}, un adaptador de red la envía al servidor y el \textit{GameLoop} la procesa de forma autoritativa.
-    \item \textbf{Servidor → Cliente}: el servidor valida y resuelve la lógica, luego devuelve efectos, cambios de estado o \textit{feedback} visual mediante \textit{ServerEvents} o \textit{SyncVars}.
+    \item \textbf{Cliente → Servidor}: el jugador ejecuta una acción, el cliente la convierte en un \textit{command},
+     un adaptador de red la envía al servidor y el \textit{GameLoop} la procesa de forma autoritativa.
+    \item \textbf{Servidor → Cliente}: el servidor valida y resuelve la lógica, luego devuelve efectos, cambios de 
+    estado o \textit{feedback} visual mediante \textit{ServerEvents} o \textit{SyncVars}.
 \end{itemize}
 
-La idea clave es que el servidor es la autoridad final sobre el estado del mundo. El cliente solo propone acciones y muestra el resultado.
+La idea clave es que el servidor es la autoridad final sobre el estado del mundo. El cliente solo propone acciones 
+y muestra el resultado.
 
-\subsubsection{Camino de ida: cliente → servidor}
+\paragraph{Camino de ida: cliente → servidor}
 
 \textbf{\underline{Captura del \textit{input}}}
 
 \vspace{0.15cm}
 
-El punto de entrada es captado en un lector de entradas, que recibe los eventos del sistema de \textit{input} de \texttt{Unity}. Desde ahí se disparan eventos de alto nivel como movimiento, inventario, interacción, uso de equipamento, etc.
+El punto de entrada es captado en un lector de entradas, que recibe los eventos del sistema de \textit{input} de
+ \texttt{Unity}. Desde ahí se disparan eventos de alto nivel como movimiento, inventario, interacción, uso de 
+ equipamento, etc.
 
-Por ejemplo se detecta una cambio en el inventario o una acción de movimiento. Ese acción llega a un '\textit{controller}', donde cada funcionalidad principal se separa en distintos de ellos, por ejemplo \texttt{InventoryController}, \texttt{InteractController} o \texttt{MovementController}.
+Por ejemplo se detecta una cambio en el inventario o una acción de movimiento. Ese acción llega a un '\textit{controller}',
+ donde cada funcionalidad principal se separa en distintos de ellos, por ejemplo \texttt{InventoryController},
+  \texttt{InteractController} o \texttt{MovementController}.
 
 \vspace{0.20cm}
 
@@ -25,29 +42,37 @@ Por ejemplo se detecta una cambio en el inventario o una acción de movimiento. 
 
 \vspace{0.15cm}
 
-Cada \textit{controller} traduce la intención del jugador a un evento de red, creando un tipo de \textit{command}, dependiendo de la interacción.
+Cada \textit{controller} traduce la intención del jugador a un evento de red, creando un tipo de \textit{command}, 
+dependiendo de la interacción.
 
-Si es una interacción compleja que requiere enviar información que el servidor puede no disponer o una petición específica se envía de tipo \textit{transaction}. Si la interacción es relacionada a interacciones directas con las lógicas físicas y motrices dentro del juego, entonces se envía bajo un \textit{command} de tipo \textit{action}.
+Si es una interacción compleja que requiere enviar información que el servidor puede no disponer o una petición 
+específica se envía de tipo \textit{transaction}. Si la interacción es relacionada a interacciones directas con las lógicas físicas y motrices dentro del juego, entonces se envía bajo un \textit{command} de tipo \textit{action}.
 
-Por ejemplo, una interacción dentro del inventario del jugador crea un \textit{command} de tipo transacción mientras que simplemente moverse envía un \textit{command} de tipo \textit{action}.
+Por ejemplo, una interacción dentro del inventario del jugador crea un \textit{command} de tipo transacción mientras 
+que simplemente moverse envía un \textit{command} de tipo \textit{action}.
 
-Se tomó esta decisión para optimizar la comunicación, ya que se minimiza el tamaño del paquete en acciones más simples pero que son de mucha frecuencia y las interacciones más costosas pero de menor frecuencia permitimos enviar en el contenido del mensaje lo justo y necesario.
+Se tomó esta decisión para optimizar la comunicación, ya que se minimiza el tamaño del paquete en acciones más simples 
+pero que son de mucha frecuencia y las interacciones más costosas pero de menor frecuencia permitimos enviar en el
+ contenido del mensaje lo justo y necesario.
 
 La estructura de los dos \textit{DTOs} utilizados son:
 
 \begin{itemize}
     \item \texttt{ActionCommandDTO}: contiene \textit{Type}, \textit{NetId} y \textit{Direction}.
-    \item \texttt{TransactionCommandDTO}: contiene \textit{Type}, \textit{NetId}, \textit{Id} y \textit{content} serializado.
+    \item \texttt{TransactionCommandDTO}: contiene \textit{Type}, \textit{NetId}, \textit{Id} y \textit{content} 
+    serializado.
 \end{itemize}
 
 \textbf{\underline{El adaptador de red envía el \textit{command}}}
 
 \vspace{0.25cm}
 
-El \textit{controller} llama al adaptador de red, contenido en el mismo objeto que necesita enviar la información. Ese adaptador es el puente de red:
+El \textit{controller} llama al adaptador de red, contenido en el mismo objeto que necesita enviar la información. 
+Ese adaptador es el puente de red:
 \begin{itemize}
     \item En cliente, empaqueta el \textit{command} y lo manda por \texttt{Mirror}.
-    \item El adaptador completa la información necesaria, como el \texttt{NetId} perteneciente a la entidad local, y levanta el evento interno correspondiente.
+    \item El adaptador completa la información necesaria, como el \texttt{NetId} perteneciente a la entidad local, y 
+    levanta el evento interno correspondiente.
 \end{itemize}
 
 \vspace{0.20cm}
@@ -56,7 +81,8 @@ El \textit{controller} llama al adaptador de red, contenido en el mismo objeto q
 
 \vspace{0.15cm}
 
-Una vez ya en el servidor, \texttt{NetworkService} se suscribe a esos eventos y actúa como puente entre red y lógica de juego. Su trabajo es:
+Una vez ya en el servidor, \texttt{NetworkService} se suscribe a esos eventos y actúa como puente entre red y lógica 
+de juego. Su trabajo es:
 \begin{itemize}
     \item Escuchar los \textit{commands} recibidos desde el adaptador de red.
     \item Convertir el \textit{DTO} en un \textit{command} de servidor concreto usando un \textit{command factory}.
@@ -69,12 +95,14 @@ Una vez ya en el servidor, \texttt{NetworkService} se suscribe a esos eventos y 
 
 \vspace{0.15cm}
 
-Luego de recibir el \textit{command} en el \texttt{NetworkService}, el \textit{factory} decide qué clase instanciar según el tipo del \textit{DTO}. Ejemplos:
+Luego de recibir el \textit{command} en el \texttt{NetworkService}, el \textit{factory} decide qué clase instanciar 
+según el tipo del \textit{DTO}. Ejemplos:
 \begin{itemize}
     \item \texttt{ActionType.Move} → \texttt{MoveCommand}
     \item \texttt{TransactionType.EquipItem} → \texttt{EquipItemCommand}
 \end{itemize}
-Cuando el \textit{command} trae \textit{payload} binario en \textit{content}, el \textit{factory} lo deserializa con \textit{protobuf} antes de construir la instancia concreta.
+Cuando el \textit{command} trae \textit{payload} binario en \textit{content}, el \textit{factory} lo deserializa con 
+\textit{protobuf} antes de construir la instancia concreta.
 
 \vspace{0.25cm}
 
@@ -89,7 +117,8 @@ Cuando el \textit{command} trae \textit{payload} binario en \textit{content}, el
     \item \texttt{Entities}: registro de entidades \textit{server-side} indexadas por \texttt{NetId}.
     \item \texttt{LatestState}: almacenamiento de estado más reciente.
 \end{itemize}
-En este punto, el \textit{command} todavía no se ejecuta. Solo queda encolado para que el \textit{tick} del servidor lo procese en orden.
+En este punto, el \textit{command} todavía no se ejecuta. Solo queda encolado para que el \textit{tick} del servidor 
+lo procese en orden.
 
 \vspace{0.25cm}
 
@@ -109,15 +138,19 @@ Ya estando en el \textit{gameloop}, aquí sí se comienza a procesar \textit{com
 Cuando encuentra la entidad, se le aplica el \textit{command}. Esto implicaría el siguiente flujo:
 \begin{itemize}
     \item El \textit{command} no conoce la lógica concreta de la entidad.
-    \item Solo sabe cómo aplicar su intención sobre un elemento dentro de una entidad, que implemente la interfaz \texttt{ICommandable}.
-    \item Por lo tanto la entidad expone un \texttt{Commandable}, que normalmente hereda de un \textit{command handler} concreto de cada tipo de entidad, y luego cada uno tiene su propio comportamiento específico ante un \textit{command}.
+    \item Solo sabe cómo aplicar su intención sobre un elemento dentro de una entidad, que implemente la interfaz 
+    \texttt{ICommandable}.
+    \item Por lo tanto la entidad expone un \texttt{Commandable}, que normalmente hereda de un \textit{command handler} 
+    concreto de cada tipo de entidad, y luego cada uno tiene su propio comportamiento específico ante un \textit{command}.
 \end{itemize}
 
 \textbf{\underline{El \textit{command handler} delega en \textit{systems}}}
 
 \vspace{0.15cm}
 
-Como se dijo anteriormente, el \textit{command handler} define la interfaz de acciones de \textit{gameplay} del lado servidor. Pero se desacopla al mismo tiempo de las funcionalidades puntuales, y las delega en \textit{systems} especializados y puntuales para cada tipo de lógica de juego, como por ejemplo:
+Como se dijo anteriormente, el \textit{command handler} define la interfaz de acciones de \textit{gameplay} del lado 
+servidor. Pero se desacopla al mismo tiempo de las funcionalidades puntuales, y las delega en \textit{systems} 
+especializados y puntuales para cada tipo de lógica de juego, como por ejemplo:
 \begin{itemize}
     \item \texttt{MovementSystem}
     \item \texttt{DashSystem}
@@ -137,11 +170,12 @@ Estos contienen la lógica específica de cada funcionalidad, por ejemplo:
     \item aplicar daño, \textit{stamina} o \textit{stamina recovery}
     \item procesar compras y cambios de inventario
 \end{itemize}
-En esta arquitectura, el \textit{command} dice “qué quiere hacer el jugador” y el \textit{system} resuelve “si se puede hacer y qué estado cambia”.
+En esta arquitectura, el \textit{command} dice “qué quiere hacer el jugador” y el \textit{system} resuelve “si se 
+puede hacer y qué estado cambia”.
 
 \vspace{0.25cm}
 
-\subsubsection{Camino de vuelta: servidor → cliente}
+\paragraph{Camino de vuelta: servidor → cliente}
 
 Después de procesar \textit{commands}, el servidor genera salida hacia el cliente. Esa salida suele ser de dos tipos:
 \begin{itemize}
@@ -153,19 +187,33 @@ Después de procesar \textit{commands}, el servidor genera salida hacia el clien
 
 \vspace{0.15cm}
 
-Existe una clase base de evento del lado del servidor, y representa una respuesta del servidor que debe serializarse y enviarse a uno o varios clientes, dependiendo si corresponde a un evento que afecta por ejemplo visualmente a todos los usuarios que estén conectados y entidades, o si es un cambio de estado que solo afecta al usuario.
+Existe una clase base de evento del lado del servidor, y representa una respuesta del servidor que debe serializarse 
+y enviarse a uno o varios clientes, dependiendo si corresponde a un evento que afecta por ejemplo visualmente a todos 
+los usuarios que estén conectados y entidades, o si es un cambio de estado que solo afecta al usuario.
 
-Se crean en tal caso eventos específicos para cada acción esperada a enviar desde el servidor al cliente, donde optimiza lo mayor posible la comunicación, ya que cada mínima acción en el cliente tiene que ser validada en el servidor y comunicada por este medio de nuevo él.
+Se crean en tal caso eventos específicos para cada acción esperada a enviar desde el servidor al cliente, donde 
+optimiza lo mayor posible la comunicación, ya que cada mínima acción en el cliente tiene que ser validada en el 
+servidor y comunicada por este medio de nuevo él.
 
-Por lo tanto pueden existir eventos conformados por un \textit{DTO}, solo por su tipo, sin ningún contenido de información, con fines de confirmación o rechazo ante acciones del usuario, o eventos con su tipo y contenido (\textit{payload} binario serializado), cuando se requiera enviar datos debido a que hay cambios con lógica aplicada por el servidor.
+Por lo tanto pueden existir eventos conformados por un \textit{DTO}, solo por su tipo, sin ningún contenido de 
+información, con fines de confirmación o rechazo ante acciones del usuario, o eventos con su tipo y contenido 
+(\textit{payload} binario serializado), cuando se requiera enviar datos debido a que hay cambios con lógica 
+aplicada por el servidor.
 
-Con respecto a la serialización, los eventos con contenido usan mensajes \textit{protobuf} como \textit{payload}. El cliente al recibir mensajes con \textit{content}, lo deserializa con el \textit{parser} correspondiente.
+Con respecto a la serialización, los eventos con contenido usan mensajes \textit{protobuf} como \textit{payload}. 
+El cliente al recibir mensajes con \textit{content}, lo deserializa con el \textit{parser} correspondiente.
 
-Luego el \texttt{GameLoop} acumula eventos en un coleccionador de eventos y al final del \textit{tick} los mueve a una cola de eventos, también administrada por el monitor principal. Al momento de hacer \textit{flush}, cuando el \textit{tick} lo indica, \texttt{NetworkService} saca eventos de su cola, busca la entidad por \texttt{NetId} y despacha el evento a todos o a un solo cliente.
+Luego el \texttt{GameLoop} acumula eventos en un coleccionador de eventos y al final del \textit{tick} los mueve 
+a una cola de eventos, también administrada por el monitor principal. Al momento de hacer \textit{flush}, cuando 
+el \textit{tick} lo indica, \texttt{NetworkService} saca eventos de su cola, busca la entidad por \texttt{NetId} 
+y despacha el evento a todos o a un solo cliente.
 
 \vspace{0.20cm}
 
-Una vez recibido en el cliente, el adaptador de red de la entidad recibe el \textit{DTO} del evento del servidor mediante \textit{RPC} y lo expone mediante una invocación de eventos del lado del cliente. Luego un enrutador de eventos se suscribe a ese evento e inspecciona tipo de evento recibido, deserializa el contenido y dispara eventos de dominio más específicos para UI, sonido o animación. Ejemplos:
+Una vez recibido en el cliente, el adaptador de red de la entidad recibe el \textit{DTO} del evento del servidor 
+mediante \textit{RPC} y lo expone mediante una invocación de eventos del lado del cliente. Luego un enrutador de 
+eventos se suscribe a ese evento e inspecciona tipo de evento recibido, deserializa el contenido y dispara eventos 
+de dominio más específicos para UI, sonido o animación. Ejemplos:
 \begin{itemize}
     \item \texttt{ServerEventType.QuestProgressEvent} → \texttt{OnQuestProgressEvent}
     \item \texttt{ServerEventType.ChatMessageBroadcastEvent} → \texttt{OnChatMessageBroadcastEvent}
@@ -176,7 +224,8 @@ Una vez recibido en el cliente, el adaptador de red de la entidad recibe el \tex
 \textbf{\underline{\textit{SyncVars}: sincronización de estado}}
 
 \vspace{0.15cm}
-Además de eventos puntuales, el proyecto usa \texttt{SyncVar} y \texttt{SyncList} para mantener estado persistente sincronizado.
+Además de eventos puntuales, el proyecto usa \texttt{SyncVar} y \texttt{SyncList} para mantener estado persistente 
+sincronizado.
 
 \vspace{0.15cm}
 
@@ -202,16 +251,18 @@ En resumen, la diferencia clave entre \texttt{SyncVars} y \texttt{ServerEvents} 
 
 \begin{itemize}
     \item \textbf{SyncVars}: ideales para estado continuo y actualizaciones de valores.
-    \item \textbf{ServerEvents}: ideales para sucesos concretos y temporales, como reproducir un sonido o mostrar un error.
+    \item \textbf{ServerEvents}: ideales para sucesos concretos y temporales, como reproducir un sonido o 
+    mostrar un error.
 \end{itemize}
 En general, el estado “real” vive en el servidor y se replica; los eventos son la capa de \textit{feedback}.
 
-\subsubsection{Ejemplo resumido: inventario}
+\paragraph{Ejemplo resumido: inventario}
 
 Un caso completo ayuda a ver el patrón:
 \begin{enumerate}
     \item \texttt{PlayerInputReader} detecta la acción del jugador.
-    \item \texttt{InventoryController} crea un \texttt{TransactionCommandDTO} de tipo \texttt{MoveItem}, \texttt{DropItem} o \texttt{EquipItem}.
+    \item \texttt{InventoryController} crea un \texttt{TransactionCommandDTO} de tipo \texttt{MoveItem}, 
+    \texttt{DropItem} o \texttt{EquipItem}.
     \item \texttt{NetworkAdapter.DispatchTransaction(...)} envía el comando al servidor.
     \item En servidor, \texttt{CmdTransactionRequest} levanta \texttt{ReceivedTransactionCommandEvent}.
     \item \texttt{NetworkService} lo convierte con \texttt{CommandsFactory} y lo encola en \texttt{WorldMonitor.Commands}.
@@ -222,7 +273,7 @@ Un caso completo ayuda a ver el patrón:
     \item \texttt{NetworkEventRouter} los deserializa y el cliente muestra UI, sonidos o animaciones.
 \end{enumerate}
 
-\subsubsection{Idea central de la arquitectura}
+\paragraph{Idea central de la arquitectura}
 
 La separación principal es esta:
 \begin{itemize}
@@ -240,18 +291,33 @@ Ese diseño evita que el cliente decida la lógica final y mantiene el servidor 
 
 \vspace{0.15cm}
 
-Sobre decisiones de diseño, con respecto a la decisión de utilizar \textit{protobuf}, su utilización a la hora de serialización y deserialización reduce el ancho de banda, la latencia, el uso de memoria y tráfico total.
+Sobre decisiones de diseño, con respecto a la decisión de utilizar \textit{protobuf}, su utilización a la hora 
+de serialización y deserialización reduce el ancho de banda, la latencia, el uso de memoria y tráfico total.
 
-Esto es primordial para el objetivo del proyecto que es obtener una gran cantidad de usuarios y entidades presentes concurrentemente en un mismo servidor y que él tenga un buen rendimiento y capacidad para soportar dicha carga y el cliente un buen rendimiento para que no afecte la jugabilidad.
+Esto es primordial para el objetivo del proyecto que es obtener una gran cantidad de usuarios y entidades 
+presentes concurrentemente en un mismo servidor y que él tenga un buen rendimiento y capacidad para soportar 
+dicha carga y el cliente un buen rendimiento para que no afecte la jugabilidad.
 
-Además otro aspecto es que dentro del protocolo que comparten ambos lados cliente-servidor se evite errores de \textit{parsing} y al momento de cambios haya un solo punto de modificaciones que afecte todo el sistema.
-
-\vspace{0.5cm}
-
-Se consideró entre otras herramientas a \texttt{Mirror} ya que era la mejor opción encontrada, según sugerencias y recomendaciones a comparación de otras herramientas presentes en \texttt{Unity} para \textit{networking}, para el caso de nuestro proyecto que implica una gran cantidad de usuarios conectados en un mismo entorno y que sea capaz de soportar la comunicación y sincronización en el servidor.
-
-Además, está diseñado alrededor de \textit{server authority} que es un factor principal considerado en nuestro diseño, ya que en juegos orientados a este género es importante que tenga seguridad ante adulteraciones de datos, manipulación de estados y otros \textit{hacks}, más aún que se maneja un modelo económico donde los usuarios pagan por contenido, por lo tanto el sistema debería ser robusto y seguro.
+Además otro aspecto es que dentro del protocolo que comparten ambos lados cliente-servidor se evite errores de 
+\textit{parsing} y al momento de cambios haya un solo punto de modificaciones que afecte todo el sistema.
 
 \vspace{0.5cm}
 
-Se explica las migraciones realizadas, tanto en la herramienta utilizada como arquitectura optada al principio y final del proyecto, en el apéndice (TODO:(reference) ver de hacer apéndice).
+Se consideró entre otras herramientas a \texttt{Mirror} ya que era la mejor opción encontrada, según sugerencias 
+y recomendaciones a comparación de otras herramientas presentes en \texttt{Unity} para \textit{networking}, 
+para el caso de nuestro proyecto que implica una gran cantidad de usuarios conectados en un mismo entorno y 
+que sea capaz de soportar la comunicación y sincronización en el servidor.
+
+Además, está diseñado alrededor de \textit{server authority} que es un factor principal considerado en nuestro 
+diseño, ya que en juegos orientados a este género es importante que tenga seguridad ante adulteraciones de datos, 
+manipulación de estados y otros \textit{hacks}, más aún que se maneja un modelo económico donde los usuarios pagan 
+por contenido, por lo tanto el sistema debería ser robusto y seguro. PONER EJEMPLOs como que el cliente no puede 
+decidir su posición, salud o ítems equipados, sino que el servidor es quien tiene la última palabra sobre eso. 
+De otra forma un cliente malicioso podría modificar su posición para teletransportarse, o su salud para ser 
+invencible, o sus ítems para tener ventajas injustas, y lo mas importante, podría afectar la economía del juego 
+si el cliente pudiera manipular su \texttt{currency} o transacciones.
+
+\vspace{0.5cm}
+
+Se explica las migraciones realizadas, tanto en la herramienta utilizada como arquitectura optada al principio y 
+final del proyecto, en el apéndice (TODO:(reference) ver de hacer apéndice).
