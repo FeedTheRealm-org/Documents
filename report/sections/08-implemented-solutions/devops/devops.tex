@@ -168,6 +168,9 @@ Las partes principales de la infraestructura son:
         y mínimos para los mismos.
     \item \textbf{Monitoreo - Datadog}: \textit{Deamonset} o \textit{Agente} de Datadog para recolección de métricas de uso de recursos,
         lanzados al inicio de cada nodo.
+    \item \textbf{DNS - Route53}: Configuración de registros DNS para el dominio (apex) y los subdominios utilizados.
+    \item \textbf{Páginas web - Vercel}: Despliegue de \textit{backoffice} y \textit{landing page} en Vercel, a través de \texit{pipelines}
+        ejecutados cuando se realiza un \textit{push} a la rama principal de cada repositorio.
 \end{itemize}
 
 En la siguiente figura se puede apreciar algunos de los componentes mencionados, como están separados a nivel físico, qué servicios alojan y como se conectan entre sí.
