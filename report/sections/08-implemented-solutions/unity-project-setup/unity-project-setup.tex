@@ -15,11 +15,7 @@ de dependencia entre módulos, evitando acoplamientos no deseados.
 Ambos proyectos se estructuran en tres módulos: \textit{Core}, \textit{Gameplay} y \textit{User Interface}, 
 cada uno compilado como un assembly independiente. En el caso del proyecto de juego, esta estructura se 
 separa en 3 assemblies para el cliente (\textit{Core}, \textit{Gameplay}, \textit{User Interface}) y 
-2 assemblies para el servidor (\textit{Core} y \textit{Gameplay}), ya que el servidor no requiere elementos visuales.
-
-A su vez, de los modulos \textit{Core} y \textit{Gameplay} se encuentra en cada uno de ellos un assembly de \texttt{Bot}
-que es utilizado para desplegar bots en un entorno de test de estrés, y así poder probar el rendimiento del sistema 
-bajo condiciones de alta carga, simulando múltiples jugadores simultáneos realizando acciones en un mismo servidor.
+2 assemblies para el servidor (\textit{Core} y \textit{Gameplay}), ya que el servidor no requiere elementos visuales
 
 Esta separación garantiza que la lógica del cliente y la del servidor permanezcan aisladas, evitando dependencias 
 cruzadas entre ambos.
@@ -34,13 +30,20 @@ A continuacion se describen las responsabilidades de cada módulo:
 
 El código contenido dentro de estos módulos, pueden contener de otras capas pero solo de forma incremental, es decir:
 
+\begin{center}
 $Core \rightarrow Gameplay \rightarrow UI.$
+\end{center}
 
-Por ejemplo UI puede tener código de Core y de Gameplay, pero Gameplay no de UI, o Core tampoco tener de Gameplay o UI.
+El proyecto de \textit{Game} cuenta además con dos módulos adicionales exclusivos de ese contexto:
 
-Establecido esto, la estructura modular establece una clara separación de responsabilidades, facilitando el mantenimiento y 
-la escalabilidad de los proyectos. Este patrón de organización se replicó tanto como en el cliente y el servidor del 
-juego, como en el cliente del editor de mundos, manteniendo una arquitectura coherente en todo el sistema.
+\begin{itemize}
+  \item \textbf{Common}: módulo compartido entre cliente y servidor, compuesto por los assemblies 
+  \textit{Common.Core} y \textit{Common.Gameplay}. Centraliza el código que debe ser idéntico en ambos 
+  lados, como utilidades, contratos, canales de eventos y otras definiciones compartidas.
+  \item \textbf{Bot}: presente tanto en \textit{Core} como en \textit{Gameplay}, este módulo permite 
+  desplegar bots en entornos de prueba de estrés, simulando múltiples jugadores realizando acciones 
+  simultáneas en un mismo servidor para evaluar el rendimiento del sistema bajo alta carga.
+\end{itemize}
 
 \subsubsection{Injección de dependencias con VContainer}
 

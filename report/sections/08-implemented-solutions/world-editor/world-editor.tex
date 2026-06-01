@@ -1,21 +1,19 @@
 El World Editor es una herramienta de desarrollo destinada a la creación y edición de mundos dentro del juego. 
 Está construido como un cliente de Unity que se comunica con el Core Service a través del API Gateway, siguiendo el mismo 
-patrón de acceso que el cliente de juego.
-\vspace{0.25cm}
-El editor permite a los desarrolladores y diseñadores crear nuevos mundos,
+patrón de acceso que el cliente de juego. El editor permite a los desarrolladores y diseñadores crear nuevos mundos,
 modificar la configuración de zonas existentes, gestionar assets y probar cambios en un entorno controlado antes de su despliegue en producción.
 
 \subsubsection{Estructura de un Mundo}
 
 Un mundo se compone de tres elementos principales.
 \begin{itemize}
-  \item \textbf{Zones} (Zonas): Subdivisiones de un mundo, cada una alojada en una instancia de servidor independiente. 
+  \item \textbf{\textit{Zones} (Zonas)}: Subdivisiones de un mundo, cada una alojada en una instancia de servidor independiente. 
   Esta separación permite escalar horizontalmente y distribuir la carga entre múltiples servidores, mientras el estado 
   del jugador se preserva de forma consistente al cambiar de zona.
-  \item \textbf{Creatables} (Objetos Creables): Objetos instanciados dinámicamente en tiempo de ejecución, como NPCs, 
+  \item \textbf{\textit{Creatables} (Objetos Creables)}: Objetos instanciados dinámicamente en tiempo de ejecución, como NPCs, 
   enemigos o ítems. A diferencia de los Placeables, no pueden ser posicionados manualmente durante la fase de diseño, 
   sino que son generados por la lógica del juego.
-  \item \textbf{Placeables} (Objetos Colocables): Objetos posicionados manualmente en el editor durante la fase de diseño, 
+  \item \textbf{\textit{Placeables} (Objetos Colocables)}: Objetos posicionados manualmente en el editor durante la fase de diseño, 
   que permanecen estáticos en tiempo de ejecución. Se clasifican en estructuras (\textit{Structures}), generadores 
   (\textit{Spawners}) y objetos diversos (\textit{Miscellaneous Objects}).
 \end{itemize}
@@ -29,16 +27,16 @@ del clúster. El estado del jugador, incluyendo su inventario y progresión, se 
 las zonas de un mismo mundo, permitiendo que el jugador transite entre ellas sin perder información.
 \vspace{0.25cm}
 Los creadores de mundos pueden crear nuevas zonas dentro del editor, configurando parámetros como la textura
-del terreno, la textura del cielo (Skybox) y también configurar como un jugador transporta de una zona a otra mediante
-Portales (Portals).
+del terreno, la textura del cielo (\textit{Skybox}) y también configurar como un jugador transporta de una zona a otra mediante
+Portales (\textit{Portals}).
 
 \subsubsection{Placeable Objects (Objetos Colocables)}
 
-Los Placeables son objetos posicionados manualmente en el editor durante la fase de diseño y permanecen estáticos en
+Los \textit{Placeables} son objetos posicionados manualmente en el editor durante la fase de diseño y permanecen estáticos en
 tiempo de ejecución. Se clasifican en tres categorías principales:
 
 \begin{itemize}
-\item \textbf{Structures (Estructuras)}: Objetos estáticos que forman parte del entorno del juego, como edificios,
+\item \textbf{\textit{Structures} (Estructuras)}: Objetos estáticos que forman parte del entorno del juego, como edificios,
   árboles o rocas. Al ser colocados, su posición, rotación y escala pueden editarse mediante \textit{Gizmos} o a través
   de su panel de configuración. Cada estructura permite configurar sus \textit{Colliders} (Colisionadores), que definen
   las interacciones físicas con el jugador y otros elementos del juego. Actualmente se soportan dos tipos de colisionador:
@@ -46,17 +44,17 @@ tiempo de ejecución. Se clasifican en tres categorías principales:
   superficies inclinadas que permiten al jugador desplazarse hacia zonas de mayor altura. Adicionalmente, cualquier
   estructura puede configurarse como \textit{Shop} (Tienda), habilitando la compra de ítems por parte de los jugadores.
 
-\item \textbf{Spawners (Generadores)}: Objetos que instancian entidades en tiempo de ejecución, como enemigos o NPCs.
+\item \textbf{\textit{Spawners} (Generadores)}: Objetos que instancian entidades en tiempo de ejecución, como enemigos o NPCs.
 Pueden configurarse con parámetros como frecuencia de aparición, rango y tipo de entidad a generar. Actualmente se
 encuentran disponibles tres tipos: \textit{Enemy Spawner} (Generador de Enemigos), \textit{NPC Spawner} (Generador
 de NPCs) y \textit{Player Spawner} (Generador de Jugadores).
 
-\item \textbf{Miscellaneous Objects (Objetos Diversos)}: Elementos que no se ajustan a las categorías anteriores pero
+\item \textbf{\textit{Miscellaneous Objects} (Objetos Diversos)}: Elementos que no se ajustan a las categorías anteriores pero
   contribuyen a la composición del mundo. Actualmente se encuentran disponibles dos variantes:
   \begin{itemize}
-    \item \textbf{Cofres}: Objetos interactuables que los jugadores pueden abrir para obtener recompensas.
+    \item \textbf{\textit{Chests} (Cofres)}: Objetos interactuables que los jugadores pueden abrir para obtener recompensas.
     Configurables con distintos tipos de botín, tiempo de reseteo y apariencia en estado abierto y cerrado.
-    \item \textbf{Portales}: Objetos que permiten transportar al jugador a otra ubicación, incluso entre zonas distintas
+    \item \textbf{\textit{Portals} (Portales)}: Objetos que permiten transportar al jugador a otra ubicación, incluso entre zonas distintas
     del mundo. Al interactuar con un portal, el jugador es teletransportado a la zona de destino configurada,
     conservando su estado y progresión.
   \end{itemize}
@@ -64,44 +62,44 @@ de NPCs) y \textit{Player Spawner} (Generador de Jugadores).
 
 \subsubsection{Creatable Objects (Objetos Creables)}
 
-Los Creatables son objetos instanciados dinámicamente en tiempo de ejecución. A diferencia de los Placeables, no se
+Los \textit{Creatables} son objetos instanciados dinámicamente en tiempo de ejecución. A diferencia de los \textit{Placeables}, no se
 posicionan directamente en el mundo, sino que se configuran y gestionan a través de paneles de edición dedicados.
 Actualmente se encuentran disponibles los siguientes tipos:
 
 \begin{itemize}
-  \item \textbf{Passive NPC} (Personaje No Jugable Pasivo): Personajes no hostiles con los que el jugador puede
+  \item \textbf{\textit{Passive NPC}} (Personaje No Jugable Pasivo): Personajes no hostiles con los que el jugador puede
   interactuar mediante diálogos, como aldeanos o comerciantes. El creador puede asignarles diálogos predefinidos
   para que el jugador obtenga información, inicie \textit{Quests} o simplemente enriquezca la ambientación del mundo.
 
-  \item \textbf{Aggressive NPC} (Personaje No Jugable Agresivo): Personajes hostiles que atacan al jugador al
+  \item \textbf{\textit{Aggressive NPC}} (Personaje No Jugable Agresivo): Personajes hostiles que atacan al jugador al
   detectarlo dentro de un rango determinado. Configurables con estadísticas de salud, tipos de armas que utilizan
   y tabla de botín que sueltan al ser derrotados.
 
-  \item \textbf{Consumable Items} (Objetos Consumibles): Ítems que el jugador puede recoger y utilizar durante
+  \item \textbf{\textit{Consumable Items}} (Objetos Consumibles): Ítems que el jugador puede recoger y utilizar durante
   el juego, como pociones de salud o comida. Se consumen al ser utilizados y pueden otorgar distintos efectos
   según su configuración.
 
-  \item \textbf{Weapon Items} (Armas): Ítems que el jugador puede recoger y equipar para atacar NPCs agresivos
+  \item \textbf{\textit{Weapon Items}} (Armas): Ítems que el jugador puede recoger y equipar para atacar NPCs agresivos
   u otros jugadores. Configurables con tipo de arma (cuerpo a cuerpo o a distancia), daño, alcance, velocidad
   de ataque y textura.
 
-  \item \textbf{Loot Tables} (Tablas de Botín): Configuraciones que definen qué ítems y qué cantidad de oro
+  \item \textbf{\textit{Loot Tables}} (Tablas de Botín): Configuraciones que definen qué ítems y qué cantidad de oro
   se obtienen al interactuar con un elemento del juego. Se asignan a enemigos y cofres, donde cada ítem de la
   tabla tiene una probabilidad de aparición determinada
 
-  \item \textbf{Dialogs} (Diálogos): Conjuntos de mensajes asignables a NPCs pasivos que habilitan la
+  \item \textbf{\textit{Dialogs}} (Diálogos): Conjuntos de mensajes asignables a NPCs pasivos que habilitan la
   interacción con el jugador. Permiten estructurar flujos de conversación y vincular \textit{Quests} a mensajes
   específicos, posibilitando mostrar distintos diálogos según el progreso del jugador.
 
-  \item \textbf{Quests} (Misiones): Misiones asignables a NPCs que el jugador puede completar para obtener
+  \item \textbf{\textit{Quests}} (Misiones): Misiones asignables a NPCs que el jugador puede completar para obtener
   recompensas. Los objetivos disponibles actualmente incluyen eliminar una cantidad determinada de enemigos o
-  interactuar con NPCs específicos. Al completarse, el jugador puede recibir experiencia, oro o ítems especiales.
+  interactuar con NPCs específicos. Al completarse, el jugador puede receive experiencia, oro o ítems especiales.
 
-  \item \textbf{Shop} (Tienda): Configuración asignable a estructuras que habilita la compra de ítems al
+  \item \textbf{\textit{Shop}} (Tienda): Configuración asignable a estructuras que habilita la compra de ítems al
   interactuar con ellas. Soporta dos tipos de productos: ítems consumibles y armas, adquiribles con oro
   obtenido durante el juego, y cosméticos, adquiribles con gemas.
 
-  \item \textbf{Cosmetics} (Cosméticos): Objetos de personalización estética como ropa, accesorios o skins
+  \item \textbf{\textit{Cosmetics}} (Cosméticos): Objetos de personalización estética como ropa, accesorios o skins
   que no afectan la jugabilidad. Se adquieren con gemas, una moneda premium obtenida con dinero real, y
   pueden configurarse en tiendas con distintos precios y cantidades disponibles.
 \end{itemize}
