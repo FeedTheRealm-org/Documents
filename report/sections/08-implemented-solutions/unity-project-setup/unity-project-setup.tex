@@ -48,8 +48,21 @@ El proyecto de \textit{Game} cuenta además con dos módulos adicionales exclusi
 \subsubsection{Injección de dependencias con VContainer}
 
 \textbf{VContainer}: Librería de inyección de dependencias para Unity utilizada como contenedor 
-  de inversión de control (IoC) del sistema. Permite declarar y resolver dependencias de forma explícita, 
-  desacoplando la construcción de objetos de su lógica de negocio. Esto facilita la testabilidad de los 
-  componentes, reduce el acoplamiento entre módulos y centraliza la configuración del ciclo de vida de 
-  los objetos, reemplazando el uso de singletons y referencias estáticas propias de proyectos Unity 
-  sin arquitectura definida.
+de inversión de control (IoC) del sistema. Permite declarar y resolver dependencias de forma explícita, 
+desacoplando la construcción de objetos de su lógica de negocio. Esto facilita la testabilidad de los 
+componentes, reduce el acoplamiento entre módulos y centraliza la configuración del ciclo de vida de 
+los objetos, reemplazando el uso de singletons y referencias estáticas propias de proyectos Unity 
+sin arquitectura definida.
+
+\subsection{Core}
+
+El primer módulo base para cada proyecto, tanto \texttt{Game} como \texttt{World Editor} es el \texttt{Core}.
+En ambos, está conformado principalmente por clases que perduran en memoria durante la escena y pueden ser utilizados por múltiples recursos. 
+Con cada modulo teniendo sus respectivos \textit{Entry Points} que se encargan de iniciar el módulo, 
+configurar los recursos necesarios y preparar la escena para su funcionamiento.
+\vspace{0.25cm}
+Dentro de estos hay elementos de como datos/valores fijos ya inicialmente configurados para el correcto 
+funcionamiento. Por otro lado también otros recursos importantes son los eventos que utiliza el cliente. 
+Todos los eventos formalizan un \textit{event channel}, que es un canal de comunicación entre distintos 
+componentes del cliente, donde se define para comunicar cambios entre los componentes, invocando y 
+suscribiendose a estos eventos.
