@@ -6,7 +6,7 @@ las entidades y distribuye las actualizaciones a los clientes conectados. Está 
 instancia es responsable de una única zona del mundo, por lo que un mundo con múltiples zonas implica que se ejecuten varias instancias de servidor en paralelo, 
 cada una gestionando su propia zona y los jugadores que se encuentren en ella.
 
-\paragraph{Server: Inicializacion}
+\paragraph{Inicializacion}
 Cada instancia de zona del servidor se ejecuta dentro de un contenedor Docker. La imagen se construye a partir de una base de Debian mínima
 sobre la cual se instalan las dependencias necesarias para ejecutar el binario del servidor de Unity en modo \textit{headless},
 junto con las credenciales requieridas para obtener recursos desde el \textit{Core Service} en el momento del arranque.
@@ -27,13 +27,13 @@ notifica al \textit{Core Service} que la zona está activa y lista para recibir 
 el proceso se cancela y el servidor notifica igualmente al \textit{Core Service} del estado fallido. Al apagarse, 
 el proceso inverso ocurre: el servidor notifica al \textit{Core Service} que la zona pasó a estado \textit{offline}.
 
-\paragraph{Server: Game Loop}
+\paragraph{Game Loop}
 
 Otro elemento primordial en la capa de \textit{Core} es la implementación del sistema del \textit{GameLoop}.
 Este sistema se encarga de manejar el ciclo de actualización del juego, procesando las acciones de los jugadores, mediante 
 el popeo de eventos del \textit{WorldMonitor}.
 
-\paragraph{Server: Game Tick}
+\paragraph{Game Tick}
 
 Un problema común en los juegos multijugador es la sincronización del estado del juego entre el servidor y los clientes. 
 Para abordarlo, se implementa un sistema de \textit{Game Tick} personalizado en el servidor.
@@ -50,7 +50,7 @@ Todos los sistemas que requieren actualizarse en sincronía con el ciclo de jueg
 un evento que el \textit{Game Loop} emite en cada tick. Esto garantiza que dichos sistemas se ejecuten siempre en el mismo orden y en el mismo
 momento, evitando inconsistencias en el estado del juego.
 
-\paragraph{Server: Limitacion de comandos}
+\paragraph{Limitacion de comandos}
 
 Para evitar que el procesamiento de comandos entrantes consuma demasiado tiempo y afecte al resto del ciclo de juego, se aplica un mecanismo
 de limitación por tick. 
@@ -62,7 +62,7 @@ alcanza cualquiera de estos dos límites antes de vaciar la cola, los comandos r
 procesan en el tick siguiente. De esta forma, se garantiza que picos repentinos de actividad, como muchos jugadores enviando acciones al mismo
 tiempo, no interrumpan la física ni la lógica del juego, manteniendo el ciclo estable.
 
-\paragraph{Server: Game Systems y State Storage}
+\paragraph{Game Systems y State Storage}
 Cada entidad del mundo del juego (jugadores (\textit{Players}), bolsas de botín, NPCs) que requiera syncronizacion con el servidor está representada por un \textit{objeto de red} (\textit{Networked Object}):
 una entidad que existe simultáneamente en el servidor y en los clientes de todos los jugadores conectados, manteniéndose sincronizada entre
 ellos.
@@ -87,32 +87,46 @@ del valor y dispara un \textit{Hook}  (una función de callback) que notifica al
 permite que, por ejemplo, la interfaz gráfica actualice la barra de salud en cuanto el servidor registra un daño, o que el sistema de
 movimiento se detenga automáticamente cuando el personaje muere.
 
-\paragraph{Server: Networked Objects}
+\paragraph{Networked Objects}
 A continuación se describen los distintos tipos de objetos de red que componen el mundo del juego.
 \begin{itemize}
     \item \textbf{Jugador (\textit{Player})}:
     representa a un usuario conectado en el mundo. Es la entidad principal del juego: puede moverse, interactuar con otros objetos, 
-    equiparítems, completar quests y acumular recursos.
-    Su estado (posición, salud, stamina, ítemequipado) se mantiene sincronizado en tiempo real con todos los 
+    equipar ítems, completar quests y acumular recursos.
+    Su estado (posición, salud, stamina, ítem equipado) se mantiene sincronizado en tiempo real con todos los 
     clientes presentes en la zona, y se persiste en base de datos para conservarlo entre sesiones.
 
-    \item \textbf{NPC Pasivo (\textit{Passive NPC})}: personaje no jugador con el que el jugador puede interactuar mediante diálogos.
-    No representa una amenaza; su rol es narrativo y funcional dentro del sistema de quests. 
-    Al iniciar una conversación, el NPC bloquea su propio movimiento y gestiona el progreso del diálogo en función del estadode 
-    las misiones(\textit{Quests}) activas del jugador.
+    \item \textbf{NPC Pasivo (\textit{Passive NPC})}: personaje no jugador presente en el
+    mundo con el que el jugador puede iniciar una conversación al acercarse. Gestiona
+    sesiones de diálogo individuales por jugador, avanzando por una secuencia de mensajes
+    que varía según el estado de las quests activas de quien interactúa. Cuando una quest
+    está asociada al diálogo, el NPC queda en espera hasta que el jugador tome una decisión
+    antes de continuar. Cuando no está siendo interactuado, el NPC deambula de forma
+    autónoma por un área definida alrededor de su punto de aparición, utilizando el sistema
+    de navegación de Unity (\textit{NavMesh}) para calcular rutas transitables por el
+    terreno. Su movimiento alterna entre períodos de espera y desplazamiento hacia puntos
+    aleatorios dentro de esa área.
 
-    \item \textbf{NPC Agresivo (\textit{Aggressive NPC})}: enemigo controlado por el servidor que detecta la presencia de jugadores cercanos y los ataca.
-    Su comportamientoes autónomo: patrulla el área, persigue al jugador cuando entra en su rango dedetección y ejecuta ataques en función de su configuración. 
-    Al ser derrotado, puedegenerar ítems de loot en el mundo.
+    \item \textbf{NPC Agresivo (\textit{Aggressive NPC})}: enemigo controlado por el
+    servidor cuyo comportamiento está gobernado por una máquina de estados con tres modos:
+    reposo, deambulación y persecución. En reposo o deambulación se comporta de forma
+    similar al NPC pasivo, moviéndose de manera autónoma dentro de un radio configurable
+    alrededor de su punto de aparición mediante \textit{NavMesh}. Cuando un jugador entra
+    en su zona de detección, el NPC entra en modo persecución: recalcula su ruta hacia el
+    jugador periódicamente y lo sigue hasta alcanzar su rango de ataque, que depende del
+    arma que tenga equipada. Si el jugador abandona el área de detección, el NPC regresa
+    al estado de reposo. Al ser derrotado, puede generar ítems de loot en el mundo.
+
 
     \item \textbf{Bolsa de loot (\textit{Loot Bag})}: objeto que aparece en el mundo alderrotar a un enemigo o como recompensa 
-    de alguna acción. Contiene un ítem o una cantidad de oro que el jugador puede recoger al acercarse. Su posición, tipo de ítem
+    de abrir un cofre. Contiene un ítem o una cantidad de oro que el jugador puede recoger al acercarse. Su posición, tipo de ítem
     y cantidad están sincronizados con todos los clientes. Una vez recogido, el objeto desaparece del mundo. En caso de no ser
-    recogido en un tiempo determinado, el servidor lo elimina automáticamente para evitar saturar el mundo con objetos inactivos.
+    recogido en un tiempo determinado, el servidor lo elimina automáticamente mediante el \texttt{Entity Reaper}, que se encarga de
+    limpiar el mundo de entidades obsoletas o sin interacción durante un período prolongado.
 
     \item \textbf{Portal}: punto de interacción fijo en el mundo que permite al jugadorviajar a otra zona.
     Al interactuar con él, el servidor valida que el jugador estédentro del rango permitido y le envía una pantalla de
-    confirmación con el nombre deldestino. Si el jugador acepta, se inicia el proceso de teletransportación. Los destinos pueden
+    confirmación con el nombre del destino. Si el jugador acepta, se inicia el proceso de teletransportación. Los destinos pueden
     ser una posicion en la misma zona o una zona completamente diferente, lo que implica que el cliente debe desconectarse 
     del servidor actual y conectarse al nuevo servidor que hospeda la zona de destino.
 
@@ -124,7 +138,7 @@ A continuación se describen los distintos tipos de objetos de red que componen 
     \end{itemize}
 \end{itemize}
 
-\paragraph{Server: Player Persistence}
+\paragraph{Player Persistence}
 La persistencia del jugador es el mecanismo por el cual el estado de un jugador (inventario, oro, posición y progreso de quests) se conserva
 en la base de datos y se restaura cada vez que el jugador se conecta a una zona.
 
@@ -143,7 +157,7 @@ gasta oro o avanza en una quest, el cambio se persiste inmediatamente); y de for
 cada cierto intervalo de tiempo configurable. Al desconectarse, se realiza un guardado final de todos los datos para garantizar que ningún
 progreso reciente se pierda.
 
-\paragraph{Server: Quest Progression}
+\paragraph{Quest Progression}
 % TODO(reference)
 Las quests son uno de los pilares del género MMORPG: gran parte de la experiencia de juego gira en torno a ellas, ya que son el principal
 motor de progresión del jugador dentro del mundo. Juegos icónicos del género como \textit{World of Warcraft} o \textit{RuneScape} deben buena
