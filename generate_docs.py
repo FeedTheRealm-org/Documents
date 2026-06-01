@@ -1,4 +1,5 @@
 import os
+import sys
 import yaml
 
 CONFIG_FILE = "files.yaml"
@@ -33,13 +34,24 @@ class Document:
   def delete_generator_file(self):
     os.remove(f"{self.entrypoint}/{GENERATOR_FILENAME}")
 
+def build(key, config):
+  doc = Document(config['name'], config['description'], config['entrypoint'])
+  doc.generate_file_for_pdf()
+  doc.run_generator()
+  doc.copy_pdf_to_root()
+  doc.delete_generator_file()
+
 if __name__ == "__main__":
   with open(CONFIG_FILE, "r") as config_file:
     config = yaml.safe_load(config_file)
 
-  for files, config in config.items():
-    doc = Document(config['name'], config['description'], config['entrypoint'])
-    doc.generate_file_for_pdf()
-    doc.run_generator()
-    doc.copy_pdf_to_root()
-    doc.delete_generator_file()
+  if len(sys.argv) == 1:
+    for key, doc_config in config.items():
+      build(key, doc_config)
+  else:
+    key = sys.argv[1]
+    if key not in config:
+      print(f"Error: la clave '{key}' no existe en {CONFIG_FILE}.")
+      print(f"Claves disponibles: {', '.join(config.keys())}")
+      sys.exit(1)
+    build(key, config[key])

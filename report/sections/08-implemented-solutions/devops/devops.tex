@@ -33,6 +33,8 @@ sin necesidad de rediseñar componentes fundamentales.
 
 \subsubsection{CI/CD \& Workflows}
 
+\paragraph{Core-service}
+
 En el caso del backend web 'core-service' se tiene un flujo de trabajo que inicia cuando se efectiviza una acción de \textit{Merge}
 de código desde la rama de desarrollo (\textit{dev}) hacia la rama de despliegue (\textit{main}).
 
@@ -92,6 +94,8 @@ desde \textbf{ECR} y la ejecución el contenedor por medio de \textit{docker run
 \caption{Pipeline de despliegue del contenedor y ejecución en EC2.}
 \end{figure}
 
+\paragraph{Zoning servers o ftr-servers}
+
 Por otro lado, en el caso de los \textir{zoning servers} o \textit{ftr-servers} se tiene un flujo de trabajo que inicia cuando 
 se crea y se sube al repositorio una nueva etiqueta o \texit{tag} de versión con el formato de versionamiento semántico \textbf{vX.Y.Z}.
 
@@ -119,6 +123,26 @@ los zoning servers (ftr-server) que se encuentran activos en ese momento.
 
 \subsubsection{Actualización de las aplicaciones 'Cliente'}
 
+En el caso de las aplicaciones 'Cliente', es decir, el editor de mundos y el juego (\textit{front-end}), al igual que con la imagen de docker de los servidores (\textit{ftr-server})
+estas no se compilan en un \textit{Pipeline} de integración continua debido a las limitaciones impuestas por \textit{Unity},
+sino que son compiladas por un miembro del equipo con sus diferentes perfiles de construcción, estos perfiles son:
+
+\begin{itemize}
+    \item Feed the Realm - Game
+    \begin{itemize}
+        \item Windows
+        \item Linux
+    \end{itemize}
+    \item Feed the Realm - World Editor
+    \begin{itemize}
+        \item Windows
+        \item Linux
+    \end{itemize}
+\end{itemize}
+
+Luego de ser compiladas, se comprimen y se realiza un \textit{Release} de la nueva versión a través del sistema \textbf{backoffice} que se abordara en la correspondiente sección.
+De esta forma los usuarios tendrán acceso a la última versión disponible de las aplicaciones obteniéndolas de la página principal del juego.
+
 \subsubsection{Infraestructura}
 
 A continuación se explica el estado actual de la infraestructura cuya especificación y configuración pertenece al repositorio
@@ -126,7 +150,29 @@ de \textbf{IaC}, el cual define la misma por medio de la herramienta \textbf{Ter
 \textit{on-demand} de mundos y zoning servers, y para el \textit{discovery} de servicios de forma dinámica que tiene
 como objetivo que los jugadores puedan establecer una conexión directa con el servidor en el que desean jugar.
 
-\vspace{0.25cm}
+\paragraph{Elección del orquestador de servicios}
+
+La elección de \textbf{HashiCorp Nomad} como orquestador de cargas de trabajo respondió tanto a criterios operativos como económicos.
+
+Si bien \textbf{Kubernetes} constituye actualmente el estándar de facto para la orquestación de contenedores, muchas de sus capacidades están orientadas a entornos
+de gran escala y alta complejidad operativa, en el caso de \textit{Feed the Realm}, donde los servidores de juego representan sesiones activas con jugadores conectados
+en tiempo real, se priorizó un modelo de \textit{scheduling} más predecible y controlado.
+Kubernetes puede realizar procesos automáticos de re-balanceo, reprogramación o reemplazo de \textit{pods} cuando detecta cambios en la disponibilidad de recursos del clúster, y
+si bien este comportamiento resulta beneficioso para aplicaciones web sin estado (\textit{stateless}), puede provocar la finalización y recreación 
+de una instancia de servidor de juego durante una partida, desconectando a todos los jugadores conectados a la misma.
+Nomad, por el contrario, adopta una filosofía más simple y conservadora respecto de la reasignación de cargas, permitiendo mantener los procesos ejecutándose 
+en el nodo asignado hasta que exista una razón explícita para migrarlos o reiniciarlos.
+
+Asimismo, desde la perspectiva de costos, Nomad presenta una ventaja significativa al requerir una cantidad considerablemente menor de componentes de control para operar.
+Un clúster básico puede ejecutarse con pocos servicios y un consumo reducido de memoria y CPU, mientras que Kubernetes suele requerir una mayor cantidad de procesos 
+auxiliares y, en entornos administrados como \textit{EKS (Elastic Kubernetes Service)}, implica además costos asociados al plano de control independientemente 
+de la carga real del sistema.
+
+Dado que la infraestructura de \textit{Feed the Realm} busca desplegar servidores bajo demanda y optimizar el uso de recursos disponibles,
+se consideró que Nomad ofrecía una mejor relación entre simplicidad operativa, previsibilidad del comportamiento y costo de mantenimiento, sin sacrificar las capacidades 
+necesarias para el crecimiento futuro del proyecto.
+
+\paragraph{Componentes principales}
 
 Las partes principales de la infraestructura son:
 \begin{itemize}
@@ -148,6 +194,9 @@ Las partes principales de la infraestructura son:
         y mínimos para los mismos.
     \item \textbf{Monitoreo - Datadog}: \textit{Deamonset} o \textit{Agente} de Datadog para recolección de métricas de uso de recursos,
         lanzados al inicio de cada nodo.
+    \item \textbf{DNS - Route53}: Configuración de registros DNS para el dominio (apex) y los subdominios utilizados.
+    \item \textbf{Páginas web - Vercel}: Despliegue de \textit{backoffice} y \textit{landing page} en Vercel, a través de \texit{pipelines}
+        ejecutados cuando se realiza un \textit{push} a la rama principal de cada repositorio.
 \end{itemize}
 
 En la siguiente figura se puede apreciar algunos de los componentes mencionados, como están separados a nivel físico, qué servicios alojan y como se conectan entre sí.
@@ -160,6 +209,8 @@ servicios por nombre. Tanto esto como el flujo de despliegue de nuevos 'zoning s
 \includegraphics[width=1\textwidth]{img/08-implemented-solution/devops/deployment.jpg}
 \caption{Vista general de la infraestructura desplegada.}
 \end{figure}
+
+\paragraph{Orquestación, Descubrimiento y Comunicación de Servicios}
 
 Los clientes interactuan con los servicios desplegados de dos formas principales:
 \begin{enumerate}
@@ -235,6 +286,23 @@ a su vez el zoning server almacena la información del jugador en la base de dat
 \caption{Diagrama de uso de zone server y sus dependencias \textit{(cliente in-game)}.}
 \end{figure}
 
+\paragraph{Configuración de DNS}
+
+La resolución de nombres del sistema se implementó mediante \textit{Amazon Route 53}, definiendo tanto una zona pública para el dominio \textbf{feedtherealm.world}
+como una zona privada interna utilizada exclusivamente por los servicios desplegados dentro de la VPC (\textit{virtual private cloud}).
+
+En la zona pública se configuraron registros que permiten acceder a los distintos componentes de la plataforma,
+incluyendo el dominio raíz (apex), los subdominios \textbf{www}, \textbf{admin} y \textbf{core}, además de un conjunto dinámico de registros 
+(\textbf{s1}, \textbf{s2}, \dots) asociados a las direcciones IP públicas de los nodos clientes de Nomad que pueden alojar servidores de juego.
+Asimismo, se añadieron los registros TXT y CNAME requeridos para la autenticación y validación del servicio de correo electrónico utilizado por 
+la plataforma, los cuales se envian desde \textbf{'noreply@feedtherealm.world'}.
+
+Por otro lado, la zona privada \textbf{internal} proporciona un mecanismo de resolución de nombres para la comunicación entre servicios dentro de la infraestructura.
+En ella se registran direcciones internas para componentes como \textbf{nomad.internal}, \textbf{consul.internal} y \textbf{core-service.internal},
+evitando la dependencia de direcciones IP estáticas y simplificando la configuración de los servicios.
+Esta separación entre DNS público e interno permite exponer únicamente los componentes necesarios hacia Internet mientras que la comunicación entre servicios permanece 
+aislada dentro de la red privada.
+
 \subsubsection{Seguridad informática}
 
 Es importante para una aplicación productiva que se tenga presente la importancia de la seguridad informática,
@@ -256,8 +324,10 @@ Los cuidados que se tuvieron en cuenta para el desarrollo de los sistemas asocia
         las que requieren un manejo cauteloso por ser críticas para las comunicaciones con servicios externos o para firmas internas se suben a través de
         terraform como \textit{SecureString} a \textit{AWS SSM Parameter Storage}, desde donde se toman para inyectar a los contenedores como variables de entorno.
         También, como parte de los \textit{Pipelines} ejecutados en cada push a cada repositorio y los \textit{Precommit hooks} se analiza el posible filtrado de credenciales con \textbf{gitleaks}.
-    \item \textbf{Escaneo de imagenes de docker}: Al subir las imágenes de docker al registro de contenedores se escanean las mismas en búsqueda de vulnerabilidades
-        haciendo referencia al paquete que tiene la vulnerabilidad, la severidad y el detalle del \textit{CVE} reportado.
+    \item \textbf{Escaneo de vulnerabilidades}: Se realizan controles automáticos para detectar vulnerabilidades tanto en las imágenes de contenedores 
+        como en las dependencias (paquetes)  utilizadas por los proyectos. 
+        Las imágenes de Docker se analizan al ser publicadas en el registro de contenedores, mientras que las dependencias son verificadas mediante \textbf{OSV-Scanner},
+        identificando paquetes afectados, la severidad de las vulnerabilidades y el detalle de los \textit{CVE} reportados.
     \item \textbf{Terraform state}: Se guarda el estado de terraform luego de aplicar cambios en un bucket asegurado con bloqueo de acceso público y cifrado de los datos
         en tránsito y en reposo.
 \end{itemize}
