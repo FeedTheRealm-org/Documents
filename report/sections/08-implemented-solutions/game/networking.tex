@@ -16,7 +16,7 @@ El flujo está dividido en dos direcciones:
     \item \textbf{Cliente → Servidor}: el jugador ejecuta una acción, el cliente la convierte en un \textit{command},
      un adaptador de red la envía al servidor y el \textit{GameLoop} la procesa de forma autoritativa.
     \item \textbf{Servidor → Cliente}: el servidor valida y resuelve la lógica, luego devuelve efectos, cambios de 
-    estado o \textit{feedback} visual mediante \textit{ServerEvents} o \textit{SyncVars}.
+    estado o \textit{feedback} visual mediante eventos que envía el servidor y variables compartidas que se sincronizan.
 \end{itemize}
 
 La idea clave es que el servidor es la autoridad final sobre el estado del mundo. El cliente solo propone acciones 
@@ -121,13 +121,15 @@ lo procese en orden.
 
 \textbf{\underline{\textit{GameLoop}: procesamiento autoritativo}}
 
+//TODO: sacar bulletpoints
+
 \vspace{0.15cm}
 
 \texttt{GameLoop} es quien consume los \textit{commands} de su cola, en el \textit{tick} principal.
 
 Ya estando en el \textit{gameloop}, aquí sí se comienza a procesar \textit{commands}. La funcionalidad principal sería:
 \begin{itemize}
-    \item Sacar \textit{commands} de la cola de \textit{commands}.
+    \item Obtener \textit{commands} de la cola de \textit{commands}.
     \item Limitar el trabajo por \textit{tick} con un máximo de tiempo y cantidad.
     \item Busca la entidad destino en el monitor según el \textit{netID}.
 \end{itemize}
@@ -209,8 +211,8 @@ y despacha el evento a todos o a un solo cliente.
 
 Una vez recibido en el cliente, el adaptador de red de la entidad recibe el \textit{DTO} del evento del servidor 
 mediante \textit{RPC} y lo expone mediante una invocación de eventos del lado del cliente. Luego un enrutador de 
-eventos se suscribe a ese evento e inspecciona tipo de evento recibido, deserializa el contenido y dispara eventos 
-de dominio más específicos para UI, sonido o animación. Ejemplos:
+eventos se suscribe a ese evento e inspecciona el tipo recibido, deserializa el contenido y dispara eventos 
+de dominio más específicos para \textit{UI}, sonido o animación. Ejemplos:
 \begin{itemize}
     \item \texttt{ServerEventType.QuestProgressEvent} → \texttt{OnQuestProgressEvent}
     \item \texttt{ServerEventType.ChatMessageBroadcastEvent} → \texttt{OnChatMessageBroadcastEvent}
@@ -253,23 +255,6 @@ En resumen, la diferencia clave entre \texttt{SyncVars} y \texttt{ServerEvents} 
 \end{itemize}
 En general, el estado “real” vive en el servidor y se replica; los eventos son la capa de \textit{feedback}.
 
-\paragraph{Ejemplo resumido: inventario}
-
-Un caso completo ayuda a ver el patrón:
-\begin{enumerate}
-    \item \texttt{PlayerInputReader} detecta la acción del jugador.
-    \item \texttt{InventoryController} crea un \texttt{TransactionCommandDTO} de tipo \texttt{MoveItem}, 
-    \texttt{DropItem} o \texttt{EquipItem}.
-    \item \texttt{NetworkAdapter.DispatchTransaction(...)} envía el comando al servidor.
-    \item En servidor, \texttt{CmdTransactionRequest} levanta \texttt{ReceivedTransactionCommandEvent}.
-    \item \texttt{NetworkService} lo convierte con \texttt{CommandsFactory} y lo encola en \texttt{WorldMonitor.Commands}.
-    \item \texttt{GameLoop.ProcessCommands()} lo toma y lo aplica a la entidad correcta.
-    \item \texttt{ServerPlayerCommandHandler} delega en \texttt{InventorySystem}.
-    \item \texttt{InventorySystem} actualiza \texttt{InventoryStateStorage} y, si hace falta, genera \texttt{ServerEvents}.
-    \item \texttt{NetworkService.FlushEventsToClients()} envía los eventos (en este caso solo al jugador del inventario).
-    \item \texttt{NetworkEventRouter} los deserializa y el cliente muestra UI, sonidos o animaciones.
-\end{enumerate}
-
 \paragraph{Idea central de la arquitectura}
 
 La separación principal es esta:
@@ -308,11 +293,10 @@ que sea capaz de soportar la comunicación y sincronización en el servidor.
 Además, está diseñado alrededor de \textit{server authority} que es un factor principal considerado en nuestro 
 diseño, ya que en juegos orientados a este género es importante que tenga seguridad ante adulteraciones de datos, 
 manipulación de estados y otros \textit{hacks}, más aún que se maneja un modelo económico donde los usuarios pagan 
-por contenido, por lo tanto el sistema debería ser robusto y seguro. Como por ejemplo que el cliente no puede 
-decidir su posición, salud o ítems equipados, sino que el servidor es quien tiene la última palabra sobre eso. 
-De otra forma un cliente malicioso podría modificar su posición para teletransportarse, o su salud para ser 
-invencible, o sus ítems para tener ventajas injustas, y lo mas importante, podría afectar la economía del juego 
-si el cliente pudiera manipular su \texttt{currency} o transacciones.
+por contenido, por lo tanto el sistema debería ser robusto y seguro. Sino que el servidor es quien tiene la última 
+palabra sobre eso. De otra forma un cliente malicioso podría modificar su posición para teletransportarse, su salud 
+para ser invencible, o sus ítems para tener ventajas injustas, y lo mas importante, podría afectar la economía 
+del juego si el cliente pudiera manipular su \textit{currency} o transacciones.
 
 \vspace{0.5cm}
 
