@@ -30,10 +30,10 @@ y muestra el resultado.
 
 El punto de entrada es captado en un lector de entradas, que recibe los eventos del sistema de \textit{input} de
  \texttt{Unity}. Desde ahí se disparan eventos de alto nivel como movimiento, inventario, interacción, uso de 
- equipamento, etc.
+ equipamiento, etc.
 
-Por ejemplo se detecta una cambio en el inventario o una acción de movimiento. Ese acción llega a un '\textit{controller}',
- donde cada funcionalidad principal se separa en distintos de ellos, por ejemplo \texttt{InventoryController},
+Estas acciones se propagan hacia el '\textit{controller}' 
+ de la funcionalidad específica, como lo pueden ser \texttt{InventoryController},
   \texttt{InteractController} o \texttt{MovementController}.
 
 \vspace{0.20cm}
@@ -46,14 +46,16 @@ Cada \textit{controller} traduce la intención del jugador a un evento de red, c
 dependiendo de la interacción.
 
 Si es una interacción compleja que requiere enviar información que el servidor puede no disponer o una petición 
-específica se envía de tipo \textit{transaction}. Si la interacción es relacionada a interacciones directas con las lógicas físicas y motrices dentro del juego, entonces se envía bajo un \textit{command} de tipo \textit{action}.
+específica se envía de tipo \textit{transaction}. Si la interacción es relacionada a interacciones directas con las lógicas físicas y motrices dentro del juego,
+entonces se envía bajo un \textit{command} de tipo \textit{action}.
 
-Por ejemplo, una interacción dentro del inventario del jugador crea un \textit{command} de tipo transacción mientras 
-que simplemente moverse envía un \textit{command} de tipo \textit{action}.
+Por ejemplo, si se tiene una interacción dentro del inventario del jugador o dentro de una tienda se crea un \textit{command} de tipo transacción, mientras 
+que al simplemente moverse o atacar se envía un \textit{command} de tipo \textit{action}.
 
-Se tomó esta decisión para optimizar la comunicación, ya que se minimiza el tamaño del paquete en acciones más simples 
-pero que son de mucha frecuencia y las interacciones más costosas pero de menor frecuencia permitimos enviar en el
- contenido del mensaje lo justo y necesario.
+Se tomó esta decisión para optimizar la comunicación, ya que se minimiza el tamaño del paquete en acciones más simples, 
+pero que son de mucha frecuencia y en las interacciones más costosas, pero de menor frecuencia se envía más información.
+
+\vspace{0.25cm}
 
 La estructura de los dos \textit{DTOs} utilizados son:
 
@@ -67,13 +69,9 @@ La estructura de los dos \textit{DTOs} utilizados son:
 
 \vspace{0.25cm}
 
-El \textit{controller} llama al adaptador de red, contenido en el mismo objeto que necesita enviar la información. 
-Ese adaptador es el puente de red:
-\begin{itemize}
-    \item En cliente, empaqueta el \textit{command} y lo manda por \texttt{Mirror}.
-    \item El adaptador completa la información necesaria, como el \texttt{NetId} perteneciente a la entidad local, y 
-    levanta el evento interno correspondiente.
-\end{itemize}
+El \textit{controller} luego de empaquetar el 'command', utiliza el adaptador de red (o \textit{Network Adapter}), contenido en el mismo objeto que necesita enviar la información. 
+Ese adaptador actúa como puente de red, quien completa la información adicional necesaria como el \textit{NetId} perteneciente a la entidad local y
+envía los comandos a través de \texttt{Mirror} (la librería de networking utilizada) al \textit{Network Adapter} de la misma entidad existente en el servidor.
 
 \vspace{0.20cm}
 
@@ -81,8 +79,8 @@ Ese adaptador es el puente de red:
 
 \vspace{0.15cm}
 
-Una vez ya en el servidor, \texttt{NetworkService} se suscribe a esos eventos y actúa como puente entre red y lógica 
-de juego. Su trabajo es:
+Una vez ya en el servidor, el \texttt{NetworkService} se suscribe a los eventos de recepción de mensajes del adaptador y los convierte en objetos internos de lógica 
+de negocio. Sus responsabilidades son:
 \begin{itemize}
     \item Escuchar los \textit{commands} recibidos desde el adaptador de red.
     \item Convertir el \textit{DTO} en un \textit{command} de servidor concreto usando un \textit{command factory}.
@@ -101,7 +99,7 @@ según el tipo del \textit{DTO}. Ejemplos:
     \item \texttt{ActionType.Move} → \texttt{MoveCommand}
     \item \texttt{TransactionType.EquipItem} → \texttt{EquipItemCommand}
 \end{itemize}
-Cuando el \textit{command} trae \textit{payload} binario en \textit{content}, el \textit{factory} lo deserializa con 
+Cuando el \textit{command} trae un \textit{payload} binario en el campo \textit{content}, el \textit{factory} lo deserializa con 
 \textit{protobuf} antes de construir la instancia concreta.
 
 \vspace{0.25cm}
@@ -110,12 +108,11 @@ Cuando el \textit{command} trae \textit{payload} binario en \textit{content}, el
 
 \vspace{0.15cm}
 
-\texttt{WorldMonitor}, el monitor principal que centraliza el estado operativo del servidor:
+\texttt{WorldMonitor} es el monitor principal que centraliza el estado operativo del servidor:
 \begin{itemize}
     \item \texttt{Commands}: cola de \textit{commands} pendientes a ser procesados.
     \item \texttt{Events}: cola de eventos generados por la simulación.
     \item \texttt{Entities}: registro de entidades \textit{server-side} indexadas por \texttt{NetId}.
-    \item \texttt{LatestState}: almacenamiento de estado más reciente.
 \end{itemize}
 En este punto, el \textit{command} todavía no se ejecuta. Solo queda encolado para que el \textit{tick} del servidor 
 lo procese en orden.
@@ -193,7 +190,7 @@ los usuarios que estén conectados y entidades, o si es un cambio de estado que 
 
 Se crean en tal caso eventos específicos para cada acción esperada a enviar desde el servidor al cliente, donde 
 optimiza lo mayor posible la comunicación, ya que cada mínima acción en el cliente tiene que ser validada en el 
-servidor y comunicada por este medio de nuevo él.
+servidor y comunicada por este medio de nuevo a él.
 
 Por lo tanto pueden existir eventos conformados por un \textit{DTO}, solo por su tipo, sin ningún contenido de 
 información, con fines de confirmación o rechazo ante acciones del usuario, o eventos con su tipo y contenido 
@@ -224,7 +221,7 @@ de dominio más específicos para UI, sonido o animación. Ejemplos:
 \textbf{\underline{\textit{SyncVars}: sincronización de estado}}
 
 \vspace{0.15cm}
-Además de eventos puntuales, el proyecto usa \texttt{SyncVar} y \texttt{SyncList} para mantener estado persistente 
+Además de eventos puntuales, el proyecto usa \texttt{SyncVar} y \texttt{SyncList} para mantener el estado persistente 
 sincronizado.
 
 \vspace{0.15cm}
