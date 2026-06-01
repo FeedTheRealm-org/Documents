@@ -1,0 +1,130 @@
+\subsubsection{Cliente}
+
+Como se habló de las capas de la arquitectura del sistema del juego, éste se divide principalmente en dos: 
+cliente y servidor, cada una con su propia lógica y responsabilidades. El cliente es responsable de la 
+experiencia del usuario, incluyendo la representación visual, la interacción y la comunicación con el 
+servidor. El servidor, por otro lado, maneja la lógica del juego, la gestión de datos y la coordinación 
+entre múltiples clientes.
+
+En esta sección se describirá la implementación del cliente del juego, detallando su estructura, componentes 
+y cómo se integra con el resto del sistema. Se explicará la organización del proyecto en \texttt{Unity}, la 
+arquitectura de sus módulos, la comunicación con el servidor y las herramientas utilizadas para su desarrollo.
+
+El cliente contiene tres módulos principales: el \texttt{Core}, que contiene la lógica central y utilidades; 
+el \texttt{Gameplay}, que maneja la lógica de juego en tiempo de ejecución; y el \texttt{User Interface}, 
+que se encarga de la representación visual y la interacción del usuario. Para más detalle sobre modulos, 
+\textit{Assemblies} y \textit{Vcontainer}, esto se explica en la sección 
+(TODO: (reference) 8.2 Estructura del Proyecto de Unity). 
+
+\paragraph{Cliente: Core}
+
+El primer módulo base, el \texttt{Core} del cliente, está conformado principalmente por clases que perduran 
+en memoria durante la escena y pueden ser utilizados por múltiples recursos.
+
+Dentro de estos hay elementos de como datos/valores fijos ya inicialmente configurados para el correcto 
+funcionamiento. Por otro lado también otros recursos importantes son los eventos que utiliza el cliente. 
+Todos los eventos formalizan un \textit{event channel}, que es un canal de comunicación entre distintos 
+componentes del cliente, donde se define para comunicar cambios entre los componentes, invocando y 
+suscribiendose a estos eventos.
+
+Todos estos elementos se encuentran inyectados en el contenedor de dependencias de \textit{VContainer}, 
+lo que permite una gestión eficiente de las dependencias, una mayor modularidad y no depender de \texttt{Unity}
+para anexar componentes a los objetos de la escena.
+
+De esta forma se permite que el código se mantenga desacoplado lo mayormente posible. Hay clases que no 
+tienen conocimiento de otras ni a quien envían sus eventos, en los cuales se comparte o no lógica de 
+alguna característica, dejando el código lo más limpio posible y evitando dependencias ante alteraciones 
+de distintos componentes. 
+
+\vspace{0.20cm}
+
+Otro elemento primordial en la capa de \texttt{Core} es la implementación del sistema de inputs del cliente, 
+el cual se basa en el sistema de inputs de \texttt{Unity}, pero con una capa de abstracción que permite una mayor 
+flexibilidad y modularidad. Este sistema de inputs se integra con el resto del cliente a través de eventos, 
+lo que permite que cualquier componente pueda reaccionar a las acciones del usuario sin necesidad de conocer 
+la fuente de esos inputs.
+
+Se encuentran en el \texttt{Core} también varios gestores de recursos como gestor de Menú, de controlador del 
+\textit{mouse}, de cámara y otros, que se encargan de manejar aspectos específicos del juego y proporcionar una 
+interfaz para interactuar con ellos.
+
+Dentro del módulo de \texttt{Core}, también hay un \textit{assembly} llamado \texttt{Common}, donde se guarda 
+la lógica y los datos que deben ser idénticos para cliente y servidor. 
+
+En dicho módulo, no contiene código de \texttt{UI} ni de \texttt{Gameplay} exclusivo, sino contratos, 
+configuraciones y mecanismos de red que ambos lados usan para comunicarse de forma coherente. 
+Esto garantiza que interpreten igual los valores de configuración y protocolos. 
+Entre estos se encuentran \textit{DTO's}, \textit{Enums}, eventos, y otros elementos que son compartidos. 
+
+\paragraph{Cliente: Gameplay}
+
+El módulo \texttt{Gameplay} es la capa de jugabilidad y ejecución específica del cliente. No es solo lógica de red ni 
+solo \texttt{UI}, es el conjunto que une la experiencia del jugador con los datos de mundo, con el servidor y 
+con los objetos lógicos y visuales que se representan lo que el usuario percibe.
+
+Todo comienza con el código en sus puntos de entrada, llamados \textit{Entry Points}, donde se maneja el arranque 
+del cliente y toda la configuración necesaria para que la escena tome todo lo necesario para comenzar a funcionar y
+tomar los recursos para que se mantenga así. 
+
+Esto incluye la configuración de iniciar la conexión con el servidor, cargar los recursos necesarios ya sea local 
+o desde el \textit{backend} que contiene los datos a cargar o renderizar, configurar los sistemas de juego y 
+preparar la escena y su flujo para la interacción del usuario.
+
+Todo estos recursos nombrados, previamente se inicializan e inyectan los recursos y servicios necesarios 
+en el contenedor de dependencias de \textit{VContainer}, bajo clases inicializadoras de cada escena.
+Con respecto a lo nombrado sobre escenas, en el cliente se manejan distintas escenas para cada parte del juego, 
+una escena para el menú principal, que incluye el navegador de mundos, edición de personaje, menú de obtención 
+de moneda de juego, etc. Y luego otra escena para el juego en sí, donde se desarrolla la experiencia de juego 
+una vez que el usuario ha seleccionado un mundo y ha comenzado a jugar.
+
+\vspace{0.25cm}
+
+Volviendo a la configuración de la escena del juego, Cada objeto/entidad carga sus datos por su propio sistema 
+categorizado de \textit{loaders}. Una vez que se ha establecido la conexión con el servidor y 
+se han cargado los recursos necesarios, el \textit{Entry Point} del juego se encarga de configurar todos los 
+objetos presentes en el juego mediante \textit{linkers}.
+Estos son clases que se encargan de vincular al objeto/entidad del mundo con su representación visual y lógica 
+en la escena.
+
+Es una capa de \textit{“composition wiring”}: toma objetos de red y los convierte en entidades 
+jugables con su \textit{UI} y comportamiento. Esto permite inyectar dependencias y controllers en cada tipo 
+de entidad, diferenciar entre jugador local y otros clientes, y dejar las entidades listas para que el sistema 
+de juego las maneje sin necesidad de acoplar la lógica de red o de \textit{UI} directamente en ellas, respondiendo 
+a lo que el servidor envía y a lo que el jugador hace.
+
+Dentro de este \textit{liking} un elemento importante, si bien declarado en el módulo de \texttt{Core}, se 
+agrega a cada entidad el componente \textit{network adapter}, que actúa como el puente directo entre esa 
+entidad y la red.
+Para el jugador local, permite que esa entidad envíe acciones y transacciones al servidor. Para entidades 
+remotas, permite recibir eventos del servidor y procesarlos localmente.
+De esta forma así llega información como ataques, diálogos, portales, interacciones, etc. y se procesan en 
+cada entidad para que el jugador vea la respuesta a sus acciones o a las acciones de otros jugadores.
+
+Con esto se logra manejar el comportamiento de cada entidad desde la lógica en el servidor, explicado en su sección, 
+teniendo el control según su \textit{NetId} almacenada en su \textit{network adapter} de cada entidad.
+De esta forma el cliente solo se encarga de representar y ejecutar lo que el servidor le indica.
+
+Para el módulo \texttt{Common} dentro de \texttt{Gameplay}, los \textit{State Storage} que contiene estados 
+compartidos para personajes, ítems, inventario, etc. Estos componentes guardan el estado replicado o 
+usado en red y son comunes a ambos servidor y cliente. Por ejemplo, el estado de salud de un personaje, su 
+posición, o el contenido de un inventario.
+
+Además en este módulo en común, se encuentran los objetos llamados \textit{Prefabs} que son objetos 
+instanciables en la escena, que se comparten para tener una estructura similar y componentes basicos de red 
+entre el cliente y servidor, y luego cada parte configura correctamente sus componentes o sistemas.
+
+\paragraph{Cliente: User Interface}
+
+El módulo de \textit{UI} del cliente es la capa que entrega toda la experiencia visual e interactiva del jugador 
+fuera de la simulación de jugabilidad. Su función es presentar información, opciones y controles al 
+usuario, y traducir las acciones de la interfaz en eventos que el resto del cliente consume.
+
+Esto incluye elementos que visualizan el estado del juego, como barras de salud, inventario, 
+menús de misiones, diálogos, etc. También está involucrado todo el flujo de navegación como el menú principal, 
+selección de mundo, y el contenido gráfico interactuable o no dentro de la escena.
+
+Se integra con el resto del cliente mediante eventos y controladores de cada elemento de \textit{UI}. De esta forma, 
+al tener la \textit{UI} en su propio módulo, el cliente puede cambiar la presentación sin tocar la lógica de 
+\textit{gameplay} o red, por lo que no hay dependencias entre la lógica de juego en el módulo \texttt{Gameplay} 
+y la presentación visual.
+
