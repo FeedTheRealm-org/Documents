@@ -2,37 +2,36 @@
 
 El servidor del juego es el componente con autoridad sobre la lógica del mundo: procesa las acciones de los jugadores, mantiene el estado de
 las entidades y distribuye las actualizaciones a los clientes conectados. Está implementado como un proyecto Unity compilado en modo
-\textit{headless} (sin interfaz gráfica) y se ejecuta dentro de contenedores Docker desplegados dinámicamente por el Core Service. Cada
-instancia es responsable de una única zona del mundo, por lo que un mundo con múltiples zonas implica múltiples instancias ejecutándose en
-paralelo.
+\textit{headless} (sin interfaz gráfica) y se ejecuta dentro de contenedores Docker desplegados dinámicamente por el \textit{Core Service}. Cada
+instancia es responsable de una única zona del mundo, por lo que un mundo con múltiples zonas implica que se ejecuten varias instancias de servidor en paralelo, 
+cada una gestionando su propia zona y los jugadores que se encuentren en ella.
 
 \paragraph{Server: Inicializacion}
 Cada instancia de zona del servidor se ejecuta dentro de un contenedor Docker. La imagen se construye a partir de una base de Debian mínima
-sobre la cual se instalan las dependencias necesarias para ejecutar el binario del servidor de Unity en modo headless ,sin interfaz gráfica,,
-junto con la herramienta de línea de comandos de AWS, utilizada para obtener credenciales de forma segura desde el servicio de parámetros de
-Amazon (SSM) en el momento del arranque. El binario del servidor, compilado previamente, se copia dentro de la imagen junto con un script de
-entrada (\textit{entrypoint}). La imagen expone dos puertos: el 7777 para el tráfico del juego (TCP y UDP) y el 7778 para el
+sobre la cual se instalan las dependencias necesarias para ejecutar el binario del servidor de Unity en modo \textit{headless},
+junto con las credenciales requieridas para obtener recursos desde el \textit{Core Service} en el momento del arranque.
+La imagen expone dos puertos: el 7777 para el tráfico del juego (\textit{KCP} y \textit{UDP}) y el 7778 para el
 \textit{healthcheck}. Al iniciar el contenedor, el servidor recibe como argumentos el identificador del mundo (\texttt{world-id}) y de la zona
  (\texttt{zone-id}) que debe cargar.
 
 \vspace{0.25cm}
 
-Con esos parámetros, el servidor ejecuta una secuencia de inicialización a través de una serie de \textit{Loaders}: se comunica con el
-servicio central (\textit{Core Service}) para obtener la información relevante de la zona (\textit{Zone Data}) y de los objetos no colocables
-(\textit{Creatables Data})y la utiliza para cargar todas las entidades y configuraciones de la zona.
+Con esos parámetros, el servidor inicia una secuencia de inicialización mediante varios \textit{Loaders}: 
+consulta al \textit{Core Service} la información de la zona, por ejemplo, los elementos colocables 
+(\textit{Placeables}) y los no colocables (\textit{Creatables}), y la utiliza para cargarla.
 
 \vspace{0.25cm}
 
-Una vez completada la carga, el servidor establece la conexión con la base de datos, levanta el servidor de \textit{healthcheck} y 
-notifica al \textit{core service} que la zona está activa y lista para recibir jugadores. En caso de fallo en cualquier etapa, 
-el proceso se cancela y el servidor notifica igualmente al \textit{core service} del estado fallido. Al apagarse, 
-el proceso inverso ocurre: el servidor notifica al \textit{core service} que la zona pasó a estado \textit{offline}.
+Una vez completada la carga, el servidor establece la conexión con la base de datos no relacional que persiste la información del jugador en el mundo (ultima posición en la zona, inventario de ese mundo, etc) , levanta el servidor de \textit{healthcheck} y 
+notifica al \textit{Core Service} que la zona está activa y lista para recibir jugadores. En caso de fallo en cualquier etapa, 
+el proceso se cancela y el servidor notifica igualmente al \textit{Core Service} del estado fallido. Al apagarse, 
+el proceso inverso ocurre: el servidor notifica al \textit{Core Service} que la zona pasó a estado \textit{offline}.
 
 \paragraph{Server: Game Loop}
 
-Otro elemento primordial en la capa de \textit{Core} es la implementación del sistema del \textit{GameLoop}. 
+Otro elemento primordial en la capa de \textit{Core} es la implementación del sistema del \textit{GameLoop}.
 Este sistema se encarga de manejar el ciclo de actualización del juego, procesando las acciones de los jugadores, mediante 
-el popeo de eventos del \textit{WorldMonitor}. El world monior es 
+el popeo de eventos del \textit{WorldMonitor}.
 
 \paragraph{Server: Game Tick}
 
@@ -92,7 +91,7 @@ movimiento se detenga automáticamente cuando el personaje muere.
 A continuación se describen los distintos tipos de objetos de red que componen el mundo del juego.
 \begin{itemize}
     \item \textbf{Jugador (\textit{Player})}:
-    representa a un usuario conectado en el mundo.Es la entidad principal del juego: puede moverse, interactuar con otros objetos, 
+    representa a un usuario conectado en el mundo. Es la entidad principal del juego: puede moverse, interactuar con otros objetos, 
     equiparítems, completar quests y acumular recursos.
     Su estado (posición, salud, stamina, ítemequipado) se mantiene sincronizado en tiempo real con todos los 
     clientes presentes en la zona, y se persiste en base de datos para conservarlo entre sesiones.
