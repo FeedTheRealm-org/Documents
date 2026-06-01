@@ -74,10 +74,15 @@ Todo estos recursos nombrados, previamente se inicializan e inyectan los recurso
 en el contenedor de dependencias de \textit{VContainer}, bajo clases inicializadoras de cada escena.
 Con respecto a lo nombrado sobre escenas, en el cliente se manejan distintas escenas para cada parte del juego, 
 una escena para el menú principal, que incluye el navegador de mundos, edición de personaje, menú de obtención 
-de moneda de juego, etc. Y luego otra escena para el juego en sí, donde se desarrolla la experiencia de juego 
-una vez que el usuario ha seleccionado un mundo y ha comenzado a jugar.
+de moneda de juego, etc. Y luego otra escena para el juego una vez dentro del mundo, donde se desarrolla la 
+experiencia de juego.
 
-\vspace{0.25cm}
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{img/08-implemented-solution/game/client-init.jpg}
+\caption{Visión general del flujo de inicialización del cliente.}
+\end{figure}
+
 
 Volviendo a la configuración de la escena del juego, Cada objeto/entidad carga sus datos por su propio sistema 
 categorizado de \textit{loaders}. Una vez que se ha establecido la conexión con el servidor y 
