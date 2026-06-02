@@ -5,9 +5,10 @@ las ideas principales tanto de los primeros pasos para comenzar con el diseño d
 y los repositorios a crear junto a sus \textit{templates} de directorios y \textit{pipelines} necesarios. En esta etapa 
 también se logró estimar las fases del proyecto, como dividir módulos por lógica, features en las fases, y realizar un 
 \textit{brainstorming} sobre features obligatorias y secundarias que existirían en la totalidad del proyecto.
-\vspace{0.25cm}
 
-Para esto utilizamos múltiples herramientas, las principales fueron:
+\subsection{Herramientas de planificación, visualización y Comunicación}
+
+Para la planificación, visualización y comunicación del proyecto se utilizaron múltiples herramientas:
 \vspace{0.25cm}
 
 \textbf{\underline{Miro}}: para la creación y visualización más ``amigable" de las user stories propuestas, creando un 
@@ -32,7 +33,7 @@ requeridas para cumplir los objetivos del proyecto en sí.
 entre el grupo y el tutor, se empezó a migrar las mismas user stories del USM diagramado en el Miro. Luego en el comienzo 
 de cada iteración, de duración de dos semanas, se revisa que las user stories que deben estar en progreso en esa iteración 
 o si existe una siguiente en la misma versión, todas ellas deben tener una estimación aproximada de dificultad, si supera un 
-cierto umbral de valor de estimación, debe dividirse en otra/s o en substories. 
+cierto umbral de valor de estimación, debe dividirse en otra/s o en substories.
 \vspace{0.25cm}
 
 También se corrobora con consenso grupal cuáles son los criterios de aceptación (CA) utilizando el formato o método 
@@ -49,20 +50,9 @@ futuro junto con otras para determinar si entra en el alcance del proyecto.
     \label{fig:github-projects}
 \end{figure}
 
-Por lo general se define un solo asignado a cada user story pero hubo casos donde se requirió suplantar al asignado 
-principal por diferentes motivos que no pudo continuar, o se agregó un asignado más ya sea por una dificultad inesperada 
-o que otra US quedó parcialmente acoplada/relacionada a la dicha. La metodología implementada en todos los casos con la 
-salvedad en alguna excepción de prioridades en las US, tomar una US implicaría que el asignado a ella debe implementar 
-todas las características que se requieran en los distintos servicios para que esté correctamente funcionando. Tomamos 
-por tema de seguridad la regla de que un pull request antes de ser completado debe ser probado por otro integrante del 
-grupo que no sea el asignado a la US relacionada, ya que la herramienta de Unity al versionar sus archivos pueden generar 
-incongruencias o errores y puede llegar a no funcionar sin las configuraciones locales del integrante asignado, por 
-distintos motivos.
-\vspace{0.25cm}
-
 \textbf{\underline{Excalidraw}}: para realizar esquemas, croquis, posibles diseños de UI y diagramas de funcionamiento 
 del flujo de sistemas más complejos. Algunos son públicos para complementar la documentación y otros son privados con el 
-fin de visualizar ideas entre los integrantes. 
+fin de visualizar ideas entre los integrantes.
 \vspace{0.25cm}
 
 \begin{figure}[h]
@@ -77,13 +67,6 @@ ejecuciones y variables de entorno locales o temporales para comunicar cambios e
 sistemas del proyecto.
 \vspace{0.25cm}
 
-Relacionado a estas metodologías que tomamos como gestión, se estableció ya desde el principio de desarrollo del proyecto, 
-que deben haber 3 reuniones semanales fijas en cierto horario, generalmente a las 14hrs los dias lunes, miercoles y viernes, 
-con el fin de actualizar los avances de todos los integrantes del grupo, hacer consenso de decisiones de diseño en las 
-diferentes US y hacer tareas de planificación como se ha nombrado antes en fechas de comienzo/fin de iteración y 
-comienzo/fin de nueva versión.
-\vspace{0.25cm}
-
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.85\textwidth]{img/discord.jpg}
@@ -91,7 +74,27 @@ comienzo/fin de nueva versión.
     \label{fig:discord}
 \end{figure}
 
-También como se ha nombrado las versiones las hemos separado aproximadamente una por mes, para poder tener parámetros del 
+Relacionado a estas metodologías que tomamos como gestión, se estableció ya desde el principio de desarrollo del proyecto, 
+que deben haber 3 reuniones semanales fijas en cierto horario, generalmente a las 14hrs los dias lunes, miercoles y viernes, 
+con el fin de actualizar los avances de todos los integrantes del grupo, hacer consenso de decisiones de diseño en las 
+diferentes US y hacer tareas de planificación como se ha nombrado antes en fechas de comienzo/fin de iteración y 
+comienzo/fin de nueva versión.
+\vspace{0.25cm}
+
+Por lo general se define un solo asignado a cada user story pero hubo casos donde se requirió suplantar al asignado 
+principal por diferentes motivos que no pudo continuar, o se agregó un asignado más ya sea por una dificultad inesperada 
+o que otra US quedó parcialmente acoplada/relacionada a la dicha. La metodología implementada en todos los casos con la 
+salvedad en alguna excepción de prioridades en las US, tomar una US implicaría que el asignado a ella debe implementar 
+todas las características que se requieran en los distintos servicios para que esté correctamente funcionando. Tomamos 
+por tema de seguridad la regla de que un pull request antes de ser completado debe ser probado por otro integrante del 
+grupo que no sea el asignado a la US relacionada, ya que la herramienta de Unity al versionar sus archivos pueden generar 
+incongruencias o errores y puede llegar a no funcionar sin las configuraciones locales del integrante asignado, por 
+distintos motivos.
+\vspace{0.25cm}
+
+\subsection{Gestión de iteraciones y versiones}
+
+Como se mencionó anteriormente, las versiones las hemos separado aproximadamente una por mes, para poder tener parámetros del 
 estado del proyecto a lo largo del tiempo y poder establecer un avance de él de forma incremental, ya que hay US que son 
 dependientes una de otras y deben realizarse en cierto orden. Además, cada versión contiene dos iteraciones de dos semanas 
 de duración aproximadamente, pudo llegar a extenderse la duración debido a problemas de demora general del equipo por 
@@ -107,8 +110,8 @@ de solución de \textit{bugs} y pulido de features y UI, dependiendo de la grave
 riesgos o si ese \textit{bug} puede afectar otra US y desencadenar fallas difíciles de detectar.
 \vspace{0.25cm}
 
-Cómo se mencionó anteriormente se decidió que las últimas dos iteraciones del total de ellas, sean destinadas a la última 
-etapa de pulir últimos cambios y desarrollo de informe. Con últimos cambios se infiere a soluciones de \textit{Bugs} 
+Como se mencionó anteriormente se decidió que las últimas dos iteraciones del total de ellas, sean destinadas a la última 
+etapa de pulir últimos cambios y desarrollo de informe. Con últimos cambios se infiere a soluciones de \textit{bugs} 
 pendientes, desarrollar aspectos a mejorar que en su momento se obviaron para tener US con funcionalidad suficiente, mejoras 
 en la UI pendientes o para perfeccionar, features opcionales que mejoran la jugabilidad de los clientes y optimizaciones 
 importantes para mejorar el rendimiento ya sea de los clientes como de los servidores.
@@ -121,13 +124,15 @@ una nueva US con las características a desarrollar pendientes en la próxima it
 la última etapa del proyecto.
 \vspace{0.25cm}
 
-Con respecto a las etapas del proyecto, se organizaron de forma de que para al entrega intermedia se tenga algunas o las 
+Con respecto a las etapas del proyecto, se organizaron de forma de que para la entrega intermedia se tenga algunas o las 
 mayorías características principales del proyecto funcionando y también la mayor parte de lo pactado con el tutor y lo 
-escrito en la propuesta entregada antes de comenzar el proyecto. Se podría decir que logró un buen resultado con gestión 
+escrito en la propuesta entregada antes de comenzar el proyecto. Se podría decir que logró un buen resultado con la gestión 
 implementada, ya que se llegó a la etapa final con todas las características y funcionalidades principales esperadas 
 completadas. Y además las US desestimadas no fueron en general features determinantes o muy relevantes con respecto a 
 las realizadas sino más bien extras o complementarias.
 \vspace{0.25cm}
+
+\subsection{Automatización del despliegue}
 
 Con respecto al tema de grado de automatización de despliegue, en nuestro caso hubo complicaciones en ciertos aspectos 
 como en el caso específico de la automatización de despliegue del sistema de servidores, ya que como se requiere de la 
