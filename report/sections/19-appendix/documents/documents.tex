@@ -15,7 +15,7 @@ El repositorio está organizado de la siguiente manera:
     \item \textbf{\texttt{Makefile}}: expone los comandos principales para construir el entorno y compilar los documentos.
     \item \textbf{\texttt{Dockerfile}}: define la imagen Docker que contiene el entorno \LaTeX{} necesario para la compilación, 
     evitando dependencias locales.
-    \item \textbf{\texttt{generar\_docs.py}}: script Python auxiliar para la generación de documentos.
+    \item \textbf{\texttt{generate\_docs.py}}: script Python auxiliar para la generación de documentos.
     \item \textbf{\texttt{.github/workflows/}}: contiene las definiciones del \textit{pipeline} de CI/CD que automatiza 
     la compilación y publicación.
 \end{itemize}
@@ -35,13 +35,7 @@ git push --tags
 \end{verbatim}
 
 Una vez ejecutado el \textit{pipeline}, los PDFs compilados quedan disponibles públicamente en la sección de \textit{Releases} 
-del repositorio, accesibles mediante una URL de la forma:
-
-\begin{verbatim}
-https://github.com/FeedTheRealm-org/Documents/releases/tag/v1.0.0
-\end{verbatim}
-
-La compilación se realiza dentro de un contenedor Docker para no requerir una instalación local de \LaTeX{}. Los comandos 
+del repositorio. La compilación se realiza dentro de un contenedor Docker para no requerir una instalación local de \LaTeX{}. Los comandos 
 disponibles a través del \texttt{Makefile} son:
 \vspace{0.25cm}
 
