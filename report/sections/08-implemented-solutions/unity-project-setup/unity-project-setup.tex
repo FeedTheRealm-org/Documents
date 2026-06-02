@@ -48,8 +48,32 @@ El proyecto de \textit{Game} cuenta además con dos módulos adicionales exclusi
 \subsubsection{Injección de dependencias con VContainer}
 
 \textbf{VContainer}: Librería de inyección de dependencias para Unity utilizada como contenedor 
-  de inversión de control (IoC) del sistema. Permite declarar y resolver dependencias de forma explícita, 
-  desacoplando la construcción de objetos de su lógica de negocio. Esto facilita la testabilidad de los 
-  componentes, reduce el acoplamiento entre módulos y centraliza la configuración del ciclo de vida de 
-  los objetos, reemplazando el uso de singletons y referencias estáticas propias de proyectos Unity 
-  sin arquitectura definida.
+de inversión de control (IoC) del sistema. Permite declarar y resolver dependencias de forma explícita, 
+desacoplando la construcción de objetos de su lógica de negocio. Esto facilita la testabilidad de los 
+componentes, reduce el acoplamiento entre módulos y centraliza la configuración del ciclo de vida de 
+los objetos, reemplazando el uso de singletons y referencias estáticas propias de proyectos Unity 
+sin arquitectura definida.
+
+\subsection{Core}
+
+El primer módulo base para cada proyecto, tanto \texttt{Game} como \texttt{World Editor} es el \texttt{Core}.
+En ambos, está conformado principalmente por clases que perduran en memoria durante la escena y pueden ser 
+utilizadas por múltiples recursos. 
+
+Cada proyecto tiene sus respectivos \textit{Entry Points}, que se encargan de iniciar e instanciar los 
+recursos necesarios para el funcionamiento del proyecto, como servicios, gestores, controladores, 
+y preparar la escena para su funcionamiento.
+
+\vspace{0.25cm}
+
+Dentro de estos hay elementos de como datos/valores fijos ya inicialmente configurados para el correcto 
+funcionamiento. Por otro lado también otro recursos importantes son los eventos. 
+Todos los eventos formalizan un \textit{event channel}, que es un canal de comunicación entre distintos 
+componentes o sistemas, invocando y suscribiendose a estos eventos, de esta forma se evita el acoplamiento
+entre clases.
+
+\vspace{0.25cm}
+
+Más adelante se describirá con más detalle la implementación del cliente, servidor y \texttt{World Editor}, 
+con respecto a sus módulos restantes, pero la estructura base que contiene \texttt{Core}, de 
+cada uno de estos proyectos, en esencia es la misma.

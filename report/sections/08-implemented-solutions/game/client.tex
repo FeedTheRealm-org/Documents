@@ -1,11 +1,5 @@
 \subsubsection{Cliente}
 
-Como se habló de las capas de la arquitectura del sistema del juego, éste se divide principalmente en dos: 
-cliente y servidor, cada una con su propia lógica y responsabilidades. El cliente es responsable de la 
-experiencia del usuario, incluyendo la representación visual, la interacción y la comunicación con el 
-servidor. El servidor, por otro lado, maneja la lógica del juego, la gestión de datos y la coordinación 
-entre múltiples clientes.
-
 En esta sección se describirá la implementación del cliente del juego, detallando su estructura, componentes 
 y cómo se integra con el resto del sistema. Se explicará la organización del proyecto en \texttt{Unity}, la 
 arquitectura de sus módulos, la comunicación con el servidor y las herramientas utilizadas para su desarrollo.
@@ -18,24 +12,7 @@ que se encarga de la representación visual y la interacción del usuario. Para 
 
 \paragraph{Core}
 
-El primer módulo base, el \texttt{Core} del cliente, está conformado principalmente por clases que perduran 
-en memoria durante la escena y pueden ser utilizados por múltiples recursos.
-
-Dentro de estos hay elementos de como datos/valores fijos ya inicialmente configurados para el correcto 
-funcionamiento. Por otro lado también otros recursos importantes son los eventos que utiliza el cliente. 
-Todos los eventos formalizan un \textit{event channel}, que es un canal de comunicación entre distintos 
-componentes del cliente, donde se define para comunicar cambios entre los componentes, invocando y 
-suscribiendose a estos eventos.
-
-Estos elementos se inyectan con \texttt{VContainer}, lo que mejora la gestión de dependencias, 
-la modularidad y elimina la necesidad de usar \texttt{Unity} para asignar componentes. 
-Así el código queda desacoplado: las clases no conocen a otras ni a quién llegan sus eventos, 
-compartiendo solo la lógica necesaria. Esto mantiene el código limpio y evita que cambios en un 
-componente afecten a otros.
-
-\vspace{0.20cm}
-
-Otro elemento primordial en la capa de \texttt{Core} es la implementación del sistema de inputs del cliente, 
+Un elemento primordial en la capa de \texttt{Core} del cliente es la implementación del sistema de inputs del cliente, 
 el cual se basa en el sistema de inputs de \texttt{Unity}, pero con una capa de abstracción que permite una mayor 
 flexibilidad y modularidad. Este sistema de inputs se integra con el resto del cliente a través de eventos, 
 lo que permite que cualquier componente pueda reaccionar a las acciones del usuario sin necesidad de conocer 
