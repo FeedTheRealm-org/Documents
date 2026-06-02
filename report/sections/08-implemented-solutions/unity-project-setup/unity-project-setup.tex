@@ -1,7 +1,7 @@
-Unity es el motor de desarrollo utilizado para ambos módulos principales del proyecto. El \textit{World Editor} (Creador de mundos) y el \textit{Game}
-(proyecto de juego), que agrupa el cliente y el servidor en un mismo proyecto Unity. Se desarrollan como 
+Unity es el motor de desarrollo utilizado para ambas aplicaciones principales del proyecto. El \textit{World Editor} (Creador de mundos) por un lado y el \textit{Game}
+(proyecto de juego), que agrupa el cliente y el servidor en un mismo proyecto de Unity por otro. Se desarrollan como 
 proyectos independientes, cada uno con su propia configuración, assets y código. Para compartir estructuras 
-de datos comunes entre ambos proyectos, se utiliza un submódulo compartido denominado \textit{Shared Package}, 
+de datos comunes entre ambos proyectos, se utiliza un submódulo o paquete compartido denominado \textit{Shared Package}, 
 que centraliza los DTOs e implementaciones de servicios que realizan llamadas externas al \textit{Core Service}, 
 evitando la duplicación de código.
 
@@ -23,15 +23,15 @@ cruzadas entre ambos.
 A continuacion se describen las responsabilidades de cada módulo:
 
 \begin{itemize}
-  \item \textbf{Core}: Contiene la lógica central, librerias, interfaces y utilidades para que el módulo de Gameplay funcione. Esto incluye la gestión de repositorios internos, la comunicación entre distintos sistemas.
+  \item \textbf{Core}: Contiene la lógica central, librerías, interfaces y utilidades para que el módulo de Gameplay funcione. Esto incluye la gestión de repositorios internos y la comunicación entre distintos sistemas lógicos.
   \item \textbf{Gameplay}: Contiene la lógica de negocio en tiempo de ejecución, como la manipulación de objetos, comportamiento de entidades y reglas de juego.
   \item \textbf{User Interface}: Incluye todos los elementos visuales, como ventanas, paneles, menús y herramientas de usuario.
 \end{itemize}
 
-El código contenido dentro de estos módulos, pueden contener de otras capas pero solo de forma incremental, es decir:
+El código contenido dentro de estos módulos, pueden acceder a otros y tenerlos como dependencia, pero solo en el siguiente orden:
 
 \begin{center}
-$Core \rightarrow Gameplay \rightarrow UI.$
+    $Core \leftarrow Gameplay \leftarrow UI$ \textit{(e.g. Gameplay tiene como dependencia a Core)}
 \end{center}
 
 El proyecto de \textit{Game} cuenta además con dos módulos adicionales exclusivos de ese contexto:
@@ -42,19 +42,21 @@ El proyecto de \textit{Game} cuenta además con dos módulos adicionales exclusi
   lados, como utilidades, contratos, canales de eventos y otras definiciones compartidas.
   \item \textbf{Bot}: presente tanto en \textit{Core} como en \textit{Gameplay}, este módulo permite 
   desplegar bots en entornos de prueba de estrés, simulando múltiples jugadores realizando acciones 
-  simultáneas en un mismo servidor para evaluar el rendimiento del sistema bajo alta carga.
+  simultáneas en un mismo servidor para evaluar el rendimiento del sistema bajo alta carga. 
+        Se compila como programa \textit{lightweight} aislado.
 \end{itemize}
 
-\subsubsection{Injección de dependencias con VContainer}
+\subsubsection{Inyección de dependencias con \textit{VContainer}}
 
 \textbf{VContainer}: Librería de inyección de dependencias para Unity utilizada como contenedor 
 de inversión de control (IoC) del sistema. Permite declarar y resolver dependencias de forma explícita, 
-desacoplando la construcción de objetos de su lógica de negocio. Esto facilita la testabilidad de los 
+desacoplando la construcción de objetos de su lógica de negocio. Esto facilita las pruebas de los 
 componentes, reduce el acoplamiento entre módulos y centraliza la configuración del ciclo de vida de 
 los objetos, reemplazando el uso de singletons y referencias estáticas propias de proyectos Unity 
 sin arquitectura definida.
 
-\subsubsection{Core}
+% TODO(fix): redundante con lo de core, vale la pena mencionar tema **Initiators** y Entrypoints, lo demas no. e.g. [Manejo del flujo de arranque]
+\subsubsection{Manejo del flujo de inicialización}
 
 El primer módulo base para cada proyecto, tanto \texttt{Game} como \texttt{World Editor} es el \texttt{Core}.
 En ambos, está conformado principalmente por clases que perduran en memoria durante la escena y pueden ser 
@@ -74,6 +76,6 @@ entre clases.
 
 \vspace{0.25cm}
 
-Más adelante se describirá con más detalle la implementación del cliente, servidor y \texttt{World Editor}, 
+Más adelante se describirá con más detalle la implementación del cliente, servidor y editor de mundos, 
 con respecto a sus módulos restantes, pero la estructura base que contiene \texttt{Core}, de 
 cada uno de estos proyectos, en esencia es la misma.
