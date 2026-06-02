@@ -60,3 +60,69 @@ existe la posibilidad de conectar a diferentes personas a través de los chats, 
 de amigos o grupos de amigos de forma presencial, desalentando la falta de sociabilización del último tiempo.
 
 \subsection{Impacto Ambiental}
+
+Si bien el proyecto presenta los impactos sociales y económicos descritos anteriormente, su desarrollo y operación no 
+están exentos de consecuencias ambientales. Al tratarse de un videojuego de tipo MMO RPG que requiere infraestructura de 
+cómputo en la nube de forma continua, el consumo energético asociado constituye la principal fuente de impacto ambiental 
+del proyecto.
+\vspace{0.25cm}
+
+La infraestructura del proyecto se encuentra desplegada en \textbf{\textit{Amazon Web Services (AWS)}}, operando principalmente en 
+la región \textit{US East (Ohio)}, como mencionamos antes. Las emisiones de gases de efecto invernadero (GEI) fueron 
+medidas a través de \textbf{\textit{AWS Sustainability}} (versión de modelo v3.0.1), herramienta oficial de Amazon que aplica la 
+metodología del \textit{Greenhouse Gas Protocol}. Los valores se expresan en toneladas métricas de CO\textsubscript{2} 
+equivalente (MTCO\textsubscript{2}e) e integran los alcances (\textit{Scopes}) 1, 2 y 3 definidos por dicho protocolo. 
+Cada \textit{scope} se refiere a diferentes categorías de emisiones, de acuerdo con la documentacion de \textit{AWS Sustainability}.
+\vspace{0.25cm}
+
+\begin{itemize}
+  \item \textbf{\textit{Scope 1}}: Emisiones directas procedentes de fuentes propias o controladas.
+  \item \textbf{\textit{Scope 2}}: Emisiones indirectas derivadas de la producción de energía adquirida.
+  \item \textbf{\textit{Scope 3}}: Emisiones indirectas (no incluidas en el alcance 2) que se producen en la cadena de valor de la 
+  empresa informante.
+\end{itemize}
+
+Y puede ser calculado mediante dos métodos diferentes, de acuerdo con el documento titulado \textit{GHG Protocol Scope 2 Guidance (GHG Protocol, 2015, p. 104)},
+publicado por el \textit{Greenhouse Gas Protocol}. Dichos métodos son:
+\vspace{0.25cm}
+
+\begin{itemize}
+  \item \textbf{\textit{Location-Based Method (LBM)}}: Cuantificar las emisiones de GEI de \textit{Scope 2} basado en factores de emisión 
+  promedio de la generación de energía para ubicaciones definidas, incluyendo límites locales, subnacionales o nacionales.
+  \item \textbf{\textit{Market-Based Method (MBM)}}: Cuantificar las emisiones de GEI de \textit{Scope 2} basado en las emisiones de GEI emitidas 
+  por los generadores a los que el informante compra electricidad contractualmente, agrupadas con instrumentos, o instrumentos individuales.
+\end{itemize}
+
+El período analizado comprende los meses de febrero a abril de 2026, correspondientes al primer despliegue operativo del proyecto.
+Durante dicho período, las emisiones totales ascendieron a \textbf{0,00239 MTCO\textsubscript{2}e} bajo el método basado 
+en ubicación (\textit{Location-Based Method}, LBM), equivalentes a aproximadamente 2,39kg de CO\textsubscript{2}e. No obstante, 
+AWS compensa parte de su consumo eléctrico mediante instrumentos contractuales de energía renovable, lo que reduce las emisiones 
+netas a \textbf{0,00047~MTCO\textsubscript{2}e} bajo el método basado en mercado (\textit{Market-Based Method}, MBM), representando 
+una reducción del 80,4\%. A continuación se detalla el desglose por mes y servicio.
+\vspace{0.25cm}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{llS[table-format=1.6]S[table-format=1.6]S[table-format=1.6]}
+  \hline
+  \textbf{Mes} & \textbf{Servicio} & \textbf{Total LBM} & \textbf{Total MBM} & \textbf{Ahorro CFE} \\
+  \hline
+  Febrero 2026 & AmazonEC2 & 0,000153 & 0,000032 & 0,000121 \\
+  & Other     & 0,000261 & 0,000051 & 0,000210 \\
+  \hline
+  Marzo 2026   & AmazonEC2 & 0,000409 & 0,000083 & 0,000326 \\
+  & Other     & 0,000516 & 0,000102 & 0,000414 \\
+  \hline
+  Abril 2026   & AmazonEC2 & 0,000472 & 0,000090 & 0,000382 \\
+  & Other     & 0,000581 & 0,000111 & 0,000470 \\
+  \hline
+  \multicolumn{2}{l}{\textbf{Total}} & \textbf{0,002392} & \textbf{0,000469} & \textbf{0,001923} \\
+  \hline
+\end{tabular}
+\caption{Emisiones de GEI por mes y servicio (MTCO\textsubscript{2}e)}
+\end{table}
+
+Los valores registrados corresponden a una infraestructura en etapa inicial, con un uso creciente a lo largo del trimestre: 
+las emisiones mensuales LBM se incrementaron un 154\% entre febrero y abril, reflejando el escalado progresivo de los 
+servicios de cómputo (\textit{AmazonEC2}).
