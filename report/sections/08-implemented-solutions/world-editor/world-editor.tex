@@ -1,7 +1,7 @@
-El \textit{World Editor} es una herramienta de desarrollo destinada a la creación y edición de mundos dentro del juego.
-Está construido como un cliente de Unity que se comunica con el \textit{Core Service} a través del \textit{API Gateway}, siguiendo el mismo
-patrón de acceso que el cliente de juego. El editor permite a los desarrolladores y diseñadores crear nuevos mundos,
-modificar la configuración de zonas existentes, gestionar \textit{assets} y probar cambios en un entorno controlado antes de su despliegue en producción.
+El \textit{World Editor} es una herramienta destinada a la creación y edición de mundos dentro del juego.
+Está construido como un cliente de Unity que se comunica con el \textit{Core Service} a través del \textit{API Gateway}.
+El editor permite a los jugadores crear nuevos mundos,
+modificar la configuración de zonas existentes, gestionar \textit{assets}, publicar y mediante una subscripción activar dichos mundos.
 
 \vspace{0.25cm}
 
@@ -10,7 +10,6 @@ A continuación se enumera de forma resumida las funcionalidades principales de 
 \begin{itemize}
   \item Creación y publicación de mundos personalizados para la comunidad de Feed the Realm.
   \item Organización de múltiples zonas interconectadas dentro de cada mundo.
-  \item Publicación de zonas individuales o mundos completos.
   \item Colocación de estructuras, objetos de entorno, bases, rampas y assets decorativos.
   \item Personalización de materiales de suelo, colores y presentación visual.
   \item Definición de puntos de aparición de jugadores y áreas de spawn de enemigos.
@@ -20,7 +19,7 @@ A continuación se enumera de forma resumida las funcionalidades principales de 
   \item Creación y personalización de enemigos, NPCs y sus apariencias visuales.
   \item Configuración de árboles de diálogo de NPCs e interacciones con quests.
   \item Construcción de cadenas de quests completas con objetivos, recompensas e integración de diálogos.
-  \item Creación de objetivos basados en derrotas de enemigos, recolección de ítems, conversaciones, adquisición de oro y más.
+  \item Creación de objetivos basados en derrotas de enemigos o interacciones.
   \item Configuración de recompensas de quests incluyendo ítems y moneda.
   \item Creación de armas, consumibles, tablas de \textit{loot} y \textit{drops} (recompensas) de ítems.
   \item Asignación de tablas de \textit{drops} y recompensas de \textit{loot} a enemigos.
@@ -35,9 +34,7 @@ A continuación se enumera de forma resumida las funcionalidades principales de 
 
 Un mundo se compone de tres elementos principales.
 \begin{itemize}
-  \item \textbf{Zonas (\textit{Zones})}: Subdivisiones de un mundo, cada una alojada en una instancia de servidor independiente.
-  Esta separación permite escalar horizontalmente y distribuir la carga entre múltiples servidores, mientras el estado
-  del jugador se preserva de forma consistente al cambiar de zona.
+  \item \textbf{Zonas (\textit{Zones})}: Subdivisiones de un mundo con diferentes áreas.
   \item \textbf{Objetos Creables (\textit{Creatables})}: Objetos instanciados dinámicamente en tiempo de ejecución, como \textit{NPCs},
   enemigos o ítems. A diferencia de los \textit{Placeables}, no pueden ser posicionados manualmente durante la fase de diseño,
   sino que son generados por la lógica del juego.
@@ -47,13 +44,6 @@ Un mundo se compone de tres elementos principales.
 \end{itemize}
 
 \subsubsection{Zonas (\textit{Zones})}
-
-En los juegos \textit{MMORPG} es habitual distribuir el mundo entre múltiples
-servidores para poder sostener entornos de gran escala y una alta cantidad de jugadores simultáneos. Para abordar este
-desafío, cada mundo se divide en zonas independientes, cada una ejecutándose en su propia instancia de servidor dentro
-del clúster. El estado del jugador, incluyendo su inventario y progresión, se mantiene consistente a través de todas
-las zonas de un mismo mundo, permitiendo que el jugador transite entre ellas sin perder información.
-\vspace{0.25cm}
 
 Los creadores de mundos pueden crear nuevas zonas dentro del editor, configurando parámetros como la textura
 del terreno, la textura del cielo (\textit{Skybox}) y también configurar cómo un jugador se transporta de una zona a otra mediante
