@@ -1,4 +1,5 @@
-\subsection{Arquitectura}
+A continuación se detallan las decisiones de diseño de la arquitectura general del proyecto, con énfasis
+en los diferentes componentes y la solución propuesta para lograr una experiencia multijugador masiva a gran escala.
 
 \begin{figure}[H]
   \centering
@@ -7,53 +8,40 @@
   \label{fig:architecture}
 \end{figure}
 
-El sistema sigue una arquitectura orientada a servicios: los clientes de juego y editor de mundos, desarrollados en Unity, 
-se comunican con un único servicio central (Core Service) a través de un API Gateway que centraliza la autenticación, 
-autorización y enrutamiento de solicitudes. 
+El sistema sigue una arquitectura orientada a servicios, donde existe un único servicio llamado \textit{Core Service} 
+que se estructura como monolito modular (para su fácil extracción a servicios independientes), accesible a través 
+de un \textit{API Gateway} que actúa como punto de entrada único, proporcionando terminación TLS y enrutamiento de 
+solicitudes. 
+
 \vspace{0.25cm}
-El Core Service coordina la comunicación entre los clientes, el clúster de mundos y los sistemas de almacenamiento, y gestiona además el despliegue dinámico de instancias de mundo mediante Nomad. 
+
+Se cuenta con dos aplicaciones web: la \textit{Landing Page}, orientada a presentar el producto al público general, 
+y el \textit{Back Office}, destinado a la administración interna del sistema. Por otro lado, el Cliente de Juego permite 
+a los usuarios conectarse y jugar en cualquier mundo disponible, y el Editor de Mundos está destinado a la 
+creación y modificación de mundos.
+
 \vspace{0.25cm}
-Para la administración interna del sistema se desarrolló una aplicación web (Back Office), y como punto de entrada para 
-usuarios finales se cuenta con una Landing Page que brinda información general del proyecto y facilita la descarga del 
-cliente de juego y el editor de mundos. 
+
+El Core Service coordina la comunicación entre estos clientes, el clúster de mundos y los sistemas de 
+almacenamiento, que comprenden una base de datos relacional (PostgreSQL) para recursos del \textit{Core Service}, 
+una base de datos no relacional (MongoDB)  para la persistencia del estado de los jugadores, y 
+dos buckets de archivos para assets cosméticos y contenido general de los mundos.
+
 \vspace{0.25cm}
-Ambas aplicaciones web se comunican con el sistema a través del API Gateway, 
-siguiendo el mismo patrón de acceso que los clientes Unity. Por último, el monitoreo del sistema se delega a Datadog, 
-que centraliza métricas y logs de los distintos componentes de forma continua.
-\subsubsection{Componentes del sistema}
 
-\begin{itemize}
-  \item \textbf{Back Office}: Aplicación web desarrollada en React. Permite la administración interna del sistema.
-  \item \textbf{Landing Page}: Aplicación web desarrollada en React, con el fin de brindar a los usuarios finales un primer acercamiento al proyecto. Permite conocer una vista general de la propuesta y descargar el cliente de juego y el editor de mundos.
-  \item \textbf{World Editor}: Cliente de Unity destinado a la edición de mundos del juego.
-  \item \textbf{Client}: Cliente Unity que representa la sesión de juego del jugador.
-  \item \textbf{API Gateway}: Punto de entrada único al sistema. Recibe todas las solicitudes entrantes de los clientes, aplica autenticación, autorización y enrutamiento antes de derivarlas al Core Service.
-  \item \textbf{Core Service}: Servicio backend central que coordina todas las solicitudes entre clients, world servers y sistemas de almacenamiento.
-  \item \textbf{Worlds Cluster}: Clúster de instancias de mundo escalables (World 1 - Zone 1 hasta World N - Zone M) que representan zonas activas del juego y se comunican bidirecionalmente con el Core Service.
-  \item \textbf{Monitoring Service}: Servicio de monitoreo basado en Datadog. Observa el Core Service mediante métricas y alertas.
-  \item \textbf{Core Service Database}: Base de datos relacional (PostgreSQL) asociada al Core Service.
-  \item \textbf{Cosmetics Bucket}: Almacenamiento de objetos (S3-compatible) para assets cosméticos.
-  \item \textbf{Content Bucket}: Almacenamiento de objetos para contenido general del juego.
-  \item \textbf{Player Persistence}: Base de datos (MongoDB) para el almacenamiento del estado persistente de los jugadores.
-\end{itemize}
+En los juegos \textit{MMORPG} es habitual distribuir el mundo entre múltiples
+servidores para poder sostener entornos de gran escala y una alta cantidad de jugadores simultáneos. Para abordar este
+desafío, cada mundo se divide en zonas independientes, cada una ejecutándose en su propia instancia de servidor dentro
+del clúster de mundos, permitiendo escalar horizontalmente y que los jugadores establezcan conexiones directas.
+El estado del jugador, incluyendo su inventario y progresión, se mantiene consistente a través de todas
+las zonas de un mismo mundo haciendo uso de la Base de Datos MongoDB asignada al mismo,
+permitiendo que el jugador transite entre ellas sin perder información.
 
-\subsubsection{Patrones de diseño}
+Para llevar a cabo esto se necesita un despliegue dinámico de mundos y descubrimiento de los mismos por nombre (o identificador)
+que se aborda en la sección de \textbf{infraestructura}.
 
-\begin{itemize}
-  \item \textbf{API Gateway}: Todas las solicitudes externas pasan por un gateway centralizado que concentra las responsabilidades transversales del sistema: autenticación, autorización, rate limiting y enrutamiento, desacoplando estas preocupaciones del Core Service.
-  \item \textbf{Fachada central (Core Service)}: El Core Service actúa como fachada interna que unifica el acceso a los distintos subsistemas y mecanismos de persistencia, ocultando la complejidad de la infraestructura a los clientes.
-  \item \textbf{Separación de almacenamiento por tipo de dato}: Se utilizan distintos mecanismos de persistencia según la naturaleza del dato: base de datos relacional para datos estructurados del servicio, base de datos de documentos para el estado del jugador, y object storage para assets binarios.
-  \item \textbf{Clúster de instancias escalables}: Los mundos del juego se modelan como instancias independientes dentro de un clúster, permitiendo escalar horizontalmente la carga de sesiones activas.
-  \item \textbf{Observabilidad externa}: El monitoreo está desacoplado del Core Service mediante un agente Datadog, siguiendo el patrón \textit{observer} sin intrusión en la lógica de negocio.
-\end{itemize}
+\vspace{0.25cm}
 
-\subsubsection{Detalles de implementación}
+Por último, la observabilidad del sistema se delega 
+a Datadog, que centraliza métricas, logs y alertas de los distintos componentes de forma continua.
 
-\begin{itemize}
-  \item Los clientes web (Back Office y Landing Page) están implementados con React y se comunican con el sistema a través del API Gateway vía HTTP/REST.
-  \item Los clientes de juego (World Editor y Client) están desarrollados en Unity y acceden al sistema mediante el API Gateway, utilizando WebSockets o HTTP según el tipo de operación.
-  \item El API Gateway se ubica delante del Core Service y concentra la validación de tokens, el control de acceso y el enrutamiento de solicitudes.
-  \item El Worlds Cluster expone un punto de entrada propio que distribuye el tráfico entre las instancias de zona activas.
-  \item El Core Service es el único componente con acceso directo a todos los sistemas de almacenamiento, centralizando el control de acceso a datos.
-  \item El Monitoring Service recibe métricas del Core Service de forma asíncrona, sin afectar el flujo principal de solicitudes.
-\end{itemize}
