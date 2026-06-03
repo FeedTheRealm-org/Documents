@@ -164,14 +164,15 @@ de la carga real del sistema.
 
 Dado que la infraestructura de \textit{Feed the Realm} busca desplegar servidores bajo demanda y optimizar el uso de recursos disponibles,
 se consideró que Nomad ofrecía una mejor relación entre simplicidad operativa, previsibilidad del comportamiento y costo de mantenimiento, sin sacrificar las capacidades 
-necesarias para el crecimiento futuro del proyecto.
+necesarias para el crecimiento futuro del proyecto. En conjunto con Nomad se utilizara \textbf{HashiCorp Consul} que provee
+herramientas para monitoreo de contenedores por medio de \textit{healthchecks} y descubrimiento de servicios (\textit{Service Discovery}).
 
 \paragraph{Componentes principales}
 
 Las partes principales de la infraestructura son:
 \begin{itemize}
     \item \textbf{Nomad server node - EC2}: Este tipo de nodos son los que contienen mínimamente
-        una instancia de \textit{nomad server} y otra de \textit{consul server}. % TODO(fix): faltaria un breve resumen de que es consul no?
+        una instancia de \textit{nomad server} y otra de \textit{consul server}.
     \item \textbf{Nomad client node - EC2}: Este tipo de nodos contienen mínimamente una instancia
         \textit{nomad client} y otra de \textit{consul client}. A su vez son los que se utilizaran para desplegar los ftr-servers.
     \item \textbf{Buckets - S3}: Utilizados para almacenamiento de archivos de imágenes para cosméticos o ítems,
