@@ -1,6 +1,5 @@
 % TODO(reference): add archi section pointer
-En esta sección se detallan las decisiones infraestructurales tomadas para llevar la arquitectura previamente mencionada y
-abordada en la sección correspondiente a la práctica teniendo en cuenta el uso de recursos de las aplicaciones,
+En esta sección se detallan las decisiones infraestructurales tomadas para llevar la arquitectura previamente mencionada, a la práctica teniendo en cuenta el uso de recursos de las aplicaciones,
 el presupuesto del equipo y las necesidades actuales, a su vez permitiendo el escalamiento y crecimiento del proyecto.
 
 Por otro lado, se especifica el proceso de integración y despliegue de código de forma continua y por versiones,
@@ -8,10 +7,10 @@ como también las revisiones automatizadas de errores de código, inconsistencia
 
 \subsubsection{Proveedor de infraestructura como servicio (IaaS) elegido}
 
-Se optó por \textit{AWS (Amazon web services)} como plataforma principal para la infraestructura (o \textit{Cloud provider}) de \textit{Feed the Realm}
+Se optó por \textit{AWS (Amazon web services)} como plataforma principal para la infraestructura (\textit{Cloud provider}) de \textbf{Feed the Realm}
 debido a la flexibilidad frente a soluciones PaaS, alcance global, madurez del ecosistema y familiaridad por parte del equipo con sus herramientas.
-Durante la elección del proveedor también se consideraron alternativas como \textit{Linode}, \textit{Hetzner}, 
-\textit{GCP (Google cloud platform)} y \textit{Microsoft Azure}.
+Durante la elección del proveedor también se consideraron alternativas como Linode, Hetzner, 
+GCP \textit{(Google cloud platform)} y Microsoft Azure.
 
 Uno de los factores más relevantes fue la capacidad de construir una infraestructura altamente modular y flexible.
 En lugar de depender de un entorno excesivamente administrado o centrado únicamente en plataformas PaaS,
@@ -32,6 +31,11 @@ requiere inicialmente una infraestructura masiva, se buscó una plataforma que p
 sin necesidad de rediseñar componentes fundamentales.
 
 \subsubsection{CI/CD \& Workflows}
+
+El sistema cuenta con pipelines de integración y despliegue continuo (\textit{CI/CD}) implementados mediante 
+GitHub Actions, que automatizan el proceso de validación, construcción y despliegue de los distintos 
+componentes del sistema. Dado que el proyecto involucra tecnologías heterogéneas, cada componente cuenta con 
+su propio flujo de trabajo adaptado a sus particularidades técnicas.
 
 \paragraph{Core-service}
 
@@ -69,7 +73,7 @@ de subir la imagen al registro de contenedores, estas son las siguientes:
 \begin{itemize}
     \item \textbf{Build}: Se realiza la construcción per-se de la imagen utilizando docker y el \textit{Dockerfile}
         con el objectivo o \textit{'target'} correspondiente.
-    \item \textbf{ECR Login}: Se realiza la obtencion de un token \textit{OIDC (OpenID connect)} utilizando 
+    \item \textbf{Elastic Container Registry Login}: Se realiza la obtencion de un token \textit{OIDC (OpenID connect)} utilizando 
         a \textit{Github} como proveedor, para de esta forma poder utilizar \textit{AWS STS (security token service)}
         y verificar la identidad del pipeline obteniendo asi acceso al corresponiente rol de 
         \textit{IAM (identity access management)} que permite realizar la operacion de subida de la imagen al registro
@@ -123,24 +127,14 @@ los zoning servers (ftr-server) que se encuentran activos en ese momento.
 
 \subsubsection{Actualización de las aplicaciones 'Cliente'}
 
-En el caso de las aplicaciones 'Cliente', es decir, el editor de mundos y el juego (\textit{front-end}), al igual que con la imagen de docker de los servidores (\textit{ftr-server})
-estas no se compilan en un \textit{Pipeline} de integración continua debido a las limitaciones impuestas por \textit{Unity},
-sino que son compiladas por un miembro del equipo con sus diferentes perfiles de construcción, estos perfiles son:
+En el caso de las aplicaciones cliente, es decir, el editor de mundos y el juego, al igual que con la imagen 
+de docker de los servidores (\textit{ftr-server}), estas no se compilan en un pipeline de integración continua 
+debido a las limitaciones impuestas por Unity, sino que son compiladas manualmente por un miembro del equipo. 
+Por el momento solo se compilan para las plataformas de Windows y Linux.
 
-\begin{itemize}
-    \item Feed the Realm - Game
-    \begin{itemize}
-        \item Windows
-        \item Linux
-    \end{itemize}
-    \item Feed the Realm - World Editor
-    \begin{itemize}
-        \item Windows
-        \item Linux
-    \end{itemize}
-\end{itemize}
+\vspace{0.25cm}
 
-Luego de ser compiladas, se comprimen y se realiza un \textit{Release} de la nueva versión a través del sistema \textbf{backoffice} que se abordara en la correspondiente sección.
+Luego de ser compiladas, se comprimen y se realiza un \textit{Release} de la nueva versión a través del sistema \textit{Back Office} que se abordara en la correspondiente sección.
 De esta forma los usuarios tendrán acceso a la última versión disponible de las aplicaciones obteniéndolas de la página principal del juego.
 
 \subsubsection{Infraestructura}
@@ -155,7 +149,7 @@ como objetivo que los jugadores puedan establecer una conexión directa con el s
 La elección de \textbf{HashiCorp Nomad} como orquestador de cargas de trabajo respondió tanto a criterios operativos como económicos.
 
 Si bien \textbf{Kubernetes} constituye actualmente el estándar de facto para la orquestación de contenedores, muchas de sus capacidades están orientadas a entornos
-de gran escala y alta complejidad operativa, en el caso de \textit{Feed the Realm}, donde los servidores de juego representan sesiones activas con jugadores conectados
+de gran escala y alta complejidad operativa, en el caso de \textbf{Feed the Realm}, donde los servidores de juego representan sesiones activas con jugadores conectados
 en tiempo real, se priorizó un modelo de \textit{scheduling} más predecible y controlado.
 Kubernetes puede realizar procesos automáticos de re-balanceo, reprogramación o reemplazo de \textit{pods} cuando detecta cambios en la disponibilidad de recursos del clúster, y
 si bien este comportamiento resulta beneficioso para aplicaciones web sin estado (\textit{stateless}), puede provocar la finalización y recreación 
@@ -177,7 +171,7 @@ necesarias para el crecimiento futuro del proyecto.
 Las partes principales de la infraestructura son:
 \begin{itemize}
     \item \textbf{Nomad server node - EC2}: Este tipo de nodos son los que contienen mínimamente
-        una instancia de \textit{nomad server} y otra de \textit{consul server}.
+        una instancia de \textit{nomad server} y otra de \textit{consul server}. % TODO(fix): faltaria un breve resumen de que es consul no?
     \item \textbf{Nomad client node - EC2}: Este tipo de nodos contienen mínimamente una instancia
         \textit{nomad client} y otra de \textit{consul client}. A su vez son los que se utilizaran para desplegar los ftr-servers.
     \item \textbf{Buckets - S3}: Utilizados para almacenamiento de archivos de imágenes para cosméticos o ítems,
