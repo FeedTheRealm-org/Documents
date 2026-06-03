@@ -55,27 +55,21 @@ componentes, reduce el acoplamiento entre módulos y centraliza la configuració
 los objetos, reemplazando el uso de singletons y referencias estáticas propias de proyectos Unity 
 sin arquitectura definida.
 
-% TODO(fix): redundante con lo de core, vale la pena mencionar tema **Initiators** y Entrypoints, lo demas no. e.g. [Manejo del flujo de arranque]
 \subsubsection{Manejo del flujo de inicialización}
 
-El primer módulo base para cada proyecto, tanto \texttt{Game} como \texttt{World Editor} es el \texttt{Core}.
-En ambos, está conformado principalmente por clases que perduran en memoria durante la escena y pueden ser 
-utilizadas por múltiples recursos. 
+En todos los sistemas del proyecto, en \textit{Game} el \textit{client} y el servidor, y en el 
+\textit{World Editor}, existe un tipo de archivo esencial, que es el iniciador o \textit{initiator}. Este archivo 
+actúa como la raíz de composición (\textit{Composition Root}) de cada sistema. Su responsabilidad exclusiva 
+es recolectar, validar y registrar todas los recursos necesarios del juego dentro del contenedor de inyección 
+de dependencias antes de que la lógica principal comience a ejecutarse. 
+Esto incluye vincular servicios de red, gestores de interfaz, repositorios de datos y configuraciones globales.
 
-Cada proyecto tiene sus respectivos \textit{Entry Points}, que se encargan de iniciar e instanciar los 
-recursos necesarios para el funcionamiento del proyecto, como servicios, gestores, controladores, 
-y preparar la escena para su funcionamiento.
+Por otro lado, el archivo de punto de entrada, o \textit{EntryPoint}, es el orquestador del flujo de ejecución 
+inicial. Una vez que el \textit{Initiator} ha preparado todas las herramientas, el \textit{EntryPoint} 
+toma el control para configurar archivos principales del sistema, lanzar el flujo de autenticación del usuario, 
+gestionar la navegación de los menús y manejar la transición entre escenas, asegurando que todo ocurra en un 
+orden estrictamente controlado y asíncrono.
 
-\vspace{0.25cm}
-
-Dentro de estos hay elementos de como datos/valores fijos ya inicialmente configurados para el correcto 
-funcionamiento. Por otro lado también otro recursos importantes son los eventos. 
-Todos los eventos formalizan un \textit{event channel}, que es un canal de comunicación entre distintos 
-componentes o sistemas, invocando y suscribiendose a estos eventos, de esta forma se evita el acoplamiento
-entre clases.
-
-\vspace{0.25cm}
-
-Más adelante se describirá con más detalle la implementación del cliente, servidor y editor de mundos, 
-con respecto a sus módulos restantes, pero la estructura base que contiene \texttt{Core}, de 
-cada uno de estos proyectos, en esencia es la misma.
+Este enfoque evita el acoplamiento fuerte entre los distintos sistemas del juego, centralizando la 
+creación de objetos en un solo lugar. Para evitar que cada \textit{script} busque o instancie sus propias 
+dependencias, el contenedor se las proporciona automáticamente.
