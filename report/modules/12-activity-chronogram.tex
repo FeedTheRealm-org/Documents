@@ -1,1 +1,58 @@
-\section{Cronograma de las actividades realizadas}
+\section{Cronograma de actividades}
+
+A continuación se presenta el cronograma de actividades llevadas a cabo durante el desarrollo del proyecto, 
+elaborado en Miro como estimación inicial del proceso. Si bien surgieron inconvenientes que requirieron 
+ajustes y cambios de enfoque en algunos aspectos, el cronograma se mantuvo relativamente estable a lo 
+largo del desarrollo.
+
+\vspace{0.25cm}
+
+Como referencia se utilizó el modelo USM, donde los requisitos principales se organizaron verticalmente 
+y los features asociados a cada uno se distribuyeron de forma horizontal, permitiendo definir el backlog 
+de cada versión. Ocasionalmente se incorporaron features no planificados, ya sea por subestimar el alcance 
+de algunos requisitos o por la aparición de nuevas ideas consideradas relevantes para el producto. En caso 
+de no completar todos los features de una versión, estos se trasladaban a la siguiente con mayor prioridad.
+
+\vspace{0.25cm}
+
+Se planificaron 7 releases, desde la \textbf{v0.1.0} hasta la \textbf{v0.7.0}, donde cada una incorporaba un conjunto de 
+funcionalidades de complejidad creciente. A continuación se detalla un resumen de lo desarrollado en 
+cada release.
+
+\paragraph{v0.1.0}
+Primera versión del proyecto, orientada a establecer las bases técnicas del sistema. Se implementaron 
+las funcionalidades esenciales del juego como el inventario, el sistema de stamina, el daño a enemigos 
+y el spawn de los mismos. En paralelo, se desarrollaron pruebas de concepto para el modo multijugador 
+y la edición de terreno, junto con una interfaz inicial para el editor de mundos y la homepage. 
+También se incorporó la autenticación de usuarios mediante la creación e inicio de sesión de cuentas.
+
+\paragraph{v0.2.0}
+Esta versión consolidó la integración entre el editor de mundos y el cliente de juego. Se implementó 
+la publicación y carga de mundos, permitiendo que los jugadores pudieran unirse a mundos desde la 
+homepage. Se incorporaron funcionalidades de juego como la visualización de bolsas de botín, la 
+recolección de ítems, los drops de enemigos y el creador de personajes. A nivel de infraestructura, 
+se avanzó con el servidor headless en modo multijugador dedicado.
+
+\paragraph{v0.3.0}
+Versión centrada en la expansión del contenido jugable y las herramientas de creación. Se incorporó 
+el sistema de quests completo, incluyendo la aceptación, seguimiento y completado de misiones mediante 
+la derrota de enemigos e interacción con NPCs. Se agregaron armas, consumibles, tiendas y el sistema 
+de diálogos con NPCs. En el editor se habilitó la configuración de spawners, tablas de botín y precios 
+de ítems en oro y gemas. A nivel técnico, se migró el servidor dedicado de NetCode a Mirror y se 
+refactorizó la arquitectura del editor de mundos.
+
+\paragraph{v0.5.0}
+Versión dedicada principalmente a la estabilización y refactorización de los sistemas existentes. 
+Se reestructuraron los módulos de salud, ataque, dash, stamina, inventario, botín, spawners y diálogos. 
+Se integró Nomad para el despliegue dinámico de servidores y Datadog para la observabilidad del sistema. 
+Se incorporaron portales para el viaje entre zonas, la tienda de gemas con método de pago y la 
+inteligencia artificial de enemigos con comportamiento de persecución y ataque.
+
+\paragraph{v0.6.0}
+Versión final orientada a completar las funcionalidades del producto mínimo viable. Se implementó el 
+sistema de cosméticos con inventario global, la persistencia del personaje entre sesiones, el chat 
+flotante en multijugador y los nametags sobre los personajes. Se incorporaron cofres, rampas, baseplates, 
+cambio de material de suelo, música ambiental y efectos de sonido. A nivel económico, se completó el 
+sistema de suscripciones, transferencias a creadores y compra de cosméticos con gemas. En infraestructura, 
+se realizaron pruebas de carga con bots, se configuró MongoDB y se finalizó la integración con Nomad 
+mediante HTTPS y dominio propio.

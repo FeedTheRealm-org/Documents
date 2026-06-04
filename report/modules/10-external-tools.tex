@@ -5,41 +5,111 @@ herramientas de virtualizacion, librerías, \textit{frameworks}, motores para de
 A continuación mencionamos todas ellas:
 \vspace{0.25cm}
 
+\textbf{\underline{Unity}}: Para el desarrollo del Editor de Mundos y el Juego (Servidor/Cliente) se optó 
+por el motor \textit{Unity}, principalmente por su curva de aprendizaje accesible, 
+su amplia comunidad y la gran disponibilidad de tutoriales, documentación y herramientas de terceros. Entre 
+las desventajas encontradas se destacan la dificultad de integración con algunas herramientas externas, el 
+costo de ciertos recursos de pago (\textit{Assets que fueron comprados para mejorar la calidad del juego en terminos de UX/UI}), 
+la complejidad del manejo del LSP de .NET subyacente y el impacto en el  rendimiento local del proyecto a medida que este crecía en tamaño y complejidad.
+Se consideró \textit{Godot} como alternativa, pero fue descartado en favor de \textit{Unity} debido a su 
+mayor madurez como plataforma, su ecosistema más consolidado y la mayor disponibilidad de documentación 
+y recursos de aprendizaje.
+
+\textbf{\underline{Mirror}}:
+
+\vspace{0.25cm}
+
+\textbf{\underline{VContainer}}:
+
+\vspace{0.25cm}
+
 \textbf{\underline{Golang}}: El equipo decidió utilizar para el desarrollo del \textit{core-service}, el lenguaje de programación 
 \textit{Go}. La decision de este lenguaje viene dada por la familiaridad de la mayoría de los miembros del equipo con
 es lenguaje. Además queríamos un lenguaje tipado, para garantizar la mínima cantidad de errores y facilitar la detección
 de \textit{bugs}. Cuenta además con la posibilidad de utilizar y llevar de manera practica, confiable y segura el uso de librerías
 externas para diferentes funcionalidades requeridas. Como la conexión con bases de datos, servicios externos o la posibilidad 
 de escribir endpoints de forma rapida, práctica y sencilla.
+
+\vspace{0.25cm}
+
+\textbf{\underline{Gin Gonic}}:
+
+\vspace{0.25cm}
+
+\textbf{\underline{Stripe}}:
+
 \vspace{0.25cm}
 
 \textbf{\underline{Python}}: Este lenguaje fue utilizado para realizar todos los scripts que permitieron principalmente: 
 Levantar diferentes servicios de forma rapida y \textit{seedear} la base de datos con assets y usuarios. A su vez, se opto 
 por este para realizar los tests de aceptación del \textit{core-service}. Ya que la librería de \textit{Go} (\textit{godog}), 
 era demasiado ardua y difícil de configurar. Por lo que se opto por utilizar su alternativa en \textit{Python} (\textit{Behave}).
+
 \vspace{0.25cm}
+
+\textbf{\underline{Nomad}}:
+
+\textbf{\underline{Consul}}:
+
+\textbf{\underline{Miro, Excalidraw, Figma}}:
+
+\textbf{\underline{Inteligencia Artificial Generativa}}:
+Claude, ChatGPT, Gemini  (mencionar Copilot y los chats)
+
+- Generacion de UI
+- Investigacion de herramientas, librerias y soluciones a problemas
+- Debugging
+- Generacion de codigo, siempre con moderacion y supervisión humana, para evitar errores y/o código no óptimo.
+- Generacion de documentación, para los repositorios
+- Revision de PRs
+- Generacion de pruebas unitarias, de integración y tests de aceptación
+
+\textbf{\underline{Datadog}}:
+
+\textbf{\underline{Terraform}}:
+
+\textbf{\underline{Bruno}}:
+
+\textbf{\underline{Brevo}}:
+
+\textbf{\underline{OSV Scanner}}:
+
+\textbf{\underline{Supabase}}:
+
+\textbf{\underline{Amazon Web Services (AWS)}}:
 
 \textbf{\underline{PostgresSQL}}: Se decidió utilizar esta base de datos para llevar el registros de los usuarios, el estado 
 de sus balances, los mundos creados y los diferentes assets que iban cargando en nuestro servicio. La facilidad del lenguaje 
 SQL para la creacion modelado de los datos, como asi tambien la familiaridad con el mismo, permitieron agilizar rápidamente 
 el desarrollo.
+
 \vspace{0.25cm}
 
 \textbf{\underline{MongoDB}}: Para utilizar y mantener el estado de los jugadores entre cada mundo y zona. Se utilizo esta 
 base de datos por su facil lectura y escritura, omo asi también guardar y almacenar de forma sencilla con un modelo no relacional 
 y mas flexible, como son los schemas. El equipo pensó tambien, utilizar esta herramienta para guardar los mundos, en vez 
 de optar por PostgresSQL.
+
 \vspace{0.25cm}
 
 \textbf{\underline{Docker}}: Para levantar, probar y testear el \textit{core-service}, como asi tambien desplegar
 la imagen del servidor de mundos. Se opto por la herramienta de virtualizacion y contenerizacion \textit{Docker}. Principalmente,
 por el amplio uso por los miembros del equipo, su facil uso a través de comandos y \textit{docker-compose} y su extensa
 documentación que permite consultar de manera facil y rápida, si se presenta alguna dificultad.
+
 \vspace{0.25cm}
 
 \textbf{\underline{Git}}: Para el control de versiones, se usa la ampliamente usada herramienta \textit{git}. No solo por 
 todo el mundo, sino tambien porque es la herramienta necesaria para utilizar \textit{Github}. Se uso tambien \textit{git
 submodules}, para gestionar el \textit{shared package}.
+
+\textbf{\underline{Pre-Commit}}:
+
+\textbf{\underline{Git Leaks}}:
+
+\textbf{\underline{Code Coverage}}:
+
+
 \vspace{0.25cm}
 
 \textbf{\underline{Github}}: Se utilizo \textit{Github} para mantener de forma \textit{online} el repositorio de codigo,
@@ -47,4 +117,5 @@ debido a que es la mas usada por todos y es la que el equipo estaba familiarizad
 alojar el codigo. Sino que tambien para utilizar \textit{Github Projects} para gestionar dia a dia el proyecto, como asi 
 tambien \textit{Github actions} para correr los controles automáticos, de \textit{linters}, \textit{formaters}, tests, 
 despliegue y controles de seguridad.
+
 \vspace{0.25cm}
