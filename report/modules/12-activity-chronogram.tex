@@ -19,40 +19,78 @@ Se planificaron 7 releases, desde la \textbf{v0.1.0} hasta la \textbf{v0.7.0}, d
 funcionalidades de complejidad creciente. A continuación se detalla un resumen de lo desarrollado en 
 cada release.
 
-\paragraph{v0.1.0}
+\paragraph{v0.1.0 |  28 de octubre, 2025}
 Primera versión del proyecto, orientada a establecer las bases técnicas del sistema. Se implementaron 
 las funcionalidades esenciales del juego como el inventario, el sistema de stamina, el daño a enemigos 
 y el spawn de los mismos. En paralelo, se desarrollaron pruebas de concepto para el modo multijugador 
 y la edición de terreno, junto con una interfaz inicial para el editor de mundos y la homepage. 
 También se incorporó la autenticación de usuarios mediante la creación e inicio de sesión de cuentas.
 
-\paragraph{v0.2.0}
+Para esta version, el sistema no se logró integrar, solo teniamos el game, editor de mundos y el shared package.
+
+\paragraph{v0.2.0 | 17 de diciembre, 2025}
 Esta versión consolidó la integración entre el editor de mundos y el cliente de juego. Se implementó 
 la publicación y carga de mundos, permitiendo que los jugadores pudieran unirse a mundos desde la 
 homepage. Se incorporaron funcionalidades de juego como la visualización de bolsas de botín, la 
 recolección de ítems, los drops de enemigos y el creador de personajes. A nivel de infraestructura, 
 se avanzó con el servidor headless en modo multijugador dedicado.
+Para esta version todavia no se logró desplegar los mundos y requeria de un proceso manual para levantar el servidor dedicado. Y
+se utilizaba NetCode como framework de red y la implementacion de multijugador se iba escalando pero el codigo
+no estaba siendo muy mantenible. EL world editor tambien comenzo a escalar pero el ssitema de colocar objectos se redujo a 
+un sistema de grillas cuadradas y los objetos colocables estaban hardcodeados.
 
-\paragraph{v0.3.0}
+\paragraph{v0.3.0 | 23 de enero, 2026}
 Versión centrada en la expansión del contenido jugable y las herramientas de creación. Se incorporó 
 el sistema de quests completo, incluyendo la aceptación, seguimiento y completado de misiones mediante 
 la derrota de enemigos e interacción con NPCs. Se agregaron armas, consumibles, tiendas y el sistema 
 de diálogos con NPCs. En el editor se habilitó la configuración de spawners, tablas de botín y precios 
 de ítems en oro y gemas. A nivel técnico, se migró el servidor dedicado de NetCode a Mirror y se 
-refactorizó la arquitectura del editor de mundos.
+refactorizó la arquitectura del editor de mundos para mejorar su maintaniabilidad, tambien se logro 
+cambiar que el world editor permita a creadores colocar objetos libremente sin necesidad de un sistema de grillas,
+se agregaron spawners de enemigos, players y NPs que permitió mayor flexibilidad a los creadores para crear sus mundos
 
-\paragraph{v0.5.0}
+\paragraph{v0.4.0 | 06 de marzo, 2026}
+Durante esta version, no se logró completar el backlog planificado debido a 
+responsabilidades personales. Lo unico que se logro resolver era arreglar bugs en el editor de mundos.
+
+\paragraph{v0.5.0 | 06 de abril, 2026}
 Versión dedicada principalmente a la estabilización y refactorización de los sistemas existentes. 
 Se reestructuraron los módulos de salud, ataque, dash, stamina, inventario, botín, spawners y diálogos. 
 Se integró Nomad para el despliegue dinámico de servidores y Datadog para la observabilidad del sistema. 
 Se incorporaron portales para el viaje entre zonas, la tienda de gemas con método de pago y la 
-inteligencia artificial de enemigos con comportamiento de persecución y ataque.
+inteligencia artificial de enemigos con comportamiento de persecución y ataque. Esta version se destaca por 
+su enfoque en la mejora de la calidad del código, la optimización del rendimiento y la preparación para las pruebas de carga masivas.
+Y se logró poder crear mundos con multiples servers (zonas) ahora los creadores tenian la posibilidad de crear 
+mundo realmente ilimitados.
+En esta version tambien se destaca que se logro implemnetar logica de Bots con el fin de ser utilizado 
+para pruebas de carga masivas, y se logró implementar la integración con Datadog para la recolección de métricas y monitoreo del sistema durante estas pruebas.
+Esta version se destaca debido a que fue la primera vez que se logró realizar una demo con conocidos del equipo donde 
+pudimos obtener feedback que nos impacto positivamente para poder determinar que feature resultaria nececsario para 
+finalizar y tener ya presente para el MVP
 
-\paragraph{v0.6.0}
+\paragraph{v0.6.0 | 11 de mayo, 2026}
 Versión final orientada a completar las funcionalidades del producto mínimo viable. Se implementó el 
 sistema de cosméticos con inventario global, la persistencia del personaje entre sesiones, el chat 
-flotante en multijugador y los nametags sobre los personajes. Se incorporaron cofres, rampas, baseplates, 
-cambio de material de suelo, música ambiental y efectos de sonido. A nivel económico, se completó el 
+flotante en multijugador y los nametags sobre los personajes. Se incorporaron cofres, rampas, 
+cambio de material de suelo y cielo, música ambiental y efectos de sonido. A nivel económico, se completó el 
 sistema de suscripciones, transferencias a creadores y compra de cosméticos con gemas. En infraestructura, 
 se realizaron pruebas de carga con bots, se configuró MongoDB y se finalizó la integración con Nomad 
 mediante HTTPS y dominio propio.
+Tambien se incorporo el Back Office para que los adminstradores puedan revisar los mundos, revisar cuentas de usuarios y gestionar contenido.
+Para esta version, el grupo emepezo a reconocer que el esfuerzo del proyecto ya estaba empezando a dar valor
+y repetidamente se giro la frase "Esto parece un juego de verdad ahora" ayudando levantar moral y motivacion para seguir
+adelante con el proyecto
+Se logró mejorar el landing page para ahora incluir descargables del creador de mundos y el cliente de juego.s
+
+\paragraph{v0.7.0 | 05 de junio, 2026}
+Versión de cierre del proyecto, donde se realizaron ajustes finales, corrección de bugs y optimizaciones. 
+Se mejoró profundamente la interfaz de usuario y se agregaron pequeños \textit{Quality of Life features}. 
+Se realizaron pruebas de aceptación con usuarios externos, se recopilaron métricas de uso y se implementaron mejoras basadas en el feedback recibido. A nivel técnico, se optimizó el rendimiento del servidor, se mejoró la escalabilidad y se preparó la infraestructura para un posible lanzamiento público.
+Durante esta version, el equipo decidio dar un paso atras de implementar y escribir el informe final que estas leyendo en este momento!
+Esta ultima version es con la que se cierra el MVP
+
+\paragraph{v0.8.0 | No planificada}
+Esta version no esta planificada, pero se deja abierta para futuras mejoras y desarrollo del producto. 
+Se espera que en esta etapa se puedan incorporar nuevas funcionalidades, realizar 
+ajustes basados en el feedback de los usuarios y continuar con la optimización del sistema. 
+El objetivo es seguir evolucionando el producto más allá del MVP
