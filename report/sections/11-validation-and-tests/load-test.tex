@@ -15,3 +15,39 @@ y puede ser considerado un \textit{MMO}, se llevaron a cabo las siguientes tarea
     especializado y evitar el deterioro de rendimiento innecesario en el \textit{Gameloop} productivo.
     \item Ejecución de diferentes escenarios de cargas y obtención de resultados.
 \end{enumerate}
+
+\subsubsection{Métricas personalizadas}
+
+\begin{itemize}
+    \item \textbf{server.tick\_duration\_ms}: duración total de un ciclo (tick) del servidor en milisegundos.
+    \item \textbf{server.commands\_ms}: tiempo empleado en procesar los comandos durante un tick.
+    \item \textbf{server.physics\_ms}: tiempo consumido por la simulación física durante un tick.
+    \item \textbf{server.tick\_event\_ms}: tiempo dedicado a la actualización optativa de objetos.
+    \item \textbf{server.events\_enqueued\_ms}: tiempo utilizado para encolar eventos.
+    \item \textbf{server.gc.gen0}: cantidad de ejecuciones del recolector de basura (GC) de generación 0 en el intervalo medido.
+    \item \textbf{server.gc.gen1}: cantidad de ejecuciones del recolector de basura (GC) de generación 1 en el intervalo medido.
+    \item \textbf{server.gc.gen2}: cantidad de ejecuciones del recolector de basura (GC) de generación 2 en el intervalo medido.
+    \item \textbf{server.entities\_count}: número total de entidades activas en el mundo del juego.
+    \item \textbf{server.players\_count}: cantidad de jugadores conectados o activos.
+    \item \textbf{server.commands\_queue\_length}: longitud actual de la cola de comandos pendientes.
+    \item \textbf{server.events\_queue\_length}: longitud actual de la cola de eventos pendientes a enviar por red.
+\end{itemize}
+
+\subsubsection{Experimentación y resultados}
+
+\paragraph{Escenario $0_1$ (Sin carga)}
+
+\paragraph{Escenario $0_2$ (1 zona - $1/25$ capacidad)}
+
+\paragraph{Escenario $1$ (1 zona - $1/4$ capacidad)}
+
+Incremento relativo al anterior de $600\%$
+
+\paragraph{Escenario $2$ (1 zona - $3/4$ capacidad)}
+
+Incremento relativo al anterior de $330\%$
+
+\paragraph{Escenario $3$ (7 zonas - $x$ capacidad)}
+
+\paragraph{Escenario $4$ (7 zonas - $x$ capacidad)}
+
