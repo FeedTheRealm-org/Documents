@@ -1,3 +1,17 @@
 \subsection{Pruebas de Rendimiento y Estrés (Load Testing)}
 
-Para la realizacion 
+Con el objetivo de realizar pruebas de carga para confirmar que el juego puede soportar cientos de jugadores por mundo
+y puede ser considerado un \textit{MMO}, se llevaron a cabo las siguientes tareas:
+
+\begin{enumerate}
+    \item Confección de un nuevo cliente ejecutable liviano (de poco uso de recursos) que simula ser un jugador
+    enviando comandos a una frecuencia previamente analizada para conseguir una semejanza cercana con la de un jugador real.
+    Al mismo se lo llamo \textbf{Bot}.
+    \item Creación por medio de una semilla de cuentas con nombres y cosméticos randomizados a ser utilizadas por los Bots.
+    Permitiendo reutilizar la misma cuenta para conexiones con diferentes zonas simultáneamente.
+    \item Implementación de métricas personalizadas en forma de medidores de variables por cada \textit{tick} e histogramas, y
+    creación de un dashboard de Datadog con las mismas.
+    \item Parametrización de los \textit{zoning servers} que se utilizaran para pruebas de manera que usen un \textit{Test Gameloop}
+    especializado y evitar el deterioro de rendimiento innecesario en el \textit{Gameloop} productivo.
+    \item Ejecución de diferentes escenarios de cargas y obtención de resultados.
+\end{enumerate}
