@@ -18,6 +18,10 @@ y puede ser considerado un \textit{MMO}, se llevaron a cabo las siguientes tarea
 
 \subsubsection{Métricas personalizadas}
 
+A continuación se detallan las métricas de rendimiento implementadas. Las mismas se reportan al agente de Datadog
+en ejecución en el nodo en donde se encuentre alojado el servidor, y se etiquetan por identificador del mundo
+y de la zona.
+
 \begin{itemize}
     \item \textbf{server.tick\_duration\_ms}: duración total de un ciclo (tick) del servidor en milisegundos.
     \item \textbf{server.commands\_ms}: tiempo empleado en procesar los comandos durante un tick.
@@ -37,17 +41,17 @@ y puede ser considerado un \textit{MMO}, se llevaron a cabo las siguientes tarea
 
 \paragraph{Escenario $0_1$ (Sin carga)}
 
-\paragraph{Escenario $0_2$ (1 zona - $1/25$ capacidad)}
+\paragraph{Escenario $0_2$ (1 zona - $\sim5\%$ capacidad de la zona)}
 
-\paragraph{Escenario $1$ (1 zona - $1/4$ capacidad)}
+\paragraph{Escenario $1$ (1 zona - $\sim25\%$ capacidad de la zona)}
 
-Incremento relativo al anterior de $600\%$
+\paragraph{Escenario $2$ (1 zona - $\sim75\%$ capacidad de la zona)}
 
-\paragraph{Escenario $2$ (1 zona - $3/4$ capacidad)}
+\paragraph{Escenario $3$ (7 zonas - $\sim60\%$ capacidad del mundo)}
 
-Incremento relativo al anterior de $330\%$
+% Mencionar 2 Nodos nomad client
 
-\paragraph{Escenario $3$ (7 zonas - $x$ capacidad)}
+\paragraph{Escenario $4$ (7 zonas - $\sim80\%$ capacidad del mundo)}
 
-\paragraph{Escenario $4$ (7 zonas - $x$ capacidad)}
+\paragraph{Escenario $Alpha$ (antes \& después de optimización de colisiones)}
 
