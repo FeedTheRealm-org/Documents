@@ -23,7 +23,7 @@ y recursos de aprendizaje.
 
 \vspace{0.25cm}
 
-\textbf{\underline{Golang}}: El equipo decidió utilizar para el desarrollo del \textit{core-service}, el lenguaje de programación 
+\textbf{\underline{Golang}}: El equipo decidió utilizar para el desarrollo del core service, el lenguaje de programación 
 \textit{Go}. La decision de este lenguaje viene dada por la familiaridad de la mayoría de los miembros del equipo con
 es lenguaje. Además queríamos un lenguaje tipado, para garantizar la mínima cantidad de errores y facilitar la detección
 de \textit{bugs}. Cuenta además con la posibilidad de utilizar y llevar de manera practica, confiable y segura el uso de librerías
@@ -32,51 +32,92 @@ de escribir endpoints de forma rapida, práctica y sencilla.
 
 \vspace{0.25cm}
 
-\textbf{\underline{Gin Gonic}}:
+\textbf{\underline{Gin Gonic}}: \textit{Framework} web HTTP para Go utilizado en el desarrollo del core service. Permite 
+definir \textit{endpoints} REST de forma rápida y estructurada, con soporte para middlewares, manejo de rutas y validación 
+de parámetros. Se eligió por su alto rendimiento, su amplia adopción en la comunidad de Go y la familiaridad del equipo con 
+la herramienta.
 
 \vspace{0.25cm}
 
-\textbf{\underline{Stripe}}:
+\textbf{\underline{Stripe}}: Plataforma de pagos utilizada para gestionar la compra de gemas y el manejo de suscripciones. 
+Provee una API robusta y bien documentada que se integró con el core service en \textit{Go}, permitiendo procesar pagos de 
+forma segura sin necesidad de manejar datos sensibles de tarjetas directamente. Además permite manejar pagos internacionales, 
+lo cual es importante para un producto con alcance global. Es por esto que se descarto alternativas como Mercado Pago.
 
 \vspace{0.25cm}
 
 \textbf{\underline{Python}}: Este lenguaje fue utilizado para realizar todos los scripts que permitieron principalmente: 
 Levantar diferentes servicios de forma rapida y \textit{seedear} la base de datos con assets y usuarios. A su vez, se opto 
-por este para realizar los tests de aceptación del \textit{core-service}. Ya que la librería de \textit{Go} (\textit{godog}), 
+por este para realizar los tests de aceptación del core service. Ya que la librería de \textit{Go} (\textit{godog}), 
 era demasiado ardua y difícil de configurar. Por lo que se opto por utilizar su alternativa en \textit{Python} (\textit{Behave}).
 
 \vspace{0.25cm}
 
 \textbf{\underline{Nomad}}:
 
+\vspace{0.25cm}
+
 \textbf{\underline{Consul}}:
 
-\textbf{\underline{Miro, Excalidraw, Figma}}:
+\vspace{0.25cm}
 
-\textbf{\underline{Inteligencia Artificial Generativa}}:
-Claude, ChatGPT, Gemini  (mencionar Copilot y los chats)
+\textbf{\underline{Miro, Excalidraw y Figma}}: Herramientas de diseño y colaboración visual utilizadas en distintas etapas 
+del proyecto. Miro y Excalidraw se emplearon para la elaboración de diagramas, flujos de arquitectura y sesiones de \textit{brainstorming} 
+del equipo. Figma fue utilizado para el diseño de interfaces y \textit{mockups} de las pantallas del juego y el editor de mundos, 
+permitiendo iterar sobre el diseño antes de implementarlo.
 
-- Generacion de UI
-- Investigacion de herramientas, librerias y soluciones a problemas
-- Debugging
-- Generacion de codigo, siempre con moderacion y supervisión humana, para evitar errores y/o código no óptimo.
-- Generacion de documentación, para los repositorios
-- Revision de PRs
-- Generacion de pruebas unitarias, de integración y tests de aceptación
+\vspace{0.25cm}
 
-\textbf{\underline{Datadog}}:
+\textbf{\underline{Inteligencia Artificial Generativa}}: El equipo incorporó herramientas de IA generativa (Claude, ChatGPT, 
+Gemini, GitHub Copilot) como asistentes durante el desarrollo. Su uso abarcó la generación de UI, investigación de herramientas 
+y soluciones a problemas técnicos, \textit{debugging}, generación de código con moderación y supervisión humana para evitar 
+errores o código no óptimo, generación de documentación para los repositorios, revisión de PRs y generación de pruebas unitarias, 
+de integración y tests de aceptación.
+
+\vspace{0.25cm}
+
+\textbf{\underline{Datadog}}: Plataforma de observabilidad y monitoreo utilizada para el seguimiento del estado y el 
+rendimiento de los servicios en producción. Permite visualizar métricas, logs y trazas distribuidas en tiempo real, facilitando 
+la detección y diagnóstico de problemas. Se integró con el core service y la infraestructura en AWS para tener visibilidad 
+centralizada del sistema. Se pensó en utilizar otras alternativas como Prometheus y Grafana, pero se optó por Datadog debido 
+a su facilidad de integración, su interfaz intuitiva y su capacidad para manejar grandes volúmenes de datos de monitoreo 
+sin necesidad de gestionar la infraestructura subyacente.
+
+\vspace{0.25cm}
 
 \textbf{\underline{Terraform}}:
 
-\textbf{\underline{Bruno}}:
+\vspace{0.25cm}
 
-\textbf{\underline{Brevo}}:
+\textbf{\underline{Bruno}}: Cliente HTTP utilizado para probar y documentar los \textit{endpoints} del core-service durante 
+el desarrollo. A diferencia de Postman, Bruno almacena las colecciones de \textit{requests} como archivos locales versionables 
+en Git, lo que permitió al equipo compartir y mantener actualizadas las pruebas de API junto al código fuente.
+
+\vspace{0.25cm}
+
+\textbf{\underline{Brevo}}: Plataforma de email marketing y transaccional utilizada para el envío de correos electrónicos 
+a los usuarios, como confirmaciones de registro, recuperación de contraseña y notificaciones del sistema, como pagos o cambios en 
+la subscripción. Se integró con el core service mediante su API, permitiendo gestionar el envío de emails de forma confiable 
+sin necesidad de administrar infraestructura de correo propia.
+
+\vspace{0.25cm}
 
 \textbf{\underline{OSV Scanner}}:
 
-\textbf{\underline{Supabase}}:
+\vspace{0.25cm}
 
-\textbf{\underline{Amazon Web Services (AWS)}}:
+\textbf{\underline{Supabase}}: Plataforma que provee una capa de acceso a la base de datos PostgreSQL con autenticación, 
+APIs REST y almacenamiento. Se utilizó para simplificar la gestión y administración de la base de datos durante 
+el desarrollo, aprovechando su interfaz visual para inspeccionar y manipular datos. Además de que provee \textit{tiers} 
+gratuitos que se ajustaban a las necesidades del proyecto durante la etapa de desarrollo.
+
+\vspace{0.25cm}
+
+\textbf{\underline{Amazon Web Services (AWS)}}: Proveedor de infraestructura en la nube utilizado para el despliegue y 
+operación del sistema en producción. Los servicios principales utilizados incluyeron EC2 para el cómputo de los servidores, 
+S3 para el almacenamiento de assets, Route 53 para la gestión de DNS y ECR para el almacenamiento de imágenes de contenedores.
+
+\vspace{0.25cm}
 
 \textbf{\underline{PostgresSQL}}: Se decidió utilizar esta base de datos para llevar el registros de los usuarios, el estado 
 de sus balances, los mundos creados y los diferentes assets que iban cargando en nuestro servicio. La facilidad del lenguaje 
@@ -92,7 +133,7 @@ de optar por PostgresSQL.
 
 \vspace{0.25cm}
 
-\textbf{\underline{Docker}}: Para levantar, probar y testear el \textit{core-service}, como asi tambien desplegar
+\textbf{\underline{Docker}}: Para levantar, probar y testear el core service, como asi tambien desplegar
 la imagen del servidor de mundos. Se opto por la herramienta de virtualizacion y contenerizacion \textit{Docker}. Principalmente,
 por el amplio uso por los miembros del equipo, su facil uso a través de comandos y \textit{docker-compose} y su extensa
 documentación que permite consultar de manera facil y rápida, si se presenta alguna dificultad.
@@ -103,12 +144,25 @@ documentación que permite consultar de manera facil y rápida, si se presenta a
 todo el mundo, sino tambien porque es la herramienta necesaria para utilizar \textit{Github}. Se uso tambien \textit{git
 submodules}, para gestionar el \textit{shared package}.
 
-\textbf{\underline{Pre-Commit}}:
+\vspace{0.25cm}
 
-\textbf{\underline{Git Leaks}}:
+\textbf{\underline{Pre-Commit}}: \textit{Framework} para la gestión de hooks de Git ejecutados antes de cada commit. Se 
+configuró para correr automáticamente \textit{linters}, formateadores y validaciones sobre el código antes de que este sea 
+registrado en el repositorio, garantizando que todo el código commiteado cumpla con los estándares de calidad y estilo definidos 
+por el equipo.
 
-\textbf{\underline{Code Coverage}}:
+\vspace{0.25cm}
 
+\textbf{\underline{Git Leaks}}: Herramienta de seguridad integrada en el pipeline de \textit{Github actions} que escanea 
+el historial y los cambios del repositorio en busca de secretos expuestos accidentalmente, como claves de API, \textit{tokens} o 
+credenciales. Su inclusión como control automático en cada PR ayudó a prevenir filtraciones de información sensible en el código fuente.
+Adicionalmente, se añadió como parte de los pre-commit hooks, para evitar que secretos sean commiteados al repositorio.
+
+\vspace{0.25cm}
+
+\textbf{\underline{Code Coverage}}: Herramienta utilizada para la generación de reportes de cobertura de código. 
+Se integró en el pipeline de CI para generar dichos reportes de cobertura en cada ejecución, permitiendo al equipo identificar 
+áreas del código sin cobertura y mantener un umbral mínimo de calidad en las pruebas del core service.
 
 \vspace{0.25cm}
 
@@ -117,5 +171,19 @@ debido a que es la mas usada por todos y es la que el equipo estaba familiarizad
 alojar el codigo. Sino que tambien para utilizar \textit{Github Projects} para gestionar dia a dia el proyecto, como asi 
 tambien \textit{Github actions} para correr los controles automáticos, de \textit{linters}, \textit{formaters}, tests, 
 despliegue y controles de seguridad.
+
+\vspace{0.25cm}
+
+\textbf{\underline{Vercel}}: Plataforma de despliegue utilizada para hospedar los frontends web del proyecto: el landing page 
+y el backoffice. Permite desplegar aplicaciones de forma automática ante cada \textit{push} a la rama correspondiente, 
+integrándose directamente con GitHub. Se eligió por su simplicidad de configuración, su plan gratuito suficiente para la 
+escala del proyecto y la velocidad de los despliegues.
+
+\vspace{0.25cm}
+
+\textbf{\underline{Swagger}}: Herramienta utilizada para documentar y exponer de forma interactiva los \textit{endpoints} REST 
+del core service. Permite visualizar y probar la API directamente desde el navegador, facilitando la integración entre el 
+equipo de backend y los consumidores de la API. Se integró con Gin Gonic para generar la documentación de forma automática 
+a partir de anotaciones en el código.
 
 \vspace{0.25cm}

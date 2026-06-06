@@ -7,19 +7,20 @@ largo del desarrollo.
 
 \vspace{0.25cm}
 
-Como referencia se utilizó el modelo USM, donde los requisitos principales se organizaron verticalmente 
-y los features asociados a cada uno se distribuyeron de forma horizontal, permitiendo definir el backlog 
-de cada versión. Ocasionalmente se incorporaron features no planificados, ya sea por subestimar el alcance 
+Como herramienta de trabajo se utilizó el modelo USM, donde los requisitos principales se organizaron verticalmente 
+y los \textit{features} asociados a cada uno se distribuyeron de forma horizontal, permitiendo definir el backlog 
+de cada versión. Ocasionalmente se incorporaron \textit{features} no planificados, ya sea por subestimar el alcance 
 de algunos requisitos o por la aparición de nuevas ideas consideradas relevantes para el producto. En caso 
-de no completar todos los features de una versión, estos se trasladaban a la siguiente con mayor prioridad.
+de no completar todos los \textit{features} de una versión, estos se trasladaban a la siguiente con mayor prioridad.
 
 \vspace{0.25cm}
 
-Se planificaron 7 releases, desde la \textbf{v0.1.0} hasta la \textbf{v0.7.0}, donde cada una incorporaba un conjunto de 
+Se planificaron 7 \textit{releases}, desde la \textbf{v0.1.0} hasta la \textbf{v0.7.0}, donde cada una incorporaba un conjunto de 
 funcionalidades de complejidad creciente. A continuación se detalla un resumen de lo desarrollado en 
-cada release.
+cada \textit{release}.
 
-\paragraph{v0.1.0 |  28 de octubre, 2025}
+\subsection{v0.1.0: 28 de octubre, 2025}
+
 Primera versión del proyecto, orientada a establecer las bases técnicas del sistema. Se implementaron 
 las funcionalidades esenciales del juego como el inventario, el sistema de stamina, el daño a enemigos 
 y el spawn de los mismos. Estos componentes se deprecaron rapidamente a medida que se avanzaba en el desarrollo
@@ -27,23 +28,25 @@ y requirieron ser refactorizadas en versiones posteriores, pero sirvieron como p
 conceptos y establecer la arquitectura inicial. En paralelo, se desarrollaron pruebas de concepto para el modo multijugador 
 y la edición de terreno, junto con una interfaz inicial para el editor de mundos y la homepage. 
 
-\vspacio{0.25cm}
+\vspace{0.25cm}
 
 También se incorporó la autenticación de usuarios mediante la creación e inicio de sesión de cuentas. 
 En esta etapa, los componentes del sistema aún no se encontraban integrados entre sí, contando únicamente 
 con el cliente de juego, el editor de mundos, el core-service y el Shared Package.
 
-\paragraph{v0.2.0 | 17 de diciembre, 2025}
+\subsection{v0.2.0: 17 de diciembre, 2025}
+
 Esta versión consolidó la integración entre el editor de mundos y el cliente de juego. Se implementó 
 la publicación y carga de mundos, permitiendo que los jugadores pudieran unirse a mundos desde la 
 homepage. Se incorporaron funcionalidades de juego como la visualización de bolsas de botín, la 
 recolección de ítems, los drops de enemigos y el creador de personajes. Sin embargo, el despliegue 
 de mundos aún requería un proceso manual para levantar el servidor dedicado. A nivel de red, se 
-utilizaba NetCode como framework de multijugador, cuya implementación comenzaba a escalar pero 
+utilizaba NetCode como \textit{framework} de multijugador, cuya implementación comenzaba a escalar pero 
 presentaba problemas de mantenibilidad. El editor de mundos también crecía en complejidad, aunque 
 el sistema de colocación de objetos estaba limitado a una grilla cuadrada con objetos hardcodeados.
 
-\paragraph{v0.3.0 | 23 de enero, 2026}
+\subsection{v0.3.0: 23 de enero, 2026}
+
 Versión centrada en la expansión del contenido jugable y las herramientas de creación. Se incorporó 
 el sistema de \textit{Quests}, incluyendo la aceptación, seguimiento y completado de misiones mediante 
 la derrota de enemigos e interacción con NPCs. Se agregaron armas, consumibles, tiendas y el sistema 
@@ -52,14 +55,16 @@ NPCs, tablas de botín y precios de ítems en oro y gemas. A nivel técnico, se 
 de NetCode a Mirror y se refactorizó la arquitectura del editor de mundos, reemplazando el sistema de 
 grillas por un sistema de colocación libre de objetos, mejorando significativamente la flexibilidad 
 y mantenibilidad del proyecto. También se creó la landing page del proyecto, con información general 
-del proyecto, un blog del desarrollo y links a las redes sociales. 
+del proyecto, un blog del desarrollo y links a las redes sociales.
 
-\paragraph{v0.4.0 | 06 de marzo, 2026}
+\subsection{v0.4.0: 06 de marzo, 2026}
+
 Durante esta versión no se logró completar el backlog planificado debido a compromisos académicos 
 externos que el equipo debió atender, principalmente la preparación de exámenes finales de materias pendientes.
 Lo unico que se logro resolver era arreglar bugs en el editor de mundos.
 
-\paragraph{v0.5.0 | 06 de abril, 2026}
+\subsection{v0.5.0: 06 de abril, 2026}
+
 Versión dedicada principalmente a la estabilización y refactorización de los sistemas existentes. 
 Se reestructuraron los módulos de salud, ataque, dash, stamina, inventario, botín, spawners y diálogos. 
 Se integró Nomad para el despliegue dinámico de servidores y Datadog para la observabilidad del sistema. 
@@ -68,13 +73,14 @@ inteligencia artificial de enemigos con comportamiento de persecución y ataque.
 
 \vspace{0.25cm}
 
-Por primera vez, los  creadores pudieron diseñar mundos con múltiples zonas ejecutándose en servidores independientes, 
+Por primera vez, los creadores pudieron diseñar mundos con múltiples zonas ejecutándose en servidores independientes, 
 habilitando mundos de escala ilimitada. También se implementó la lógica de bots para pruebas de carga 
 masivas, complementada con la integración de Datadog para la recolección de métricas durante dichas pruebas. 
 Esta versión marcó un hito al realizarse la primera demo con personas externas al equipo, cuyo feedback 
 resultó valioso para definir las funcionalidades prioritarias del MVP.
 
-\paragraph{v0.6.0 | 11 de mayo, 2026}
+\subsection{v0.6.0: 11 de mayo, 2026}
+
 Versión avanzada orientada a completar las funcionalidades del producto mínimo viable. Se implementó el 
 sistema de cosméticos con inventario global, la persistencia del personaje entre sesiones, el chat 
 flotante en multijugador y los nametags sobre los personajes. Se incorporaron cofres, rampas, cambio 
@@ -84,7 +90,7 @@ de material de suelo y cielo, música ambiental y efectos de sonido.
 
 A nivel económico, se completó el sistema de suscripciones, transferencias a creadores y compra de 
 cosméticos con gemas. Se incorporó el Back Office para que los administradores puedan gestionar mundos, 
-cuentas de usuarios y contenido de la plataforma. La Landing Page fue actualizada para incluir 
+cuentas de usuarios y contenido de la plataforma. La landing page fue actualizada para incluir 
 la descarga del cliente de juego y el editor de mundos. 
 
 \vspace{0.25cm}
@@ -94,9 +100,10 @@ y se finalizó la integración con Nomad mediante HTTPS y dominio propio. Esta v
 en que el proyecto comenzó a percibirse como un producto consolidado, lo que impactó positivamente 
 en la motivación del equipo para llevar el MVP a su estado final.
 
-\paragraph{v0.7.0 | 05 de junio, 2026}
+\subsection{v0.7.0: 05 de junio, 2026}
+
 Versión de cierre del proyecto, orientada a la corrección de bugs, ajustes finales y mejoras de 
-calidad de vida (\textit{Quality of Life}). Se integró pruebas unitarias, de integración y de acceptacion
+calidad de vida (\textit{Quality of Life}). Se integró pruebas unitarias, de integración y de aceptación
 en el core service con el fin de aumentar la cobertura de pruebas y mejorar la estabilidad del sistema. 
 
 \vspace{0.25cm}
@@ -107,7 +114,8 @@ importantes detectados por el equipo durante el desarrollo, así como otros que 
 previamente en el backlog. Durante esta etapa, el equipo destinó parte del tiempo al desarrollo del 
 presente informe, cerrando así formalmente el ciclo del MVP.
 
-\paragraph{v0.8.0 | No planificada}
+\subsection{v0.8.0: No planificada}
+
 Esta versión no forma parte del alcance definido del proyecto, pero se deja abierta como espacio para 
 el crecimiento futuro del producto. El objetivo sería incorporar nuevas funcionalidades, aplicar mejoras 
 basadas en el feedback de los usuarios y continuar con la optimización del sistema más allá del MVP.
