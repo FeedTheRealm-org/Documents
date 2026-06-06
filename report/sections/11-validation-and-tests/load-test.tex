@@ -43,8 +43,12 @@ Se realizaron pruebas de jugabilidad bajo escenarios de carga y estrés progresi
 verificando si la experiencia de juego se ve afectada (y en que medida), si los nodos lo soportan,
 y si indicadores clave como la duración de los ticks son aceptables.
 
+\vspace{0.25cm}
+
 Los escenarios $0$ a $4$ se realizaron con un único mundo desplegado, conteniendo un total de $7$ zonas,
-es decir, divido en esa cantidad de servidores aislados. Estos servidores se alojaron según el \textit{scheduler} de Nomad 
+es decir, divido en esa cantidad de servidores aislados. Cada zona contiene estructuras, enemigos que combatirán con los Bots, cofres
+y dos portales, uno para ir a la siguiente zona y otro para volver a la anterior.
+Estos servidores se alojaron según el \textit{scheduler} de Nomad 
 entre dos nodos disponibles (\textit{AWS EC2 - t3.small - $2$ $vCPUs$ \& $2$ $GiB$ $RAM$}), y con una distribución de $4$ en
 el nodo \textbf{s1.feedtherealm.world} y $3$ en \textbf{s2.feedtherealm.world}. Los datos de Datadog obtenidos que se 
 muestran en esta sección pertenecen a la séptima zona del mundo y mostrando una duración
@@ -200,11 +204,8 @@ Por otro lado, la jugabilidad siguió siendo la esperada y no se detectaron dete
 A modo de demostración de la cantidad total de jugadores activos concurrentemente en el mismo mundo durante
 la ejecución de esta prueba, se demuestran las siguientes capturas tomadas desde el \textit{backoffice} del proyecto.
 
-\vspace{0.25cm}
-
-Estas pruebas concluyen con evidencia empírica que se logró alcanzar el objetivo de que el juego sea considerado
-masivamente multijugador en línea (MMO) y soportar cientos de jugadores concurrentes en un mismo mundo dividiendo la carga
-de forma horizontal entre las diferentes zonas, que pueden o no, estar en el mismo nodo físico.
+Vale la pena aclarar que como se mencionó anteriormente, los Bots reutilizaron las mismas cuentas (de las 100 cuentas Bot creadas) en diferentes conexiones con cada zoning server,
+es por esto que el total de jugadores es un número menor a la cantidad de jugadores activos en juego.
 
 \begin{figure}[H]
 \centering
@@ -217,6 +218,10 @@ de forma horizontal entre las diferentes zonas, que pueden o no, estar en el mis
 \includegraphics[width=1\textwidth]{img/11-validation-and-tests/LT-4-bo-details.jpg}
 \caption{Vista de los detalles del mundo desplegado y su cantidad de jugadores historica.}
 \end{figure}
+
+Estas pruebas concluyen con evidencia empírica que se logró alcanzar el objetivo de que el juego sea considerado
+masivamente multijugador en línea (MMO) y soportar cientos de jugadores concurrentes en un mismo mundo dividiendo la carga
+de forma horizontal entre las diferentes zonas, que pueden o no, estar en el mismo nodo físico.
 
 \paragraph{Escenario $Alpha$ (antes \& después de optimización de colisiones)}
 
