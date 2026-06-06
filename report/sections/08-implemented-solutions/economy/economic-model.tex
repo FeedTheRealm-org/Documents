@@ -1,19 +1,20 @@
 \subsubsection{Modelo económico}
 \label{sec:economic-model}
 
-Los parámetros del modelo económico se organizan en cuatro grupos. En primer lugar, 
-los supuestos sobre \textbf{gemas} establecen que el creador retiene el 10\% de cada 
-venta cosmética, y que la conversión es de \$0{,}25 por gema. En cuanto a las 
-\textbf{suscripciones}, el precio por zona es de \$5{,}00 mensuales, con un costo de 
-mantenimiento estimado de \$2{,}00 por zona. Respecto a las \textbf{comisiones de Stripe}, 
-se aplica una tarifa variable del 2{,}90\% más \$0{,}30 fijos por transacción. Finalmente, 
-los supuestos de \textbf{comportamiento de compra} indican que cada usuario realiza en 
-promedio 1{,}5 transacciones mensuales, que los creadores mantienen 2{,}5 zonas activas, 
-y que el 90\% de las gemas adquiridas son efectivamente utilizadas.
+Los parámetros del modelo económico se organizan en cuatro grupos. En primer lugar, los supuestos sobre \textbf{gemas} 
+establecen que el creador retiene el 10\% de cada venta cosmética, y que la conversión es de \$0{,}25 por gema. En cuanto 
+a las \textbf{suscripciones}, el precio por zona es de \$5{,}00 mensuales, con un costo de mantenimiento estimado de 
+\$3{,}75 por zona. El costo de \$3{,}75 por zona, se base en que por maquina virtual se alojan 4 zonas, y cada máquina 
+virtual tiene un costo mensual de \$15{,}00, mas detalles en la seccion de \nameref{sec:load-test}.
+\vspace{0.25cm}
+
+Respecto a las \textbf{comisiones de Stripe}, se aplica una tarifa variable del 2{,}90\% más \$0{,}30 fijos por transacción. 
+Finalmente, los supuestos de \textbf{comportamiento de compra} indican que cada usuario realiza en promedio 1{,}5 transacciones 
+mensuales, que los creadores mantienen 2{,}5 zonas activas, y que el 90\% de las gemas adquiridas son efectivamente utilizadas.
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.65\textwidth]{img/08-implemented-solution/economy/assumptions.jpg}
+  \includegraphics[width=0.65\textwidth]{img/08-implemented-solution/economy/assumptions.png}
   \caption{Resumen de los supuestos del modelo económico}
   \label{fig:assumptions}
 \end{figure}
@@ -74,7 +75,7 @@ A continuación, se presentan los resultados de cada escenario, destancando la r
 \begin{figure}[H]
   \centering
   \begin{adjustbox}{width=1.10\textwidth, center}
-    \includegraphics{img/08-implemented-solution/economy/scenarios/scenario-1.jpg}
+    \includegraphics{img/08-implemented-solution/economy/scenarios/scenario-1.png}
   \end{adjustbox}
   \caption{Proyección de ingresos: Escenario Pesimista}
   \label{fig:scenarios-1}
@@ -83,7 +84,7 @@ A continuación, se presentan los resultados de cada escenario, destancando la r
 \begin{figure}[H]
   \centering
   \begin{adjustbox}{width=1.10\textwidth, center}
-    \includegraphics{img/08-implemented-solution/economy/scenarios/scenario-2.jpg}
+    \includegraphics{img/08-implemented-solution/economy/scenarios/scenario-2.png}
   \end{adjustbox}
   \caption{Proyección de ingresos: Escenario Base}
   \label{fig:scenarios-2}
@@ -92,7 +93,7 @@ A continuación, se presentan los resultados de cada escenario, destancando la r
 \begin{figure}[H]
   \centering
   \begin{adjustbox}{width=1.10\textwidth, center}
-    \includegraphics{img/08-implemented-solution/economy/scenarios/scenario-3.jpg}
+    \includegraphics{img/08-implemented-solution/economy/scenarios/scenario-3.png}
   \end{adjustbox}
   \caption{Proyección de ingresos: Escenario Optimista}
   \label{fig:scenarios-3}
@@ -101,7 +102,7 @@ A continuación, se presentan los resultados de cada escenario, destancando la r
 \begin{figure}[H]
   \centering
   \begin{adjustbox}{width=1.10\textwidth, center}
-    \includegraphics{img/08-implemented-solution/economy/scenarios/scenario-4.jpg}
+    \includegraphics{img/08-implemented-solution/economy/scenarios/scenario-4.png}
   \end{adjustbox}
   \caption{Proyección de ingresos: Escenario Arranque Lento}
   \label{fig:scenarios-4}
@@ -110,7 +111,7 @@ A continuación, se presentan los resultados de cada escenario, destancando la r
 \begin{figure}[H]
   \centering
   \begin{adjustbox}{width=1.10\textwidth, center}
-    \includegraphics{img/08-implemented-solution/economy/scenarios/scenario-5.jpg}
+    \includegraphics{img/08-implemented-solution/economy/scenarios/scenario-5.png}
   \end{adjustbox}
   \caption{Proyección de ingresos: Escenario Lanzamiento}
   \label{fig:scenarios-5}
