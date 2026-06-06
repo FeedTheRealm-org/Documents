@@ -7,17 +7,17 @@ largo del desarrollo.
 
 \vspace{0.25cm}
 
-Como referencia se utilizó el modelo USM, donde los requisitos principales se organizaron verticalmente 
-y los features asociados a cada uno se distribuyeron de forma horizontal, permitiendo definir el backlog 
-de cada versión. Ocasionalmente se incorporaron features no planificados, ya sea por subestimar el alcance 
+Como herramienta de trabajo se utilizó el modelo USM, donde los requisitos principales se organizaron verticalmente 
+y los \textit{features} asociados a cada uno se distribuyeron de forma horizontal, permitiendo definir el backlog 
+de cada versión. Ocasionalmente se incorporaron \textit{features} no planificados, ya sea por subestimar el alcance 
 de algunos requisitos o por la aparición de nuevas ideas consideradas relevantes para el producto. En caso 
-de no completar todos los features de una versión, estos se trasladaban a la siguiente con mayor prioridad.
+de no completar todos los \textit{features} de una versión, estos se trasladaban a la siguiente con mayor prioridad.
 
 \vspace{0.25cm}
 
-Se planificaron 7 releases, desde la \textbf{v0.1.0} hasta la \textbf{v0.7.0}, donde cada una incorporaba un conjunto de 
+Se planificaron 7 \textit{releases}, desde la \textbf{v0.1.0} hasta la \textbf{v0.7.0}, donde cada una incorporaba un conjunto de 
 funcionalidades de complejidad creciente. A continuación se detalla un resumen de lo desarrollado en 
-cada release.
+cada \textit{release}.
 
 \subsection{v0.1.0: 28 de octubre, 2025}
 
@@ -41,7 +41,7 @@ la publicación y carga de mundos, permitiendo que los jugadores pudieran unirse
 homepage. Se incorporaron funcionalidades de juego como la visualización de bolsas de botín, la 
 recolección de ítems, los drops de enemigos y el creador de personajes. Sin embargo, el despliegue 
 de mundos aún requería un proceso manual para levantar el servidor dedicado. A nivel de red, se 
-utilizaba NetCode como framework de multijugador, cuya implementación comenzaba a escalar pero 
+utilizaba NetCode como \textit{framework} de multijugador, cuya implementación comenzaba a escalar pero 
 presentaba problemas de mantenibilidad. El editor de mundos también crecía en complejidad, aunque 
 el sistema de colocación de objetos estaba limitado a una grilla cuadrada con objetos hardcodeados.
 
@@ -55,7 +55,7 @@ NPCs, tablas de botín y precios de ítems en oro y gemas. A nivel técnico, se 
 de NetCode a Mirror y se refactorizó la arquitectura del editor de mundos, reemplazando el sistema de 
 grillas por un sistema de colocación libre de objetos, mejorando significativamente la flexibilidad 
 y mantenibilidad del proyecto. También se creó la landing page del proyecto, con información general 
-del proyecto, un blog del desarrollo y links a las redes sociales. 
+del proyecto, un blog del desarrollo y links a las redes sociales.
 
 \subsection{v0.4.0: 06 de marzo, 2026}
 
@@ -73,7 +73,7 @@ inteligencia artificial de enemigos con comportamiento de persecución y ataque.
 
 \vspace{0.25cm}
 
-Por primera vez, los  creadores pudieron diseñar mundos con múltiples zonas ejecutándose en servidores independientes, 
+Por primera vez, los creadores pudieron diseñar mundos con múltiples zonas ejecutándose en servidores independientes, 
 habilitando mundos de escala ilimitada. También se implementó la lógica de bots para pruebas de carga 
 masivas, complementada con la integración de Datadog para la recolección de métricas durante dichas pruebas. 
 Esta versión marcó un hito al realizarse la primera demo con personas externas al equipo, cuyo feedback 
@@ -90,7 +90,7 @@ de material de suelo y cielo, música ambiental y efectos de sonido.
 
 A nivel económico, se completó el sistema de suscripciones, transferencias a creadores y compra de 
 cosméticos con gemas. Se incorporó el Back Office para que los administradores puedan gestionar mundos, 
-cuentas de usuarios y contenido de la plataforma. La Landing Page fue actualizada para incluir 
+cuentas de usuarios y contenido de la plataforma. La landing page fue actualizada para incluir 
 la descarga del cliente de juego y el editor de mundos. 
 
 \vspace{0.25cm}
@@ -103,7 +103,7 @@ en la motivación del equipo para llevar el MVP a su estado final.
 \subsection{v0.7.0: 05 de junio, 2026}
 
 Versión de cierre del proyecto, orientada a la corrección de bugs, ajustes finales y mejoras de 
-calidad de vida (\textit{Quality of Life}). Se integró pruebas unitarias, de integración y de acceptacion
+calidad de vida (\textit{Quality of Life}). Se integró pruebas unitarias, de integración y de aceptación
 en el core service con el fin de aumentar la cobertura de pruebas y mejorar la estabilidad del sistema. 
 
 \vspace{0.25cm}
