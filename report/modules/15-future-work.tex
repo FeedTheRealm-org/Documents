@@ -4,7 +4,7 @@ En esta seccion detallaremos, que se puede realizar para mejorar el proyecto y p
 sus funcionalidades ya existentes. Algunas de estas mejoras y funcionalidades son:
 \vspace{0.25cm}
 
-\paragraph{Moderacion de contenido y estrategias de \textit{baneo}}
+\subsection{Moderacion de contenido y estrategias de \textit{baneo}}
 Si bien existe la posibilidad de crear mundos con extrema libertad y lo mismo ocurre con el chat, esto es un problema, 
 ya que podria existir la posibilidad de que determinados actores creen mundos que fomenten odio de forma racial,
  etnica o genero. Asi como tambien la creacion de mundos con contenido ilegal o herotico. 
@@ -28,7 +28,7 @@ mediante de forma manual o con la detección para las diferentes acciones que me
 
 \vspace{0.25cm}
 
-\paragraph{Herramientas de AI para la generacion de mundos}
+\subsection{Herramientas de AI para la generacion de mundos}
 La idea es fomentar la creación organica de mundos, pero eso puede volverse una tarea tediosa si el mundo es muy grande 
 o muy complejo. Es por eso, que nos pareció una buena idea integrar modelos de AI para que los jugadores puedan crear mundos, utilizando estos modelos. Los jugadores 
 escriben prompts y los agentes se encargan de crear los mundos en base a los assets disponibles, como asi también crear 
@@ -42,7 +42,7 @@ de implementarla.
 
 \vspace{0.25cm}
 
-\paragraph{Detección de fraudes}
+\subsection{Detección de fraudes}
 Dado que la viabilidad del proyecto, viene dada por como se maneja su economia. 
 Es importante garantizar que la cantidad de fraudes y estafas sea mínimo para asegurar el beneficio del proyecto y de los 
 creadores de mundos. Es por eso que se plantea la posibilidad de añadir modelos preentrenados para facilitar y mitigar la 
@@ -52,7 +52,7 @@ y creadores afectados.
 
 \vspace{0.25cm}
 
-\paragraph{Migracion del \textit{core-service} hacia microservicios}
+\subsection{Migracion del \textit{core-service} hacia microservicios}
 Actualmente el Core Service está estructurado internamente como un monolito modular, donde cada módulo 
 representa un servicio independiente, pero todos se despliegan como una única unidad. A futuro, se 
 contempla migrar hacia una verdadera arquitectura de microservicios, donde cada módulo se despliegue 
@@ -73,7 +73,7 @@ sobre los mensajes que pasan entre microservicios. Fomentando la tolerancia a fa
 
 \vspace{0.25cm}
 
-\paragraph{Migración de los servidores de mundos}
+\subsection{Migración de los servidores de mundos}
 Durante el diseño y la implementación se identificó que Unity y Mirror, si bien son herramientas sólidas 
 para juegos multijugador de pequeña escala, no están diseñadas para la optimización y escalabilidad que 
 demandan los servidores de un MMO. Por ello, se contempla reescribir el servidor directamente en un 
