@@ -33,23 +33,14 @@ A continuación se enumera de forma resumida las funcionalidades principales de 
 \subsubsection{Estructura de un Mundo}
 
 Un mundo se compone de tres elementos principales.
-\begin{itemize}
-  \item \textbf{Zonas (\textit{Zones})}: Subdivisiones de un mundo con diferentes áreas.
-  \item \textbf{Objetos Creables (\textit{Creatables})}: Objetos instanciados dinámicamente en tiempo de ejecución, como \textit{NPCs},
-  enemigos o ítems. A diferencia de los \textit{Placeables}, no pueden ser posicionados manualmente durante la fase de diseño,
-  sino que son generados por la lógica del juego.
-  \item \textbf{Objetos Colocables (\textit{Placeables})}: Objetos posicionados manualmente en el editor durante la fase de diseño,
-  que permanecen estáticos en tiempo de ejecución. Se clasifican en estructuras (\textit{Structures}), generadores
-  (\textit{Spawners}) y objetos diversos (\textit{Miscellaneous Objects}).
-\end{itemize}
 
-\subsubsection{Zonas (\textit{Zones})}
+\paragraph{Zonas (\textit{Zones})}
 
 Los creadores de mundos pueden crear nuevas zonas dentro del editor, configurando parámetros como la textura
 del terreno, la textura del cielo (\textit{Skybox}) y también configurar cómo un jugador se transporta de una zona a otra mediante
 portales (\textit{Portals}).
 
-\subsubsection{Objetos Colocables (\textit{Placeable Objects})}
+\paragraph{Objetos Colocables (\textit{Placeable Objects})}
 
 Los \textit{Placeables} son objetos posicionados manualmente en el editor durante la fase de diseño y permanecen estáticos en
 tiempo de ejecución. Se clasifican en tres categorías principales:
@@ -79,7 +70,7 @@ tiempo de ejecución. Se clasifican en tres categorías principales:
   \end{itemize}
 \end{itemize}
 
-\subsubsection{Objetos Creables (\textit{Creatable Objects})}
+\paragraph{Objetos Creables (\textit{Creatable Objects})}
 
 Los \textit{Creatables} son objetos instanciados dinámicamente en tiempo de ejecución. A diferencia de los \textit{Placeables}, no se
 posicionan directamente en el mundo, sino que se configuran y gestionan a través de paneles de edición dedicados.
@@ -90,7 +81,7 @@ Actualmente se encuentran disponibles los siguientes tipos:
   interactuar mediante diálogos, como aldeanos o comerciantes. El creador puede asignarles diálogos predefinidos
   para que el jugador obtenga información, inicie \textit{Quests} o simplemente enriquezca la ambientación del mundo.
 
-  \item \textbf{\textit{NPC} Agresivo (\textit{Aggressive NPC})}: Personajes hostiles que atacan al jugador al
+  \item \textbf{\textit{NPC} Agresivo / Enemigos (\textit{Aggressive NPC / Enemies})}: Personajes hostiles que atacan al jugador al
   detectarlo dentro de un rango determinado. Configurables con estadísticas de salud, tipos de armas que utilizan
   y tabla de botín que sueltan al ser derrotados.
 
@@ -103,8 +94,8 @@ Actualmente se encuentran disponibles los siguientes tipos:
   de ataque y textura.
 
   \item \textbf{Tablas de Botín (\textit{Loot Tables})}: Configuraciones que definen qué ítems y qué cantidad de oro
-  se obtienen al interactuar con un elemento del juego. Se asignan a enemigos y \textit{Chests}, donde cada ítem de la
-  tabla tiene una probabilidad de aparición determinada.
+  se obtienen al interactuar con un elemento del juego, también se puede configurar la probabilidad de aparición de cada ítem. 
+  Se asignan a enemigos y \textit{Chests}, donde cada ítem de la tabla tiene una probabilidad de aparición determinada.
 
   \item \textbf{Diálogos (\textit{Dialogs})}: Conjuntos de mensajes asignables a \textit{NPCs} pasivos que habilitan la
   interacción con el jugador. Permiten estructurar flujos de conversación y vincular \textit{Quests} a mensajes
@@ -187,40 +178,17 @@ configuradas por el creador. Más información sobre los flujos de zonas se encu
 
 \subsubsection{Gestión de Recursos en Memoria}
 
-La gestión de recursos en memoria se organiza mediante un sistema de \textit{managers} y repositorios internos.
-El \texttt{DataPersistenceManager} centraliza las operaciones de guardado y carga, delegando la
-persistencia de cada tipo de dato a un repositorio especializado: \texttt{ZonesRepository},
-\texttt{WorldRepository} y \texttt{CreatablesRepository}, entre otros. Cada repositorio encapsula
-la lógica de serialización y acceso a disco de su dominio correspondiente.
-\vspace{0.25cm}
+La gestión de recursos en memoria se organiza mediante un sistema de managers y repositorios internos, 
+donde cada tipo de dato cuenta con su propio repositorio especializado que encapsula la lógica de 
+serialización y acceso a disco de su dominio.
 
-Para los \textit{Placeables}, cada objeto colocado en el mundo existe como una instancia rastreada en la jerarquía
-de la escena de Unity. Mediante un sistema de eventos, cada instancia notifica al \textit{manager} correspondiente
-cuando su estado ha sido modificado, determinando así si debe ser incluida en el próximo ciclo de guardado.
-\vspace{0.25cm}
+Los \textit{Placeables}, al estar representados físicamente en la escena, son rastreados individualmente y 
+notifican al sistema mediante eventos cuando su estado es modificado, determinando si deben incluirse 
+en el próximo ciclo de guardado.
 
-Los \textit{Creatables}, al no tener representación física en la escena, son gestionados por un
-\texttt{CreatablesManager} dedicado que mantiene en memoria el conjunto de objetos creables del mundo,
-permitiendo su consulta, modificación y persistencia de forma centralizada.
-\vspace{0.25cm}
-
-Cada \textit{Placeable} del mundo es un objeto instanciado y rastreado en la escena del juego, que hereda de la
-clase abstracta genérica \texttt{Placeable<T>}, donde \texttt{T} representa el modelo de datos asociado
-al objeto, definido en el \textit{Shared Package}. Esta clase base implementa dos interfaces clave:
-\texttt{IPersistent<ZoneData>}, que obliga a cada \textit{Placeable} a definir cómo serializa su estado en los
-datos de la zona mediante \texttt{SaveData}, e \texttt{ILoadable<T>}, que define cómo reconstruye su
-estado a partir de los datos cargados mediante \texttt{LoadData}.
-
-Al ser instanciado en la escena, cada \textit{Placeable} se registra en el sistema mediante el método
-\texttt{RegisterPlaceable}, que emite un evento (\texttt{ZoneDataRegistryEvent}) capturado por el
-\texttt{DataPersistenceManager}. De esta forma, el \textit{manager} mantiene un registro actualizado de todos
-los objetos presentes en la zona sin necesidad de búsquedas en la jerarquía de la escena, delegando
-la lógica de serialización a cada objeto.
-
-Como ejemplo concreto, \texttt{StructureObject} extiende \texttt{Placeable<StructureData>} y define
-en \texttt{SaveData} cómo persiste su posición, rotación, escala y configuración de colisionadores
-en el \texttt{ZoneData} de la zona activa, mientras que \texttt{LoadData} reconstruye el objeto en
-la escena a partir de los datos almacenados.
+Los \textit{Creatables}, al no tener representación física en la escena, son gestionados por un manager dedicado 
+que mantiene en memoria el conjunto de objetos creables del mundo, permitiendo su consulta, modificación 
+y persistencia de forma centralizada.
 
 \subsubsection{Publicación de Mundos}
 
