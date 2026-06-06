@@ -220,15 +220,38 @@ de forma horizontal entre las diferentes zonas, que pueden o no, estar en el mis
 
 \paragraph{Escenario $Alpha$ (antes \& después de optimización de colisiones)}
 
+Durante las pruebas \textit{Alpha} con usuarios reales (cuyos detalles se encuentran en la correspondiente sección), se realizó también
+una prueba de carga, obteniendo de esta forma las métricas del \textit{dashboard} de Datadog y retroalimentación de los jugadores.
+El mundo utilizado contiene en un espacio reducido, una cantidad alta de estructuras colisionables, \textit{NPCs}, enemigos y otras entidades como cofres
+que al abrirse dan una alta cantidad de tesoros, es decir, se asemeja a lo que se considera un \textit{lobby} donde todos los jugadores
+comienzan o usan como punto de encuentro y se tiene una alta carga de objetos.
+
+Al momento de aumentar la carga de la zona siendo puesta a prueba al $100\%$ en los gráficos se observan picos altos y que no son momentáneos,
+sino que se sostienen por unos segundos hasta que el \textit{delay} vuelve a bajar. A su vez, los jugadores mencionaron la experiencia \textit{input lag},
+\texit{rubber banding} o disconformidad con la sensación de juego.
+
 \begin{figure}[H]
 \centering
 \includegraphics[width=1\textwidth]{img/11-validation-and-tests/LT-alpha-1.jpg}
-\caption{Gráfico de rendimiento ante ~550 jugadores.}
+\caption{Gráfico de rendimiento antes de las optimizaciones.}
 \end{figure}
+
+Luego de obtener los resultados mencionados se llevaron a cabo una serie de mejoras y optimizaciones, principalmente en cuanto a las colisiones
+de los cuerpos rígidos presentes en una partida de juego.
+
+Es por esto que posteriormente se volvió a realizar la misma prueba, con el mismo servidor y la misma cantidad de jugadores concurrentes con el
+objectivo de detectar mejoras en las métricas pero principalmente en la experiencia de usuario.
+
+Como se puede observar en los gráficos de la segunda figura, si se hace foco tan solo en la curva de duración máxima por tick, se notan
+picos altos al igual que con la prueba anterior, sin embargo, en este caso son momentáneos y no se sostienen en el tiempo. Si bien
+esto indica que hay más espacio de optimizaciones, especialmente en el procesado de comandos, se logró que la alta duración de un tick
+no afecte negativamente a todos los subsiguientes.
+
+En cuanto a la experiencia de usuario, es una clara mejora, ya que los efectos del \textit{input lag} son muy cortos y no apreciables al jugador.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=1\textwidth]{img/11-validation-and-tests/LT-alpha-1-remake.jpg}
-\caption{Gráfico de rendimiento ante ~550 jugadores.}
+\caption{Gráfico de rendimiento luego de las optimizaciones.}
 \end{figure}
 
