@@ -7,11 +7,9 @@ modificar la configuración de zonas existentes, gestionar \textit{assets}, publ
 \begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/world-editor-intro.png}
-  \caption{Un ejemplo demundo en construcción dentro del editor}
+  \caption{Un ejemplo de mundo en construcción dentro del editor}
   \label{fig:world-editor-example}
 \end{figure}
-
-\vspace{0.25cm}
 
 A continuación se enumera de forma resumida las funcionalidades principales de parte del \texttt{World Editor}:
 
@@ -20,12 +18,12 @@ A continuación se enumera de forma resumida las funcionalidades principales de 
   \item Organización de múltiples zonas interconectadas dentro de cada mundo.
   \item Colocación de estructuras, objetos de entorno, bases, rampas y assets decorativos.
   \item Personalización de materiales de suelo, colores y presentación visual.
-  \item Definición de puntos de aparición de jugadores y áreas de spawn de enemigos.
+  \item Definición de puntos de aparición de jugadores.
   \item Configuración de generadores de enemigos, NPCs y cofres de \textit{loot} (botín).
   \item Importación de modelos y sprites personalizados al mundo.
   \item Acceso a una biblioteca de modelos predeterminados y contenido reutilizable.
   \item Creación y personalización de enemigos, NPCs y sus apariencias visuales.
-  \item Configuración de árboles de diálogo de NPCs e interacciones con quests.
+  \item Configuración de árboles de diálogo de NPCs e interacciones con quests (misiones).
   \item Construcción de cadenas de quests completas con objetivos, recompensas e integración de diálogos.
   \item Creación de objetivos basados en derrotas de enemigos o interacciones.
   \item Configuración de recompensas de quests incluyendo ítems y moneda.
@@ -40,7 +38,17 @@ A continuación se enumera de forma resumida las funcionalidades principales de 
 
 \subsubsection{Estructura de un Mundo}
 
-Un mundo se compone de tres elementos principales.
+Un mundo se compone de tres elementos principales:
+
+\begin{itemize}
+  \item \textbf{Zonas (\textit{Zones})}: Subdivisiones de un mundo con diferentes áreas.
+  \item \textbf{Objetos Creables (\textit{Creatables})}: Objetos instanciados dinámicamente en tiempo de ejecución, como \textit{NPCs},
+  enemigos o ítems. A diferencia de los \textit{Placeables}, no pueden ser posicionados manualmente durante la fase de diseño,
+  sino que son generados por la lógica del juego.
+  \item \textbf{Objetos Colocables (\textit{Placeables})}: Objetos posicionados manualmente en el editor durante la fase de diseño,
+  que permanecen estáticos en tiempo de ejecución. Se clasifican en estructuras (\textit{Structures}), generadores
+  (\textit{Spawners}) y objetos diversos (\textit{Miscellaneous Objects}).
+\end{itemize}
 
 \paragraph{Zonas (\textit{Zones})}
 
@@ -60,91 +68,79 @@ portales (\textit{Portals}).
 Los \textit{Placeables} son objetos posicionados manualmente en el editor durante la fase de diseño y permanecen estáticos en
 tiempo de ejecución. Se clasifican en tres categorías principales:
 
-\begin{itemize}
-  \item \textbf{Estructuras (\textit{Structures})}: Objetos estáticos que forman parte del entorno del juego, como edificios,
-  árboles o rocas. Al ser colocados, su posición, rotación y escala pueden editarse mediante \textit{Gizmos} o a través
-  de su panel de configuración. Cada estructura permite configurar sus colisionadores (\textit{Colliders}), que definen
-  las interacciones físicas con el jugador y otros elementos del juego. Actualmente se soportan dos tipos de colisionador:
-  cubo (\textit{Cube}), de uso general, y rampa (\textit{Slope}), un colisionador de forma piramidal diseñado para
-  superficies inclinadas que permiten al jugador desplazarse hacia zonas de mayor altura. Adicionalmente, cualquier
-  estructura puede configurarse como tienda (\textit{Shop}), habilitando la compra de ítems por parte de los jugadores.
+\vspace{0.25cm}
 
-  \begin{figure}[H]
-  \centering
-  \includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/structure-transform.png}
-  \caption{Estructura seleccionada.}
-  \label{fig:structure-transform}
+La primera de ellas son las \textbf{Estructuras (\textit{Structures})}, estas son objetos estáticos que forman parte del entorno del juego, como edificios,
+árboles o rocas. Al ser colocados, su posición, rotación y escala pueden editarse mediante \textit{Gizmos} o a través
+de su panel de configuración. Cada estructura permite configurar sus colisionadores (\textit{Colliders}), que definen
+las interacciones físicas con el jugador y otros elementos del juego. Actualmente se soportan dos tipos de colisionador:
+cubo (\textit{Cube}), de uso general, y rampa (\textit{Slope}), un colisionador de forma piramidal diseñado para
+superficies inclinadas que permiten al jugador desplazarse hacia zonas de mayor altura. Adicionalmente, cualquier
+estructura puede configurarse como tienda (\textit{Shop}), habilitando la compra de ítems por parte de los jugadores.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/structure-transform.png}
+    \caption{Estructura seleccionada.}
 \end{figure}
 
-  \vspace{0.25cm}
+Al iniciar el juego por primera vez, se verá que el usuario no tiene estructuras disponibles para colocar, 
+por lo que el editor ofrece una biblioteca de modelos predeterminados que los creadores pueden descargar libremente mediante la seccion de \textit{Default Content}.
+Estos modelos predeterminados ofrecen una variedad de opciones para enriquecer la ambientación y composición visual de las zonas.
 
-  Al incializar el juego por primera vez, se verá que el usuario no tiene estructuras disponibles para colocar, 
-  por lo que el editor ofrece una biblioteca de modelos predeterminados que los creadores pueden descargar libremente mediante la seccion de \textit{Default Content}.
-  Estos modelos predeterminados ofrecen una variedad de opciones para enriquecer la ambientación y composición visual de las zonas.
-
-    \begin{figure}[H]
-  \centering
-  \includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/downloading-default.png}
-  \caption{Panel de descarga de contenido predeterminado.}
-  \label{fig:default-content}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/downloading-default.png}
+    \caption{Panel de descarga de contenido predeterminado.}
 \end{figure}
 
-  \vspace{0.25cm}
+Uno de los \textit{features} más enriquecedores del editor es la posibilidad de importar modelos 3D personalizados, 
+lo que permite a los creadores diseñar y utilizar sus propios \textit{assets} visuales en el juego. Para lograr esto, se integró la librería \texttt{GLTFast}, que facilita la carga de modelos en formato \texttt{.glb} 
+durante la ejecución del editor, permitiendo a los creadores incorporar contenido único y personalizado en sus mundos.
 
-  Uno de los features mas enriquecedores del editor es la posibilidad de importar modelos 3D personalizados, 
-  lo que permite a los creadores diseñar y utilizar sus propios assets visuales en el juego. Para lograr esto, se integró la librería \texttt{GLTFast}, que facilita la carga de modelos en formato \texttt{.glb} 
-  durante la ejecución del editor, permitiendo a los creadores incorporar contenido único y personalizado en sus mundos.
-
-      \begin{figure}[H]
-  \centering
-  \includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/import-model-1.png}
-  \caption{Panel de importación de modelos 3D.}
-  \label{fig:import-model}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/import-model-1.png}
+    \caption{Panel de importación de modelos 3D.}
 \end{figure}
 
-      \begin{figure}[H]
-  \centering
-  \includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/import-model-2.png}
-  \caption{Model importado en la escena.}
-  \label{fig:import-model}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/import-model-2.png}
+    \caption{Modelo importado en la escena.}
 \end{figure}
 
+La segunda de ellas son los \textbf{Generadores (\textit{Spawners})}, que son objetos que crean entidades en tiempo de ejecución, como enemigos o \textit{NPCs}.
+Pueden configurarse con parámetros como frecuencia de aparición, rango y tipo de entidad a generar. Actualmente, se
+encuentran disponibles tres tipos: generador de enemigos (\textit{Enemy Spawner}), generador de \textit{NPCs} (\textit{NPC Spawner})
+y generador de jugadores (\textit{Player Spawner}).
 
-  \item \textbf{Generadores (\textit{Spawners})}: Objetos que instancian entidades en tiempo de ejecución, como enemigos o \textit{NPCs}.
-  Pueden configurarse con parámetros como frecuencia de aparición, rango y tipo de entidad a generar. Actualmente se
-  encuentran disponibles tres tipos: generador de enemigos (\textit{Enemy Spawner}), generador de \textit{NPCs} (\textit{NPC Spawner})
-  y generador de jugadores (\textit{Player Spawner}).
-
-        \begin{figure}[H]
+\begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/spawner-player.png}
   \caption{Generador de jugadores colocado en la escena.}
-  \label{fig:spawner-player}
 \end{figure}
 
-      \begin{figure}[H]
+\begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/spawner-npc.png}
   \caption{Generador de NPCs colocado en la escena.}
-  \label{fig:spawner-npc}
 \end{figure}
 
-      \begin{figure}[H]
+\begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/spawner-enemy.png}
   \caption{Generador de enemigos colocado en la escena.}
-  \label{fig:spawner-enemy}
 \end{figure}
 
-  \item \textbf{Objetos Diversos (\textit{Miscellaneous Objects})}: Elementos que no se ajustan a las categorías anteriores pero
-  contribuyen a la composición del mundo. Actualmente se encuentran disponibles dos variantes:
-  \begin{itemize}
+La tercera y última de ellas son los \textbf{Objetos Misceláneos (\textit{Miscellaneous Objects})}, que son elementos que no se ajustan a las categorías anteriores, pero
+contribuyen a la composición del mundo. Actualmente, se encuentran disponibles dos variantes:
+\begin{itemize}
     \item \textbf{Cofres (\textit{Chests})}: Objetos interactuables que los jugadores pueden abrir para obtener recompensas.
-    Configurables con distintos tipos de botín, tiempo de reseteo y apariencia en estado abierto y cerrado.
+        Configurables con distintos tipos de botín, tiempo de reseteo y apariencia en estado abierto y cerrado.
     \item \textbf{Portales (\textit{Portals})}: Objetos que permiten transportar al jugador a otra ubicación, incluso entre zonas distintas
-    del mundo. Al interactuar con un \textit{Portal}, el jugador es teletransportado a la zona de destino configurada,
-    conservando su estado y progresión.
-  \end{itemize}
+        del mundo. Al interactuar con un \textit{Portal}, el jugador es teletransportado a la zona de destino configurada,
+        conservando su estado y progresión.
 \end{itemize}
 
 \paragraph{Objetos Creables (\textit{Creatable Objects})}
