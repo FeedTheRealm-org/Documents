@@ -3,7 +3,6 @@ proposal:
   description: Build the proposal document using LaTeX
   entrypoint: ./proposal
 report:
-  # idk if this is the correct name for the report, don't specify it at the email. 
   name: Equipo169_InformeFinalTrabajoProfesional_2c2025_FeedtheRealm 
   description: Build the report document using LaTeX
   entrypoint: ./report
