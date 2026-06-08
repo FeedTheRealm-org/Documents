@@ -5,46 +5,48 @@ y las lecciones que el equipo extrajo a partir de esa experiencia.
 
 \subsection{Riesgos materializados}
 
-Se desarrolló una investigación más profunda en cuanto a los riesgos que se presentan en el desarrollo y la vida
-del producto. Se analizan sus causas, consecuencias y probabilidad, para determinar el impacto y un plan de respuesta y consistencia. El objetivo del siguiente artefacto
-evolutivo es tener en claro las decisiones que se deben tomar en caso de que ocurra algún problema.
+En una primera instancia se llevó a cabo una investigación para identificar y detallar los posibles riesgos asociados 
+al desarrollo y a la vida del producto. Para cada uno se analizaron sus causas, consecuencias y probabilidad, con el fin 
+de determinar su impacto y definir un plan de respuesta y contingencia. Posteriormente, a lo largo del desarrollo, se 
+detectaron y registraron nuevos riesgos que no habían sido contemplados al inicio. El objetivo de este artefacto evolutivo 
+es tener claras las decisiones a tomar en caso de que alguno de estos riesgos se materialice.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=1\textwidth]{img/13-risks-and-lessons/riesgos_1.jpg}
-\caption{Tabla resumen de los principales riesgos y como respondería el equipo.}
+\caption{Tabla resumen de los riesgos identificados inicialmente (1/2)}
 \end{figure}
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=1\textwidth]{img/13-risks-and-lessons/riesgos_2.jpg}
-\caption{Tabla resumen de los principales riesgos y como respondería el equipo.}
+\caption{Tabla resumen de los riesgos identificados inicialmente (2/2)}
 \end{figure}
 
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=1\textwidth]{img/13-risks-and-lessons/new-risks.jpg}
-\caption{Tabla resumen de los principales riesgos y como respondería el equipo.}
+\caption{Tabla resumen de los nuevos riesgos detectados durante el desarrollo}
 \end{figure}
 
 \vspace{0.25cm}
 
 A lo largo del proyecto se materializaron algunos riesgos que, gracias a la buena organización del equipo, 
 pudieron preverse en su mayoría, permitiendo tomar medidas de mitigación oportunas. Estos riesgos estuvieron 
-vinculados principalmente a cuestiones técnicas y a la falta de experiencia con algunas herramientas. Al inicio 
-del proyecto, el equipo realizó una sesión de \textit{brainstorming} para definir el alcance y los primeros bocetos 
-funcionales, sentando las bases de lo que se desarrollaría a lo largo del trabajo.
+vinculados principalmente a cuestiones técnicas y a la falta de experiencia con algunas herramientas.
 
-\vspace{0.25cm}
+\subsection{Retrospectiva del proyecto}
 
+Al inicio del proyecto, el equipo realizó una sesión de \textit{brainstorming} para definir el alcance y los primeros bocetos 
+funcionales, sentando las bases de lo que se desarrollará a lo largo del trabajo.
 Dada la alta motivación inicial, se presentaron muchas ideas que lamentablemente no vieron la luz. Esto se 
 debió a una subestimacion de muchas de las tareas e inexperiencia en el uso de las herramientas como \textit{Unity}, por 
 parte del equipo. A su vez hubo riesgos no previstos que se lograron mitigar a tiempo.
 
 \vspace{0.25cm}
 
-El equipo al inicio del proyecto, tomó la determinación de desarrollar diferentes partes de forma aislada, dado que con la
+El equipo tomó la determinación de desarrollar diferentes partes de forma aislada, dado que con la
 idea de que cada parte tenga un \textit{owner} y un \textit{co-owner}. El tutor dio advertencia a tiempo sobre 
 esta práctica y se logró rectificarla. Sin embargo, en el inconsciente colectivo del equipo esta idea de mantener \textit{owner} 
 y \textit{co-owner} en cada uno de los repositorios seguía presente y se materializo en la contribución a cada uno de ellos.
@@ -59,10 +61,10 @@ las partes del código es casi total, para cada uno de los miembros del equipo.
 \vspace{0.25cm}
 
 Siguiendo con las cuestiones organizativas, se tomó la decisión de poner las partes comunes entre el
-\textit{game} y el \textit{world editor}, en un tercer repositorio llamado \textit{shared package}. A instancias finales 
-del proyecto, los miembros del equipo encontraron esta decisión como algo tedioso y poco práctico. Es cierto que existian 
-partes comunes entre el \textit{game} y el \textit{editor}, de esta forma se mitigarian el codigo repetido y se fomentaria 
-las buenas prácticas de programación. 
+\texttt{Game} y el \texttt{World editor} en un tercer repositorio llamado \texttt{Shared Package}. A instancias finales 
+del proyecto, los miembros del equipo encontraron esta medida tediosa y poco práctica. Su única ventaja 
+fue lograr mantener coherencia entre las partes comunes, pero a costa de una mayor dificultad para realizar 
+cambios en ellas.
 
 \vspace{0.25cm}
 
@@ -73,7 +75,7 @@ introducidos.
 
 \vspace{0.25cm}
 
-En retrospección, se puede decir que el trabajo hubiera sido más fácil sin la existencia de este tercer repositorio y 
+En retrosptiva, se puede decir que el trabajo hubiera sido más fácil sin la existencia de este tercer repositorio y 
 se podría reemplazar con una libreria propia solo para comunicación del \textit{core-service} y testeado contra el mismo o 
 directamente sin este tercer repositorio. A su vez, no se puede dudar de la practicidad y versatilidad de la herramienta de 
 control de versiones \textit{git}. Como equipo, se concluyó que \textit{git} no es del todo compatible con \textit{Unity}, 
@@ -116,7 +118,6 @@ económico-financiero para analizar la viabilidad del proyecto y la puesta en ma
 inversiones semilla o inversores ángeles. Es decir, que la parte de modelado, análisis y detección de fraude queda para 
 trabajo futuro.
 
-\vspace{0.25cm}
 
 \subsection{Lecciones aprendidas}
 
@@ -160,4 +161,3 @@ gracias al tutor. Se cree que lo importante para mitigar esto en futuros proyect
 colectiva, un aprendizaje mayor de la herramientas e investigación de las mismas, antes de un dirigirse directamente a 
 implementar.
 
-\vspace{0.25cm}
