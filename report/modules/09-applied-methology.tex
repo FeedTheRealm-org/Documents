@@ -1,8 +1,8 @@
 \section{Metodología aplicada}
 
 En la primera etapa del proyecto se concretaron múltiples reuniones con todos los integrantes del grupo para unificar 
-las ideas principales tanto de los primeros pasos para comenzar con el diseño de arquitectura, los servicios necesarios 
-y los repositorios a crear junto a sus \textit{templates} de directorios y \textit{pipelines} necesarios. En esta etapa 
+las ideas principales, entre ellas los primeros pasos para comenzar con el diseño de arquitectura, los servicios 
+y los repositorios a crear, junto a sus \textit{templates} de directorios y \textit{pipelines} necesarios. En esta etapa 
 también se logró estimar las fases del proyecto, como dividir módulos por lógica, features en las fases, y realizar un 
 \textit{brainstorming} sobre features obligatorias y secundarias que existirían en la totalidad del proyecto.
 
@@ -13,7 +13,7 @@ Para la planificación, visualización y comunicación del proyecto se utilizaro
 
 \textbf{\underline{Miro}}: para la creación y visualización más ``amigable" de las user stories propuestas, creando un 
 \textit{User Story Map} (USM) y un \textit{Work Breakdown Structure} (WBS) para realizar un mapeo general, dividirlos 
-en módulos/etapas y sea más fácil de explicar a nuestro tutor con el fin de exponer la planificación a lo largo del tiempo 
+en módulos/etapas y sea más fácil de explicar al tutor con el fin de exponer la planificación a lo largo del tiempo 
 y mostrar las modificaciones si las hubiera. Dentro de estos esquemas lo más utilizado por nosotros y el tutor, fue tener 
 un seguimiento de las versiones y su progreso en el tiempo, y poder estimar mejor que features habría que darle más prioridad, 
 cuáles se pueden aplazar y cuáles descartar en caso de no llegar para la entrega del producto. Junto a las \textit{User Stories} 
@@ -115,6 +115,7 @@ etapa de pulir últimos cambios y desarrollo de informe. Con últimos cambios se
 pendientes, desarrollar aspectos a mejorar que en su momento se obviaron para tener US con funcionalidad suficiente, mejoras 
 en la UI pendientes o para perfeccionar, features opcionales que mejoran la jugabilidad de los clientes y optimizaciones 
 importantes para mejorar el rendimiento ya sea de los clientes como de los servidores.
+
 \vspace{0.25cm}
 
 Queda a aclarar que todas las US que fueron limitadas en su alcance fueron o diagramadas de tal forma previamente al 
@@ -122,6 +123,7 @@ momento de crear los CA al comienzo de iteración, o en las reuniones al ver qu�
 y/o se extendió mucho la entrega completa de tal US con respecto a los tiempos de la iteración. Entonces o bien se crea 
 una nueva US con las características a desarrollar pendientes en la próxima iteración o se crea una US para asignarse en 
 la última etapa del proyecto.
+
 \vspace{0.25cm}
 
 Con respecto a las etapas del proyecto, se organizaron de forma de que para la entrega intermedia se tenga algunas o las 
@@ -130,22 +132,110 @@ escrito en la propuesta entregada antes de comenzar el proyecto. Se podría deci
 implementada, ya que se llegó a la etapa final con todas las características y funcionalidades principales esperadas 
 completadas. Y además las US desestimadas no fueron en general features determinantes o muy relevantes con respecto a 
 las realizadas sino más bien extras o complementarias.
+
 \vspace{0.25cm}
 
-\subsection{Automatización del despliegue}
+\subsection{Métricas de planificación y gestión}
 
-Con respecto al tema de grado de automatización de despliegue, en nuestro caso hubo complicaciones en ciertos aspectos 
-como en el caso específico de la automatización de despliegue del sistema de servidores, ya que como se requiere de la 
-compilación de código mediante la herramienta de Unity, eso dificulta el flujo en el \textit{pipeline} para que con solo 
-integrar los cambios en una rama se actualicen los servidores automáticamente.
-\vspace{0.25cm}
+A continuación se mostrará las métricas obtenidas al final del proyecto, con el fin de analizar la planificación 
+y gestión del mismo a lo largo del tiempo.
 
-En su momento se investigó y Unity ofrece un sistema para compilar en la nube pero es propia de Unity y otros flujos de 
-entrega de ejecutable compilado, pero son todos sistemas pagos y se excedería en presupuesto para este proyecto para el equipo.
-Por lo tanto se pactó con el tutor que para este entregable sería suficiente que se realice solo la parte de compilación 
-del ejecutable del servidor manualmente, y el resto del \textit{pipeline} automatizado. En la cual, primero se genera
-la imagen en Docker con el ejecutable del servidor ya compilado, y luego se realiza un tag con la versión correspondiente,
-todo este mecanismo activa el \textit{pipeline} para subir la imagen a la nube y actualizar los servidores con la nueva imagen.
-Por otro lado los microservicios y el backend involucrado se encuentran efectivamente automatizados, una vez integrado 
-los cambios a la rama principal, se ejecuta el \textit{pipeline} necesario para subir/actualizar en la nube los cambios 
-realizados, y dejar el sistema funcionando correctamente.
+Para comenzar, se muestra la evolución del backlog a lo largo de las iteraciones, se contabiliza en el eje vertical 
+la cantidad de US, y en el eje horizontal las iteraciones. 
+Se puede observar que a lo largo del tiempo se mantuvo una cantidad desarrollada relativamente estable, 
+con un pico sobre el final del proyecto, debido a que se agregaron US para mejorar/arreglar características ya 
+desarrolladas o para agregar nuevas features complementarias y de diseño, lo cuales contaron con una mayor cantidad de US 
+desarrolladas pero de menor complejidad y tiempo empleado para completarlas.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{img/09-applied-methology/backlog-iteration.jpg}
+    \caption{Evolución del backlog a lo largo de las iteraciones.}
+    \label{fig:backlog-iteration}
+\end{figure}
+
+En la siguiente gráfica se muestra la evolución del backlog a lo largo de las versiones, se contabiliza en el eje vertical
+la cantidad de US, y en el eje horizontal las versiones. Se observa caraterísticas similares a la gráfica anterior, 
+por la misma razón explicada anteriormente.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{img/09-applied-methology/backlog-version.jpg}
+    \caption{Evolución del backlog a lo largo de las versiones.}
+    \label{fig:backlog-version}
+\end{figure}
+
+
+Luego en esta gráfica se muestra la división de tareas por integrante del grupo en el proyecto, se contabiliza 
+en el eje vertical la cantidad de US, y en el eje horizontal los integrantes del grupo. 
+Se puede observar que la distribución de las US fue relativamente equitativa entre los integrantes, 
+a pesar de verse distinciones en la cantidad asignada a cada integrante en ciertas etapas, se debe a que algunas 
+de ellas fueron más complejas que otras y el tiempo de desarrollo de cada una de ellas no fue el mismo, 
+a pesar de ello la distribución fue equitativa.
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{img/09-applied-methology/team-division.jpg}
+    \caption{Distribución de las US por integrante del grupo.}
+    \label{fig:team-division}
+\end{figure}
+
+
+En cuanto a las US realizadas, se puede ver en el siguiente gráfico la distinción por tipo, se contabiliza en el 
+eje vertical la cantidad, y en el eje horizontal sus tipos.
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{img/09-applied-methology/labeled-status.jpg}
+    \caption{Distribución de las US por tipo.}
+    \label{fig:labeled-status}
+\end{figure}
+
+
+Con respecto a métricas de \textit{velocity}, se mostrarán a continuación dos gráficas. La primera se muestra con
+respecto a la cantidad de US completadas por versión, se contabiliza en el eje vertical la cantidad de US, y 
+en el eje horizontal las versiones. Se puede observar que a lo largo del proyecto se mantuvo una cantidad relativamente 
+homogénea de US completadas por iteración, con un pico sobre el final del proyecto debido a lo ya explicado anteriormente 
+sobre la acción en la última etapa.
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{img/09-applied-methology/velocity-tickets.jpg}
+    \caption{Velocidad del equipo a lo largo de las versiones por cantidad de tickets.}
+    \label{fig:velocity-tickets}
+\end{figure}
+
+
+Luego, se muestra la velocidad del equipo a lo largo de las versiones por puntos de estimación, propuestas en las reuniones 
+de planificación de cada iteración utilizando la metodología de \textit{Planning Poker}, se contabiliza en el eje 
+vertical la cantidad de puntos de estimación, y en el eje horizontal las versiones.
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{img/09-applied-methology/velocity-estimate.jpg}
+    \caption{Velocidad del equipo a lo largo de las versiones por puntos de estimación.}
+    \label{fig:velocity-points}
+\end{figure}
+
+
+Por último, se puede observar en la siguiente gráfica el \textit{burn up} del proyecto, donde se contabiliza 
+en el eje vertical la cantidad de US , y en el eje horizontal las fechas durante el proyecto en etapa de desarrollo. 
+Se puede observar que a lo largo del proyecto se mantuvo una cantidad relativamente estable de US completadas en relación 
+a lo que se planificaba tener realizado, como se explicó en esta sección, se hacía un analisis si se postergaba cada US 
+a la siguiente iteración, o si se descartaba, y se puede observar en el gráfico que en determinada fecha a inicios de 
+marzo, donde ya se planificaba el cierre de la etapa de desarrollo, que un número de US ya se determinaron como fuera del 
+alcance del proyecto, y se decidió no desarrollarlas, lo cual se refleja en el gráfico como el incremento de US cerradas, 
+y la brecha entre lo planificado y lo realizado se disminuye al llegar al fin.
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{img/09-applied-methology/burnup.jpg}
+    \caption{Gráfico de \textit{burn up} del proyecto.}
+    \label{fig:burnup}
+\end{figure}
+
