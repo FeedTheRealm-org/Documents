@@ -248,12 +248,12 @@ siguiente estructura:
 
 \begin{verbatim}
 <mundo>/
-├── world.data
-├── creatables.data
-└── zone_1.world
-    zone_2.world
-    ...
-    zone_n.world
+|- world.data
+|- creatables.data
+|- zone_1.world
+|- zone_2.world
+|- ...
+|- zone_n.world
 \end{verbatim}
 
 \begin{itemize}
@@ -319,3 +319,6 @@ se inicia una secuencia de carga hacia el \textit{Core Service} que sigue el sig
   \item \textbf{\textit{Assets} de Entorno}: Las texturas de suelo (\textit{ground textures}) y cielos
   (\textit{skybox textures}) asociadas a cada zona del mundo.
 \end{enumerate}
+
+Luego que el mundo es publicado, este debe ser activado mediante el panel de economía, lo cual requiere una cierta cantidad de \textit{slots}
+igual a la cantidad de zonas que se quieran desplegar y estos se obtienen a partir de suscripciones.
