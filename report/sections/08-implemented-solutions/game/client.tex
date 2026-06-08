@@ -7,8 +7,9 @@ arquitectura de sus módulos, la comunicación con el servidor y las herramienta
 El cliente contiene tres módulos principales: el \texttt{Core}, que contiene la lógica central y utilidades; 
 el \texttt{Gameplay}, que maneja la lógica de juego en tiempo de ejecución; y el \texttt{User Interface}, 
 que se encarga de la representación visual y la interacción del usuario. Para más detalle sobre \texttt{módulos}, 
-\textit{Assemblies} y \texttt{Vcontainer}, esto se explica en la sección 
-(TODO: (reference) 8.2 Estructura del Proyecto de Unity). 
+\textit{Assemblies} y \texttt{Vcontainer}, esto se explica en la sección de 'Estructura del proyecto de Unity'.
+
+% TODO: (reference) 8.2 Estructura del Proyecto de Unity
 
 \paragraph{Core}
 
@@ -18,8 +19,8 @@ flexibilidad y modularidad. Este sistema de inputs se integra con el resto del c
 lo que permite que cualquier componente pueda reaccionar a las acciones del usuario sin necesidad de conocer 
 la fuente de esos inputs.
 
-Se encuentran en el \texttt{Core} también varios gestores de recursos como gestor de Menú, de controlador del 
-\textit{mouse}, de cámara y otros, que se encargan de manejar aspectos específicos del juego y proporcionar una 
+Se encuentran en el \texttt{Core} también varios gestores de recursos, como el gestor de Menú, de controlador del 
+\textit{mouse}, de la cámara y otros, que se encargan de manejar aspectos específicos del juego y proporcionar una 
 interfaz para interactuar con ellos.
 
 \vspace{0.20cm}
@@ -27,10 +28,10 @@ interfaz para interactuar con ellos.
 Dentro del módulo de \texttt{Core}, también hay un \textit{assembly} llamado \texttt{Common}, donde se guarda 
 la lógica y los datos que deben ser idénticos para cliente y servidor. 
 
-En dicho módulo, no contiene código de \texttt{UI} ni de \texttt{Gameplay} exclusivo, sino contratos, 
-configuraciones y mecanismos de red que ambos lados usan para comunicarse de forma coherente. 
+Dicho módulo, no contiene código de \texttt{UI} ni de \texttt{Gameplay} exclusivo, sino contratos, 
+configuraciones y mecanismos de red que ambos lados usan para comunicarse. 
 Esto garantiza que interpreten igual los valores de configuración y protocolos. 
-Entre estos se encuentran \textit{DTO's}, \textit{Enums}, eventos, y otros elementos que son compartidos. 
+Entre estos se encuentran \textit{DTO's}, \textit{Enums}, eventos, y otros elementos compartidos. 
 
 \paragraph{Gameplay}
 
@@ -39,18 +40,11 @@ solo \textit{UI}, es el conjunto que une la experiencia del jugador con los dato
 con los objetos lógicos y visuales que se representan lo que el usuario percibe.
 
 El flujo comienza en sus puntos de entrada (\textit{Entry Points}), donde se maneja el arranque 
-del cliente y toda la configuración necesaria para que la escena tome lo necesario para comenzar a funcionar y
-tomar los recursos para que se mantenga así. 
+del cliente y toda la configuración necesaria para que la escena tome los recursos necesarios para funcionar. 
 
-Esto incluye la configuración de iniciar la conexión con el servidor, cargar los recursos necesarios ya sea local 
-o desde el \textit{backend} que contiene los datos a cargar o renderizar, configurar los sistemas de juego y 
-preparar la escena y su flujo para la interacción del usuario.
-
-Todo estos recursos nombrados, previamente se inicializan e inyectan los recursos y servicios necesarios 
-en el contenedor de dependencias de \texttt{VContainer}, bajo clases inicializadoras de cada escena.
-Con respecto a lo nombrado sobre escenas, en el cliente se manejan distintas escenas para cada parte del juego, 
-una escena para el menú principal, que incluye el navegador de mundos, edición de personaje, menú de obtención 
-de moneda de juego, etc. Y luego otra escena para el juego una vez dentro del mundo, donde se desarrolla la 
+En el cliente se manejan distintas escenas para cada parte del juego, 
+una escena para el menú principal, que incluye el navegador de mundos, edición de personaje y menú de obtención 
+de moneda de juego, y otra escena a la que se redirecciona una vez seleccionado un mundo, donde se desarrolla la 
 experiencia de juego.
 
 \begin{figure}[H]
@@ -60,30 +54,29 @@ experiencia de juego.
 \end{figure}
 
 
-Volviendo a la configuración de la escena del juego, Cada objeto/entidad carga sus datos por su propio sistema 
+En cuanto a la configuración de la escena del juego, cada objeto/entidad carga sus datos por su propio sistema 
 categorizado de \textit{loaders}. Una vez que se ha establecido la conexión con el servidor y 
-se han cargado los recursos necesarios, el \textit{Entry Point} del juego se encarga de configurar todos los 
-objetos presentes en el juego mediante \textit{linkers}.
-Estos son clases que se encargan de vincular al objeto/entidad del mundo con su representación visual y lógica 
+se han cargado los recursos necesarios, el \textit{Entry Point} del mundo se encarga de configurar todos los 
+objetos presentes en el mismo mediante \textit{linkers}.
+Estas son clases que se encargan de vincular al objeto/entidad del mundo con su representación visual y lógica 
 en la escena.
 
 Es una capa de \textit{“composition wiring”}: toma objetos de red y los convierte en entidades 
-jugables con su \textit{UI} y comportamiento. Esto permite inyectar dependencias y controllers en cada tipo 
+jugables con su \textit{UI} y comportamiento. Esto permite inyectar dependencias y controladores en cada tipo 
 de entidad, diferenciar entre jugador local y otros clientes, y dejar las entidades listas para que el sistema 
 de juego las maneje sin necesidad de acoplar la lógica de red o de \textit{UI} directamente en ellas, respondiendo 
 a lo que el servidor envía y a lo que el jugador hace.
 
 \vspace{0.20cm}
 
-Un componente importante dentro del concepto \textit{liking}, es el \textit{network adapter}. Éste actúa como 
+Un componente importante dentro del concepto de \textit{linking}, es el \textit{network adapter}. Este actúa como 
 el puente directo entre cada entidad y la red. Para el jugador local, permite que esa entidad envíe acciones y 
 transacciones al servidor. Para entidades remotas, permite recibir eventos del servidor y procesarlos localmente.
-De esta forma así llega información como ataques, diálogos, portales, interacciones, etc. y se procesan en 
+De esta forma llega información como ataques, diálogos, portales, interacciones, etc. y se procesan en 
 cada entidad para que el jugador vea la respuesta a sus acciones o a las acciones de otros jugadores.
 
-Con esto se logra manejar el comportamiento de cada entidad desde la lógica en el servidor, explicado en su sección, 
-teniendo el control según su \textit{NetId} almacenada en su \textit{network adapter} de cada entidad.
-De esta forma el cliente solo se encarga de representar y ejecutar lo que el servidor le indica.
+Con esto se logra manejar el comportamiento de cada entidad desde la lógica en el servidor, 
+y el cliente solo se encarga de representar y ejecutar lo que el servidor le indica.
 
 \paragraph{User Interface}
 

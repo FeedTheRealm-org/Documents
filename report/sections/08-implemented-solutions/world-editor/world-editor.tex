@@ -84,6 +84,18 @@ estructura puede configurarse como tienda (\textit{Shop}), habilitando la compra
     \caption{Estructura seleccionada.}
 \end{figure}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/cube-collider.jpg}
+    \caption{Estructuras con colisionador de tipo cubo con transformaciones aplicadas.}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/slope-collider.jpg}
+    \caption{Estructuras con colisionador de tipo rampa con transformaciones aplicadas.}
+\end{figure}
+
 Al iniciar el juego por primera vez, se verá que el usuario no tiene estructuras disponibles para colocar, 
 por lo que el editor ofrece una biblioteca de modelos predeterminados que los creadores pueden descargar libremente mediante la seccion de \textit{Default Content}.
 Estos modelos predeterminados ofrecen una variedad de opciones para enriquecer la ambientación y composición visual de las zonas.
@@ -100,13 +112,7 @@ durante la ejecución del editor, permitiendo a los creadores incorporar conteni
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/import-model-1.jpg}
-    \caption{Panel de importación de modelos 3D.}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/import-model-2.jpg}
+    \includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/import-model.jpg}
     \caption{Modelo importado en la escena.}
 \end{figure}
 
@@ -137,10 +143,20 @@ La tercera y última de ellas son los \textbf{Objetos Misceláneos (\textit{Misc
 contribuyen a la composición del mundo. Actualmente, se encuentran disponibles dos variantes:
 \begin{itemize}
     \item \textbf{Cofres (\textit{Chests})}: Objetos interactuables que los jugadores pueden abrir para obtener recompensas.
-        Configurables con distintos tipos de botín, tiempo de reseteo y apariencia en estado abierto y cerrado.
+        Configurables con distintos tipos de botín, tiempo de reseteo y apariencia en estado abierto y cerrado. La aparicencia se puede configurar y seleccionar distintos modelos 3D para el cofre, ya sea de los modelos predeterminados o de modelos personalizados importados por el usuario.
+        \begin{figure}[H]
+          \centering
+          \includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/chest.jpg}
+          \caption{Cofre colocado en la escena.}
+        \end{figure}
     \item \textbf{Portales (\textit{Portals})}: Objetos que permiten transportar al jugador a otra ubicación, incluso entre zonas distintas
         del mundo. Al interactuar con un \textit{Portal}, el jugador es teletransportado a la zona de destino configurada,
         conservando su estado y progresión.
+        \begin{figure}[H]
+          \centering
+          \includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/portal.jpg}
+          \caption{Portal colocado en la escena.}
+        \end{figure}
 \end{itemize}
 
 \paragraph{Objetos Creables (\textit{Creatable Objects})}
@@ -205,6 +221,41 @@ que permiten a los creadores manipular visualmente la posición, rotación y esc
   \label{fig:gizmos}
 \end{figure}
 
+\paragraph{Editor de Models 3D}
+La importación de modelos 3D desde internet puede introducir problemas de escala o rotación, ya que el formato \texttt{.glb} 
+no define una convención de orientación, lo que con frecuencia produce modelos importados con resultados no deseables. 
+Para resolver esto, se incorporó un editor de modelos 3D, que permite a los  creadores ajustar visualmente la escala
+y la rotación antes de finalizar la importación al mundo, garantizando que el 
+modelo se integre correctamente en la escena sin necesidad de herramientas externas. El editor también permite 
+definir si el modelo tendrá o no colisiones al colocarse, lo que resulta útil para elementos decorativos que no 
+requieren colisionadores y mejora la experiencia al ubicar múltiples modelos sin tener que configurar cada 
+uno de forma individual luego de su colocación. El editor de modelos también cuenta con una pestaña 
+dedicada a configurar qué modelo de cofre se utiliza por defecto al colocar uno.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/model-editor.jpg}
+\caption{Editor de modelos 3D.}
+\label{fig:model-editor}
+\end{figure}
+
+
+\paragraph{Editor de Zonas}
+Para facilitar la edición de zonas, se implementó un editor de zonas que permite configurar visualmente las texturas de suelo y cielo.
+Los ususarios pueden seleccionar entre una variedad de texturas predeterminadas (Asumiendo que el ususario ya importó el default content mencionado previamente) 
+o importar sus propias texturas personalizadas. 
+
+\vspace{0.25cm}
+
+Para la textura del suelo, se puede configurar la granularidad del mismo,
+lo que determina la escala de repetición de la textura y permite ajustar su apariencia para adaptarse mejor a la composición visual de la zona. 
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/zone-editor.jpg}
+\caption{Editor de zonas.}
+\label{fig:zone-editor}
+\end{figure}
 
 \subsubsection{Gestión de Mundos}
 
@@ -236,23 +287,6 @@ siguiente estructura:
   Se genera un archivo por cada zona que compone el mundo.
 \end{itemize}
 
-\subsubsection{Personalización del Mundo}
-
-El editor permite a los creadores personalizar la apariencia de cada zona mediante la importación de contenido
-propio, incluyendo modelos 3D, texturas de ítems, texturas de suelo, \textit{skyboxes} y cosméticos personalizados
-para el jugador.
-\vspace{0.25cm}
-
-Para quienes no deseen importar contenido propio, el editor ofrece la posibilidad de descargar un conjunto
-de \textit{assets} predeterminados que incluye modelos 3D para estructuras, enemigos, \textit{NPCs}, ítems y cosméticos,
-así como texturas de suelo y cielo para las zonas.
-\vspace{0.25cm}
-
-La importación de modelos 3D en tiempo de ejecución, funcionalidad no soportada nativamente por Unity,
-se resolvió mediante la integración de la librería \texttt{GLTFast} % TODO(reference)
-, que permite cargar modelos en formato \texttt{.glb} durante la ejecución del editor, facilitando
-la incorporación de \textit{assets} personalizados por parte de los creadores de mundos.
-
 \subsubsection{Economía}
 
 El sistema cuenta con paneles de gestión económica destinados a los creadores de mundos, que centralizan
@@ -261,12 +295,26 @@ estado de cada mundo publicado, ver la fecha de renovación de su período de su
 administrar sus publicaciones.
 \vspace{0.25cm}
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/subscriptions.jpg}
+\caption{Panel de suscripciones.}
+\label{fig:subscriptions}
+\end{figure}
+
 Adicionalmente, existe un panel de ingresos que permite a los creadores recaudar las
 ganancias generadas en sus mundos. Dichos ingresos provienen de las compras realizadas por jugadores
 con gemas dentro del mundo, correspondientes a la adquisición de cosméticos disponibles en las tiendas
 configuradas por el creador. Más información sobre los flujos de zonas se encuentra explicados en la sección 
 \nameref{sec:payment-service}, mientras que los detalles de cómo funciona la economía se encuentran en la sección 
 \nameref{sec:business-model}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/transactions.jpg}
+\caption{Panel de transacciones.}
+\label{fig:transactions}
+\end{figure}
 
 \subsubsection{Gestión de Recursos en Memoria}
 
