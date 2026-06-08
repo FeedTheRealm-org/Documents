@@ -40,30 +40,31 @@ el estado fallido de la instancia.
 De forma análoga, durante el servidor notifica al \textit{Core Service} que la zona ha 
 pasado al estado \textit{offline}.
 
-\paragraph{Game Loop}
+\paragraph{Game Tick \& Game Loop}
 
 Otro elemento primordial en la capa de \textit{Core} es la implementación del sistema del \textit{GameLoop}.
-Este sistema se encarga de manejar el ciclo de actualización del juego, procesando las acciones de los jugadores, mediante 
-el popeo de eventos del \textit{WorldMonitor}.
-
-\paragraph{Game Tick}
-
-Un problema común en los juegos multijugador es la sincronización del estado del juego entre el servidor y los clientes. 
-Para abordarlo, se implementa un sistema de \textit{Game Tick} personalizado en el servidor.
+Este sistema se encarga de manejar el ciclo de actualización del juego, procesamiento de
+comandos y encolado de eventos.
 
 \vspace{0.25cm}
 
 Si bien Unity provee un ciclo de actualización mediante funciones como \texttt{Update()} y \texttt{FixedUpdate()}, estas no ofrecen control
-suficiente sobre el orden y la sincronización de los sistemas del juego. En su lugar, se desactiva la física automática de Unity y se delega
-su ejecución al \textit{Game Loop} principal, que la invoca manualmente en cada tick junto con el resto de la lógica del servidor.
+suficiente sobre el orden y la sincronización de los sistemas del juego, y generan \textit{overhead} innecesario.
+En su lugar, se desactiva la física automática de Unity y se delega
+su ejecución al \textit{Game Loop}, que la invoca manualmente en cada \textit{Physics Update} junto con el resto de la lógica del servidor.
+
+Para esto se desarrolló un \textit{Tick Driver}, que se encarga de ejecutar el ciclo principal del servidor y realizar llamadas
+al servicio de networking (encargado del envío de eventos) a razón de $60$ ticks por segundo (tps), y al servicio de \textit{game loop}
+a razón de $30 tps$. Esto es debido a que la interacción por medio de código con los objetos manejados por Unity, solamente 
+se puede realizar desde el hilo principal del proceso (\textit{Main thread}), limitando la posibilidad de realizar un programa
+con recepciones y envíos de red en múltiples hilos.
 
 \vspace{0.25cm}
 
-Todos los sistemas que requieren actualizarse en sincronía con el ciclo de juego ,movimiento, combate, spawners, entre otros, se suscriben a
-un evento que el \textit{Game Loop} emite en cada tick. Esto garantiza que dichos sistemas se ejecuten siempre en el mismo orden y en el mismo
-momento, evitando inconsistencias en el estado del juego.
+Todos los sistemas que requieren actualizarse en sincronía con el ciclo de juego, como el movimiento, el combate, los \textit{spawners}, entre otros,
+se suscriben a un evento que el \textit{Game Loop} emite en cada tick para realizar las actualizaciones.
 
-\paragraph{Limitacion de comandos}
+\paragraph{Limitación de comandos}
 
 Para evitar que el procesamiento de comandos entrantes consuma demasiado tiempo y afecte al resto del ciclo de juego, se aplica un mecanismo
 de limitación por tick. 
@@ -76,78 +77,67 @@ procesan en el tick siguiente. De esta forma, se garantiza que picos repentinos 
 tiempo, no interrumpan la física ni la lógica del juego, manteniendo el ciclo estable.
 
 \paragraph{Game Systems y State Storage}
-Cada entidad del mundo del juego (jugadores (\textit{Players}), bolsas de botín, NPCs) que requiera syncronizacion con el servidor está representada por un \textit{objeto de red} (\textit{Networked Object}):
+Cada entidad del mundo del juego (jugadores, bolsas de botín, NPCs) que requiera syncronizacion con el servidor está representada por un \textit{objeto de red} (\textit{Networked Object}):
 una entidad que existe simultáneamente en el servidor y en los clientes de todos los jugadores conectados, manteniéndose sincronizada entre
 ellos.
 
 \vspace{0.25cm}
 
-Sobre estos objetos se compone la lógica mediante \textit{Systems}: componentes modulares que se adjuntan a la entidad y son
+Sobre estos objetos se compone la lógica mediante \textit{Systems}, que son componentes modulares que se adjuntan a la entidad y son
 responsables de un aspecto específico de su comportamiento. El \textit{MovementSystem}, por ejemplo, se suscribe al evento de tick del
 \textit{Game Loop} y en cada ciclo procesa la dirección de movimiento, aplica la física correspondiente y actualiza la posición del personaje.
-Otros sistemas siguen el mismo patrón para manejar el combate, el stamina, la detección de terreno, entre otros. Esta separación permite que
+Otros sistemas siguen el mismo patrón para manejar el combate, el \textit{stamina}, la salud, entre otros. Esta separación permite que
 cada sistema sea independiente y que la lógica del juego se pueda extender sin modificar el resto.
 
 \vspace{0.25cm}
 
-Para que estos sistemas puedan comunicarse y compartir el estado de la entidad, existe un componente dedicado al almacenamiento de estado: el
-\textit{State Storage}. En el caso de los jugadores (\textit{Players}), el \textit{CharacterStateStorage} centraliza toda la información relevante de la entidad
-posición, dirección de movimiento, salud, stamina, ítem equipado, entre otros, y es la única fuente de verdad sobre su estado. Cuando el servidor modifica alguno de estos valores, la sincronización hacia los clientes ocurre de forma automática mediante el mecanismo de
-\textit{SyncVar} provisto por la biblioteca de red Mirror. Cada valor del \textit{State Storage} marcado como \textit{SyncVar} es monitoreado
-por el motor de red: ante cualquier cambio en el servidor, Mirror serializa el nuevo valor y lo envía por la red únicamente a los clientes que
-necesitan recibirlo, sin que el código del juego tenga que gestionar ese envío manualmente. Al recibirlo, el cliente actualiza su copia local
-del valor y dispara un \textit{Hook}  (una función de callback) que notifica al resto de los componentes del cliente sobre el cambio. Esto
-permite que, por ejemplo, la interfaz gráfica actualice la barra de salud en cuanto el servidor registra un daño, o que el sistema de
-movimiento se detenga automáticamente cuando el personaje muere.
+Para que estos sistemas puedan comunicarse y compartir el estado de la entidad, existe un componente dedicado al almacenamiento de estado llamado
+\textit{State Storage}. En el caso de los jugadores, el \textit{CharacterStateStorage} centraliza toda la información relevante de la entidad
+posición, dirección de movimiento, salud, stamina, ítem equipado, entre otros, y es la única fuente de verdad sobre su estado.
 
 \paragraph{Networked Objects}
 A continuación se describen los distintos tipos de objetos de red que componen el mundo del juego.
 \begin{itemize}
     \item \textbf{Jugador (\textit{Player})}:
-    representa a un usuario conectado en el mundo. Es la entidad principal del juego: puede moverse, interactuar con otros objetos, 
+    representa a un usuario conectado en el mundo. Es la entidad principal del juego, este puede moverse, interactuar con otros objetos, 
     equipar ítems, completar quests y acumular recursos.
-    Su estado (posición, salud, stamina, ítem equipado) se mantiene sincronizado en tiempo real con todos los 
-    clientes presentes en la zona, y se persiste en base de datos para conservarlo entre sesiones.
 
     \item \textbf{NPC Pasivo (\textit{Passive NPC})}: personaje no jugador presente en el
     mundo con el que el jugador puede iniciar una conversación al acercarse. Gestiona
     sesiones de diálogo individuales por jugador, avanzando por una secuencia de mensajes
-    que varía según el estado de las quests activas de quien interactúa. Cuando una quest
-    está asociada al diálogo, el NPC queda en espera hasta que el jugador tome una decisión
-    antes de continuar. Cuando no está siendo interactuado, el NPC deambula de forma
-    autónoma por un área definida alrededor de su punto de aparición, utilizando el sistema
-    de navegación de Unity (\textit{NavMesh}) para calcular rutas transitables por el
-    terreno. Su movimiento alterna entre períodos de espera y desplazamiento hacia puntos
-    aleatorios dentro de esa área.
+    que varía según el estado de las quests activas de quien interactúa. Cuando no está siendo interactuado,
+    el NPC deambula de forma autónoma por un área definida alrededor de su punto de aparición, utilizando el sistema
+    de navegación de Unity (\textit{NavMesh}).
 
     \item \textbf{NPC Agresivo (\textit{Aggressive NPC})}: enemigo controlado por el
     servidor cuyo comportamiento está gobernado por una máquina de estados con tres modos:
-    reposo, deambulación y persecución. En reposo o deambulación se comporta de forma
-    similar al NPC pasivo, moviéndose de manera autónoma dentro de un radio configurable
-    alrededor de su punto de aparición mediante \textit{NavMesh}. Cuando un jugador entra
-    en su zona de detección, el NPC entra en modo persecución: recalcula su ruta hacia el
+    inactivo, deambulación y persecución. Cuando está deambulando se comporta de forma
+    similar al NPC pasivo, pero cuando un jugador entra
+    en su zona de detección, el NPC entra en modo persecución y recalcula su ruta hacia el
     jugador periódicamente y lo sigue hasta alcanzar su rango de ataque, que depende del
     arma que tenga equipada. Si el jugador abandona el área de detección, el NPC regresa
-    al estado de reposo. Al ser derrotado, puede generar ítems de loot en el mundo.
+    al estado de reposo. Al ser derrotado, puede generar ítems de \textit{loot} en el mundo.
 
 
-    \item \textbf{Bolsa de loot (\textit{Loot Bag})}: objeto que aparece en el mundo alderrotar a un enemigo o como recompensa 
+    \item \textbf{Bolsa de loot (\textit{Loot Bag})}: objeto que aparece en el mundo al derrotar un enemigo o como recompensa 
     de abrir un cofre. Contiene un ítem o una cantidad de oro que el jugador puede recoger al acercarse. Su posición, tipo de ítem
     y cantidad están sincronizados con todos los clientes. Una vez recogido, el objeto desaparece del mundo. En caso de no ser
     recogido en un tiempo determinado, el servidor lo elimina automáticamente mediante el \texttt{Entity Reaper}, que se encarga de
     limpiar el mundo de entidades obsoletas o sin interacción durante un período prolongado.
 
-    \item \textbf{Portal}: punto de interacción fijo en el mundo que permite al jugadorviajar a otra zona.
-    Al interactuar con él, el servidor valida que el jugador estédentro del rango permitido y le envía una pantalla de
+    \item \textbf{Portal}: punto de interacción fijo en el mundo que permite al jugador viajar a otra zona.
+    Al interactuar con él, el servidor valida que el jugador esté dentro del rango permitido y le envía un evento de
     confirmación con el nombre del destino. Si el jugador acepta, se inicia el proceso de teletransportación. Los destinos pueden
-    ser una posicion en la misma zona o una zona completamente diferente, lo que implica que el cliente debe desconectarse 
+    ser una posición en la misma zona o una zona completamente diferente, lo que implica que el cliente debe desconectarse 
     del servidor actual y conectarse al nuevo servidor que hospeda la zona de destino.
 
     \item \textbf{Cofre (\textit{Chest})}: contenedor interactuable ubicado en el mundo que guarda ítems o recompensas.
     Tiene dos estados posibles:
     \begin{itemize}
-        \item \textbf{Cerrado}: cualquier jugador puede acercarse y abrirlo para recibir sus recompensas. El servidor procesa la interacción, entrega el contenido al jugador y actualiza el estado del cofre a abierto.
-        \item \textbf{Abierto}: una vez abierto, el cofre no puede ser interactuado hasta ser reseteado luego de un determinado periodo de tiempo configurado por el creador del mundo.
+        \item \textbf{Cerrado}: cualquier jugador puede acercarse y abrirlo para recibir sus recompensas.
+            El servidor procesa la interacción, entrega el contenido al jugador y actualiza el estado del cofre a abierto.
+        \item \textbf{Abierto}: una vez abierto, el cofre no puede ser interactuado hasta ser reseteado 
+            luego de un determinado periodo de tiempo configurado por el creador del mundo.
     \end{itemize}
 \end{itemize}
 
@@ -159,9 +149,6 @@ en la base de datos y se restaura cada vez que el jugador se conecta a una zona.
 
 Cuando un jugador se une, el servidor consulta su registro en la base de datos y carga sus datos en los sistemas correspondientes. Si el
 jugador no tiene datos previos (primera vez que juega), se inicializa con valores por defecto y se crea un nuevo registro.
-La posición se guarda por zona, de modo que el jugador reaparece en el último lugar en que estuvo dentro de cada zona. 
-El inventario, el oro y el progreso de quests, en cambio, son globales al personaje y se mantienen independientemente
-de la zona en la que se encuentre el jugador, de modo que al trasladarse entre zonas conserva todo su progreso intacto.
 
 \vspace{0.25cm}
 
@@ -186,9 +173,8 @@ e interactuar con un NPC específico (\textit{NpcInteract}).
 
 \vspace{0.25cm}
 
-El progreso se actualiza de forma \textbf{reactiva}: cuando el jugador mata un enemigo o interactúa con un NPC, 
-el sistema recibe un evento global, verifica si ese evento es relevante para alguna quest activa del jugador y, de ser
-así, incrementa el contador correspondiente. Al alcanzar el objetivo, la quest se marca como completada y se otorgan las recompensas
+El progreso se actualiza de forma \textbf{reactiva}, cuando el jugador mata un enemigo o interactúa con un NPC.
+Al alcanzar el objetivo, la quest se marca como completada y se otorgan las recompensas
 definidas, que pueden ser oro, un ítem específico o ítems aleatorios extraídos de una tabla de loot con probabilidades configurables. 
 Cada cambio de progreso se persiste inmediatamente en la base de datos, garantizando que el avance del jugador no se pierda ante cualquier
 interrupción.
