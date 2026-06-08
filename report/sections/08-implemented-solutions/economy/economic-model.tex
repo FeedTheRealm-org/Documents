@@ -1,15 +1,17 @@
 \subsubsection{Modelo económico}
 \label{sec:economic-model}
 
-Los parámetros del modelo económico se organizan en cuatro grupos. En primer lugar, los supuestos sobre \textbf{gemas} 
-establecen que el creador retiene el 10\% de cada venta cosmética, y que la conversión es de \$0{,}25 por gema. En cuanto 
-a las \textbf{suscripciones}, el precio por zona es de \$5{,}00 mensuales, con un costo de mantenimiento estimado de 
+A continuación se presenta el modelo económico, cuyos valores se expresan en dólares estadounidenses (USD). 
+Sus parámetros se organizan en cuatro grupos. En primer lugar, los supuestos sobre gemas establecen que 
+el creador retiene el 10\% de cada venta cosmética, y que la conversión es de \$0{,}25 por gema. En cuanto 
+a las suscripciones, el precio por zona es de \$5{,}00 mensuales, con un costo de mantenimiento estimado de 
 \$3{,}75 por zona. El costo de \$3{,}75 por zona, se base en que por maquina virtual se alojan 4 zonas, y cada máquina 
 virtual tiene un costo mensual de \$15{,}00, mas detalles en la seccion de \nameref{sec:load-test}.
+
 \vspace{0.25cm}
 
-Respecto a las \textbf{comisiones de Stripe}, se aplica una tarifa variable del 2{,}90\% más \$0{,}30 fijos por transacción. 
-Finalmente, los supuestos de \textbf{comportamiento de compra} indican que cada usuario realiza en promedio 1{,}5 transacciones 
+Respecto a las comisiones de Stripe, se aplica una tarifa variable del 2{,}90\% más \$0{,}30 fijos por transacción. 
+Finalmente, los supuestos de \textit{comportamiento de compra} indican que cada usuario realiza en promedio 1{,}5 transacciones 
 mensuales, que los creadores mantienen 2{,}5 zonas activas, y que el 90\% de las gemas adquiridas son efectivamente utilizadas.
 
 \begin{figure}[h]
@@ -30,6 +32,8 @@ a \$2{,}35 y la cantidad promedio de gemas adquiridas a 1{,}58 por compra.
   \caption{Packs de gemas y su distribución en las transacciones}
   \label{fig:gems}
 \end{figure}
+
+\paragraph{Proyecciones de crecimiento}
 
 Se modelaron cinco escenarios de crecimiento para usuarios y creadores a lo largo 
 de 12 meses, con distintas tasas mensuales y bases iniciales:
