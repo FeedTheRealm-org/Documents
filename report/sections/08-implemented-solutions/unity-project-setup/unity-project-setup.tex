@@ -1,0 +1,75 @@
+Unity es el motor de desarrollo utilizado para ambas aplicaciones principales del proyecto. El \textit{World Editor} (Creador de mundos) por un lado y el \textit{Game}
+(proyecto de juego), que agrupa el cliente y el servidor en un mismo proyecto de Unity por otro. Se desarrollan como 
+proyectos independientes, cada uno con su propia configuración, assets y código. Para compartir estructuras 
+de datos comunes entre ambos proyectos, se utiliza un submódulo o paquete compartido denominado \textit{Shared Package}, 
+que centraliza los DTOs e implementaciones de servicios que realizan llamadas externas al \textit{Core Service}, 
+evitando la duplicación de código.
+
+Internamente, cada proyecto se divide en módulos independientes mediante Assembly Definitions 
+(\textit{asmdef}), que son unidades de compilación separadas. Esta separación reduce los tiempos de 
+compilación, ya que Unity solo recompila los módulos afectados por un cambio, y establece límites explícitos 
+de dependencia entre módulos, evitando acoplamientos no deseados.
+
+\subsubsection{Build Assembly Definitions}
+
+Ambos proyectos se estructuran en tres módulos: \textit{Core}, \textit{Gameplay} y \textit{User Interface}, 
+cada uno compilado como un \textit{dll} independiente. En el caso del proyecto de juego, esta estructura se 
+separa en 3 assemblies para el cliente (\textit{Core}, \textit{Gameplay}, \textit{User Interface}) y 
+2 assemblies para el servidor (\textit{Core} y \textit{Gameplay}), ya que el servidor no requiere elementos visuales
+
+Esta separación garantiza que la lógica del cliente y la del servidor permanezcan aisladas, evitando dependencias 
+cruzadas entre ambos.
+
+A continuacion se describen las responsabilidades de cada módulo:
+
+\begin{itemize}
+  \item \textbf{Core}: Contiene la lógica central, librerías, interfaces y utilidades para que el módulo de Gameplay funcione. Esto incluye la gestión de repositorios internos y la comunicación entre distintos sistemas lógicos.
+  \item \textbf{Gameplay}: Contiene la lógica de negocio en tiempo de ejecución, como la manipulación de objetos, comportamiento de entidades y reglas de juego.
+  \item \textbf{User Interface}: Incluye todos los elementos visuales, como ventanas, paneles, menús y herramientas de usuario.
+\end{itemize}
+
+El código contenido dentro de estos módulos, pueden acceder a otros y tenerlos como dependencia, pero solo en el siguiente orden:
+
+\begin{center}
+    $Core \leftarrow Gameplay \leftarrow UI$ \textit{(e.g. Gameplay tiene como dependencia a Core)}
+\end{center}
+
+El proyecto de \textit{Game} cuenta además con dos módulos adicionales exclusivos de ese contexto:
+
+\begin{itemize}
+  \item \textbf{Common}: módulo compartido entre cliente y servidor, compuesto por los assemblies 
+  \textit{Common.Core} y \textit{Common.Gameplay}. Centraliza el código que debe ser idéntico en ambos 
+  lados, como utilidades, contratos, canales de eventos y otras definiciones compartidas.
+  \item \textbf{Bot}: presente tanto en \textit{Core} como en \textit{Gameplay}, este módulo permite 
+  desplegar bots en entornos de prueba de estrés, simulando múltiples jugadores realizando acciones 
+  simultáneas en un mismo servidor para evaluar el rendimiento del sistema bajo alta carga. 
+        Se compila como programa \textit{lightweight} aislado.
+\end{itemize}
+
+\subsubsection{Inyección de dependencias con \textit{VContainer}}
+
+\textbf{VContainer}: Librería de inyección de dependencias para Unity utilizada como contenedor 
+de inversión de control (IoC) del sistema. Permite declarar y resolver dependencias de forma explícita, 
+desacoplando la construcción de objetos de su lógica de negocio. Esto facilita las pruebas de los 
+componentes, reduce el acoplamiento entre módulos y centraliza la configuración del ciclo de vida de 
+los objetos, reemplazando el uso de singletons y referencias estáticas propias de proyectos Unity 
+sin arquitectura definida.
+
+\subsubsection{Manejo del flujo de inicialización}
+
+En todos los sistemas del proyecto, en \textit{Game} el \textit{client} y el servidor, y en el 
+\textit{World Editor}, existe un tipo de archivo esencial, que es el iniciador o \textit{initiator}. Este archivo 
+actúa como la raíz de composición (\textit{Composition Root}) de cada sistema. Su responsabilidad exclusiva 
+es recolectar, validar y registrar todas los recursos necesarios del juego dentro del contenedor de inyección 
+de dependencias antes de que la lógica principal comience a ejecutarse. 
+Esto incluye vincular servicios de red, gestores de interfaz, repositorios de datos y configuraciones globales.
+
+Por otro lado, el archivo de punto de entrada, o \textit{EntryPoint}, es el orquestador del flujo de ejecución 
+inicial. Una vez que el \textit{Initiator} ha preparado todas las herramientas, el \textit{EntryPoint} 
+toma el control para configurar archivos principales del sistema, lanzar el flujo de autenticación del usuario, 
+gestionar la navegación de los menús y manejar la transición entre escenas, asegurando que todo ocurra en un 
+orden estrictamente controlado y asíncrono.
+
+Este enfoque evita el acoplamiento fuerte entre los distintos sistemas del juego, centralizando la 
+creación de objetos en un solo lugar. Para evitar que cada \textit{script} busque o instancie sus propias 
+dependencias, el contenedor se las proporciona automáticamente.

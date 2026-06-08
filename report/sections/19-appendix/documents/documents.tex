@@ -1,0 +1,51 @@
+El repositorio \texttt{FeedTheRealm-org/Documents} centraliza la documentación académica y técnica del proyecto Feed the Realm
+en formato \LaTeX. Su principal característica es la compilación y publicación automática de los documentos generados: 
+cada vez que se etiqueta una nueva versión en el repositorio, un \textit{pipeline} de integración continua compila los 
+fuentes \LaTeX{} y publica los PDFs resultantes como \textit{GitHub Releases}.
+\vspace{0.25cm}
+
+El repositorio está organizado de la siguiente manera:
+\vspace{0.25cm}
+
+\begin{itemize}
+    \item \textbf{Carpetas de documentos} (p.\,ej.\ \texttt{proposal/}, \texttt{simulate/}): cada una contiene los fuentes 
+    \LaTeX{} de un documento, con \texttt{main.tex} como punto de entrada.
+    \item \textbf{\texttt{files.yaml}}: archivo de registro donde se declaran todos los documentos a compilar, especificando 
+    nombre, descripción y directorio de entrada.
+    \item \textbf{\texttt{Makefile}}: expone los comandos principales para construir el entorno y compilar los documentos.
+    \item \textbf{\texttt{Dockerfile}}: define la imagen Docker que contiene el entorno \LaTeX{} necesario para la compilación, 
+    evitando dependencias locales.
+    \item \textbf{\texttt{generate\_docs.py}}: script Python auxiliar para la generación de documentos.
+    \item \textbf{\texttt{.github/workflows/}}: contiene las definiciones del \textit{pipeline} de CI/CD que automatiza 
+    la compilación y publicación.
+\end{itemize}
+
+Para agregar un nuevo documento al repositorio se deben seguir los siguientes pasos:
+\vspace{0.25cm}
+
+\begin{enumerate}
+    \item Crear una carpeta con los fuentes \LaTeX{} del documento, utilizando \texttt{main.tex} como punto de entrada.
+    \item Registrar el documento en \texttt{files.yaml} con su nombre, descripción y ruta al directorio correspondiente.
+    \item Crear y publicar un \textit{tag} de versión para disparar el \textit{pipeline} de compilación y publicación:
+\end{enumerate}
+
+\begin{verbatim}
+git tag -a v1.0.0 -m "Release version 1.0.0"
+git push --tags
+\end{verbatim}
+
+Una vez ejecutado el \textit{pipeline}, los PDFs compilados quedan disponibles públicamente en la sección de \textit{Releases} 
+del repositorio. La compilación se realiza dentro de un contenedor Docker para no requerir una instalación local de \LaTeX{}. Los comandos 
+disponibles a través del \texttt{Makefile} son:
+\vspace{0.25cm}
+
+\begin{verbatim}
+make image       # Construye la imagen Docker con el entorno LaTeX
+make run         # Compila todos los documentos definidos en files.yaml
+make run-<name>  # Compila únicamente el documento especificado
+make clean       # Elimina todos los PDFs generados del directorio raíz
+\end{verbatim}
+
+Este enfoque garantiza reproducibilidad en cualquier entorno de desarrollo, independientemente del sistema operativo o la 
+distribución de \LaTeX{} instalada localmente.
+\vspace{0.25cm}

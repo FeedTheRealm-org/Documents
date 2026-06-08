@@ -1,0 +1,32 @@
+\subsection{Pruebas unitarias y aceptación}
+
+Como se menciono en la seccion de \textit{Devops} y \textit{CI/CD}, se cuenta con un sistema de pruebas unitarias y de 
+aceptación, para garantizar la calidad del código, la funcionalidades el correcto funcionamiento del los servicio. 
+Utilizando \textbf{Go} para las pruebas unitarias, y \textbf{Behave} con \textbf{Python} para las pruebas de aceptación.
+\vspace{0.25cm}
+
+Las pruebas unitarias, se encargan de probar por cada uno de los módulos del \textit{core-service}, las carpetas
+\textit{services} para los servicios, \textit{repositories} para los repositorios. A su veces, se realizaron pruebas
+unitarias para \textit{utils} y \textit{middleware}.
+\vspace{0.25cm}
+
+Los repositorios se prueban utilizando una base de datos \textit{PostgreSQL} de prueba, que se levanta a través de \textit{Docker},
+mientras que los servicios se prueban utilizando \textit{mocks} para simular el comportamiento de los repositorios, y así garantizar
+que el servicio se comporte de la manera esperada, sin importar el comportamiento de los repositorios.
+\vspace{0.25cm}
+
+Para medir el porcentaje de cobertura de las pruebas unitarias, se utilizo la herramienta \textbf{CodeCov}, que permite 
+generar un reporte de cobertura de código, y así garantizar que se están probando todas las partes del código. Dio como
+resultado un porcentaje de cobertura del 75.95\%, lo que garantiza una buena calidad del código.
+\vspace{0.25cm}
+
+Por otro lado, las pruebas de aceptación se encargan de probar el correcto funcionamiento del servicio, a través de escenarios
+que simulan el comportamiento de los usuarios, y así garantizar que el servicio se comporte de la manera esperada, sin 
+importar el comportamiento de los usuarios. Para esto se utilizo, como se menciona, la herramienta \textbf{Behave} con 
+\textbf{Python}.
+\vspace{0.25cm}
+
+Las pruebas de aceptación testean principalmente los endpoints del \textit{core-service}, para garantizar que se comporten 
+correctamente, y que se cumplan los requisitos funcionales del servicio. La cantidad de escenarios de pruebas de aceptación, 
+es de 54, lo que garantiza una buena cobertura de los requisitos funcionales del servicio.
+\vspace{0.25cm}

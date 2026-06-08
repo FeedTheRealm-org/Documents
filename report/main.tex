@@ -1,0 +1,90 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[spanish]{babel}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{fancyhdr} % For custom headers/footers
+\usepackage{titlesec} % For title formatting
+\usepackage{xcolor}   % For adding colors
+\usepackage{geometry} % For adjusting page layout
+\usepackage{array}    % For table alignment
+\usepackage{subcaption} % For subfigures
+\usepackage{float} % For [H] specifier
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{setspace}   % For line spacing
+\usepackage{longtable}
+\usepackage{adjustbox}
+
+\geometry{
+    a4paper,
+    top=1in,
+    bottom=1in,
+    left=1in,
+    right=1in
+}
+
+% Fix fancyhdr warnings
+\setlength{\headheight}{14pt} % ensures header is tall enough
+
+% Prevent duplicate page IDs with hyperref
+\hypersetup{hypertexnames=false}
+
+% Header
+\pagestyle{fancy}
+\fancyhead{} % clear all header fields
+\fancyhead[C]{Feed the Realm} % centered header
+\renewcommand{\headrulewidth}{0.4pt}
+
+% Footer
+\fancyfoot{} % clear default
+\fancyfoot[L]{Barbalase, Sanchez, Sevitz, Utrera} % names
+\fancyfoot[R]{\thepage} % page number
+\renewcommand{\footrulewidth}{0.4pt}
+
+% Config for figures positions
+\renewcommand{\textfraction}{0.1}
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.9}
+\renewcommand{\floatpagefraction}{0.5}
+
+% Config for vars
+\input{config}
+
+% Line spacing
+\onehalfspacing % 1.5 interline
+
+% Set section numbering and TOC depth to 5
+\setcounter{secnumdepth}{5}
+\setcounter{tocdepth}{5}
+
+% Section title formatting
+\titleformat{\section}
+  {\bfseries\fontsize{16pt}{16pt}\selectfont} % Title font
+  {\thesection}{1em}{}
+\titlespacing*{\section}{0pt}{14pt plus 2pt minus 2pt}{10pt plus 2pt minus 2pt} % No space before/after
+
+\titleformat{\subsection}
+  {\bfseries\fontsize{14pt}{14pt}\selectfont} % Subtitle font
+  {\thesubsection}{1em}{}
+\titlespacing*{\subsection}{0pt}{14pt plus 2pt minus 2pt}{10pt plus 2pt minus 2pt} % No space before/after
+
+\titleformat{\paragraph}
+{\normalfont\small\bfseries}
+{\theparagraph}{1em}{}
+\titlespacing*{\subsection}{0pt}{14pt plus 2pt minus 2pt}{10pt plus 2pt minus 2pt} % No space before/after
+
+% horizontal rule
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+
+\begin{document}
+
+\input{cover}
+
+\tableofcontents % Index
+
+\newpage
+
+\input{body}
+
+\end{document}

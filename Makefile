@@ -1,9 +1,17 @@
 DOCKER_TAG=feed-docs:latest
 
-docker-image:
+image:
 	docker build -t $(DOCKER_TAG) .
-.PHONY: docker-image
+.PHONY: image
 
-docker-run:
-	docker run -v $(shell pwd):/workspace --rm feed-docs:latest python3 generar_docs.py
-.PHONY: docker-run
+run:
+	docker run -v $(shell pwd):/workspace --rm feed-docs:latest python3 generate_docs.py
+.PHONY: run
+
+run-%:
+	docker run -v $(shell pwd):/workspace --rm $(DOCKER_TAG) python3 generate_docs.py $*
+.PHONY: run-%
+
+clean:
+	@rm -f *.pdf
+.PHONY: clean

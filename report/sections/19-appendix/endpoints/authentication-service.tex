@@ -1,0 +1,43 @@
+\subsubsection{\textit{Authentication service}}
+
+\renewcommand{\arraystretch}{1.4}
+\begin{longtable}{|p{2cm}|p{7cm}|p{5.5cm}|}
+\hline
+\textbf{Verbo HTTP} & \textbf{Path} & \textbf{Descripción} \\
+\hline
+\endfirsthead
+
+\hline
+\textbf{Verbo HTTP} & \textbf{Path} & \textbf{Descripción} \\
+\hline
+\endhead
+
+\endfoot
+
+\texttt{POST} & \texttt{/auth/signup}               & Crea una nueva cuenta de usuario con email y contraseña. \\
+\hline
+\texttt{POST} & \texttt{/auth/login}                & Autentica a un usuario y retorna un access token y refresh token. \\
+\hline
+\texttt{GET}  & \texttt{/auth/check-session}        & Valida la integridad y expiración del token activo. \\
+\hline
+\texttt{GET}  & \texttt{/auth/session}              & Verifica que la sesión activa tenga privilegios de administrador. \\
+\hline
+\texttt{POST} & \texttt{/auth/verify}               & Verifica el email del usuario con el código de verificación recibido. \\
+\hline
+\texttt{POST} & \texttt{/auth/refresh}              & Genera y envía un nuevo código de verificación al email del usuario. \\
+\hline
+\texttt{POST} & \texttt{/auth/password/forgot}      & Inicia el flujo de recuperación de contraseña enviando un OTP al email. \\
+\hline
+\texttt{POST} & \texttt{/auth/password/verify-code} & Valida el OTP enviado al email y retorna un token de reset de vida corta. \\
+\hline
+\texttt{POST} & \texttt{/auth/password/reset}       & Valida el token de reset y actualiza la contraseña, revocando todas las sesiones activas. \\
+\hline
+\texttt{POST} & \texttt{/auth/refresh-token}        & Valida el refresh token y emite un nuevo par de access token y refresh token. \\
+\hline
+\texttt{GET}  & \texttt{/auth/users}                & Retorna una lista paginada de usuarios. Solo administradores. \\
+\hline
+\texttt{PUT}  & \texttt{/auth/users/\{id\}/admin}   & Actualiza el estado de administrador de un usuario. Solo administradores. \\
+\hline
+\caption{\textit{Endpoints} del \textit{authentication service}}
+\label{tab:auth-endpoints}
+\end{longtable}

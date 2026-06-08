@@ -1,0 +1,267 @@
+\subsection{Pruebas de Rendimiento y Estrés (Load Testing)}
+\label{sec:load-test}
+
+Con el objetivo de realizar pruebas de carga para confirmar que el juego puede soportar cientos de jugadores por mundo
+y puede ser considerado un \textit{MMO}, se llevaron a cabo las siguientes tareas:
+
+\begin{enumerate}
+    \item Confección de un nuevo cliente ejecutable liviano (de poco uso de recursos) que simula ser un jugador
+    enviando comandos a una frecuencia previamente analizada para conseguir una semejanza cercana con la de un jugador real.
+    Al mismo se lo llamo \textbf{Bot}.
+    \item Creación de cuentas por medio de un \textit{seed} con nombres y cosméticos randomizados a ser utilizadas por los Bots.
+    Permitiendo reutilizar la misma cuenta para conexiones con diferentes zonas simultáneamente.
+    \item Implementación de métricas personalizadas en forma de medidores de variables por cada \textit{tick} e histogramas, y
+    creación de un dashboard de Datadog con las mismas.
+    \item Parametrización de los \textit{zoning servers} que se utilizaran para pruebas de manera que usen un \textit{Test Gameloop}
+    especializado y evitar el deterioro de rendimiento innecesario en el \textit{Gameloop} productivo.
+    \item Ejecución de diferentes escenarios de cargas y obtención de resultados.
+\end{enumerate}
+
+\subsubsection{Métricas personalizadas}
+
+A continuación se detallan las métricas de rendimiento implementadas. Las mismas se reportan al agente de Datadog
+existente en el nodo en donde se encuentre alojado el servidor, y se etiquetan por identificador del mundo
+y de la zona. Posteriormente, se visualizan desde el \textit{Dashboard} web.
+
+\begin{itemize}
+    \item \textbf{server.tick\_duration\_ms}: duración total de un ciclo (tick) del servidor en milisegundos.
+    \item \textbf{server.commands\_ms}: tiempo empleado en procesar los comandos durante un tick.
+    \item \textbf{server.physics\_ms}: tiempo consumido por la simulación física durante un tick.
+    \item \textbf{server.tick\_event\_ms}: tiempo dedicado a la actualización optativa de objetos.
+    \item \textbf{server.events\_enqueued\_ms}: tiempo utilizado para encolar eventos.
+    \item \textbf{server.gc.gen[n]}: cantidad de ejecuciones del recolector de basura (GC) de generación 0, 1, 2 en el intervalo medido.
+    \item \textbf{server.entities\_count}: número total de entidades activas en el mundo del juego.
+    \item \textbf{server.players\_count}: cantidad de jugadores conectados o activos.
+    \item \textbf{server.commands\_queue\_length}: longitud actual de la cola de comandos pendientes.
+    \item \textbf{server.events\_queue\_length}: longitud actual de la cola de eventos pendientes a enviar por red.
+\end{itemize}
+
+\subsubsection{Experimentación y resultados}
+
+Se realizaron pruebas de jugabilidad bajo escenarios de carga y estrés progresivamente más grandes,
+verificando si la experiencia de juego se ve afectada (y en que medida), si los nodos lo soportan,
+y si indicadores clave como la duración de los ticks son aceptables.
+
+\vspace{0.25cm}
+
+Los escenarios $0$ a $4$ se realizaron con un único mundo desplegado, conteniendo un total de $7$ zonas,
+es decir, divido en esa cantidad de servidores aislados. Cada zona contiene estructuras, enemigos que combatirán con los Bots, cofres
+y dos portales, uno para ir a la siguiente zona y otro para volver a la anterior.
+Estos servidores se alojaron según el \textit{scheduler} de Nomad 
+entre dos nodos disponibles (\textit{AWS EC2 - t3.small - $2$ $vCPUs$ \& $2$ $GiB$ $RAM$}), y con una distribución de $4$ en
+el nodo \textbf{s1.feedtherealm.world} y $3$ en \textbf{s2.feedtherealm.world}. Los datos de Datadog obtenidos que se 
+muestran en esta sección pertenecen a la séptima zona del mundo y mostrando una duración
+de aproximadamente 5 minutos a modo de resumen.
+
+\vspace{0.25cm}
+
+En las siguientes figuras se puede apreciar capturas del estado del \textit{Dashboard} de Nomad con información
+de los servidores y la topología.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{img/11-validation-and-tests/nomad-jobs.jpg}
+\caption{Listado de servidores (Nomad \textit{jobs}) en ejecución para el desarrollo de los escenarios de \textit{Load test}.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{img/11-validation-and-tests/nomad-alloc.jpg}
+\caption{Distribución de los servidores entre los nodos disponibles.}
+\end{figure}
+
+\paragraph{Escenario $0_1$ (1 zona - Sin carga)}
+
+Para comenzar se tomaron métricas de referencia con el servidor en reposo, es decir, sin ningún jugador conectado.
+Se observa que la duración de los ticks se mantiene en una cantidad de milisegundos ínfima, menor a $0.5ms$.
+Esto tiene sentido, ya que el servidor no está procesando ningún comando, no está enviando ningún evento y tan solo está
+ejecutando ticks físicos con pocos cuerpos.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{img/11-validation-and-tests/LT-0_1.jpg}
+\caption{Gráfico de rendimiento ante 0 jugadores.}
+\end{figure}
+
+\paragraph{Escenario $0_2$ (1 zona - $\sim5\%$ capacidad de la zona)}
+
+Siguiendo con el escenario inicial, el equipo de desarrollo se unió a dicha zona para ver la cantidad de tiempo
+real insumida por tick cuando hay al menos unos pocos jugadores conectados, esto corresponde a aproximadamente el $5\%$ de
+la capacidad de la zona.
+
+Una zona tiene una capacidad máxima de conexiones simultáneas de 100 jugadores, por encima de este límite el servidor
+rechaza las peticiones de conexión. Similarmente un mundo tendrá una capacidad de 100 jugadores por la cantidad de zonas $M$,
+es decir $100M$.
+
+\vspace{0.25cm}
+
+Se observa en la figura el aumento de la duración de los ticks \textit{(en el gráfico de la esquina superior derecha)} manteniéndose siempre por debajo de la
+línea punteada marcada como \textit{Healthy}, que denota que por debajo de la misma el servidor está experimentando carga
+manejable sin problemas.
+Dentro de este grafico se muestra la siguiente información:
+
+\begin{itemize}
+    \item \textbf{Milliseconds per tick}:
+    \begin{itemize}
+        \item \textbf{Amarillo}: máximos de la duración en milisegundos de los ticks.
+        \item \textbf{Violeta}: percentil $95$ de la duración en milisegundos de los ticks.
+        \item \textbf{Azul}: promedio de la duración en milisegundos de los ticks.
+    \end{itemize}
+    \item \textbf{Milliseconds per tick (decomposed)}: Es un desglose del tick por partes, teniendo en cuenta
+    la duración del procesamiento de comandos, envio de eventos y simulación física.
+    \item \textbf{Queued commands \& events}: Muestra la variación de la cantidad de comandos encolados para procesar
+    y de eventos a enviar.
+    \item \textbf{Counts}: A la izquierda se tienen contadores para la cantidad total de jugadores activos en esa zona
+    y la cantidad de entidades más generales.
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{img/11-validation-and-tests/LT-0_2.jpg}
+\caption{Gráfico de rendimiento ante 4 jugadores.}
+\end{figure}
+
+\paragraph{Escenario $1$ (1 zona - $\sim25\%$ capacidad de la zona)}
+
+Luego de las observaciones preliminares se comienzan las pruebas de mayor escala.
+Durante la prueba con un 25\% de carga de la zona, no se observan cambios drásticos respecto a la anterior figura,
+lo que indica que este incremento de jugadores no es suficiente para demostrar un desafío para el servidor.
+Sin embargo, se detectan dos picos por encima de la línea de \textit{Healthy}, pero siempre por debajo de la de \textit{Warn},
+lo que es normal en momentos de mucho combate.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{img/11-validation-and-tests/LT-1.jpg}
+\caption{Gráfico de rendimiento ante 24 jugadores.}
+\end{figure}
+
+\paragraph{Escenario $2$ (1 zona - $\sim75\%$ capacidad de la zona)}
+
+Este escenario será el último donde se sigue manteniendo la carga localizada solamente a la zona número $7$,
+que es la que está siendo monitoreada activamente. Se ejecutan un total de 75 Bots y adicionalmente a ellos
+el equipo de desarrollo también se encuentra conectado de manera de probar la jugabilidad real.
+
+\vspace{0.25cm}
+
+Como se observa en la figura a continuación, no se pueden apreciar problemas con la duración de los ticks y el servidor
+sigue mostrando métricas similares a cuando se tienen el 25\% y el 5\% de carga.
+Se detecta un pico que supera la línea de \textit{Warn} momentáneamente, pero esto sigue sin ser una preocupación para el
+servidor, ya que como se puede ver la curva del promedio y del percentil $95$ (de la duración de los ticks)
+está muy por debajo de la línea de \textit{Healthy}, indicando estabilidad.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{img/11-validation-and-tests/LT-2.jpg}
+\caption{Gráfico de rendimiento ante 79 jugadores.}
+\end{figure}
+
+\paragraph{Escenario $3$ (7 zonas - $\sim60\%$ capacidad del mundo)}
+
+Los escenarios $3$ y $4$ se realizan por sobre las 7 zonas en conjunto, y si bien solamente se muestran las métricas obtenidas
+de la séptima zona, se evalúa como es afectada por la carga no solo en su servidor individual sino que en el nodo que lo aloja.
+
+A su vez, entre el escenario anterior y los siguientes se realizaron unos pequeños ajustes haciendo mejoras a la reserva de recursos para
+los servidores en la especificación de Nomad.
+
+En este escenario se ejecutan aproximadamente un total de $50$ Bots por zona, excepto en la primera la cual alojara 100 jugadores.
+Principalmente, se tiene como objetivo determinar si los servidores se ven afectados significativamente por vecinos, pero también
+se prueba la jugabilidad y el tránsito entre zonas con carga por medio de portales.
+
+\vspace{0.25cm}
+
+Como se puede observar, el servidor sigue sin tener un impacto significativo demostrando que no está siendo afectado por
+los contenedores vecinos haciendo uso de los recursos del nodo como el \textit{CPU} y la memoria. Esto se debe a la reserva de recursos
+que Nomad realiza al iniciar los servidores.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{img/11-validation-and-tests/LT-3.jpg}
+\caption{Gráfico de rendimiento ante $\sim 400$ jugadores en el mundo.}
+\end{figure}
+
+\paragraph{Escenario $4$ (7 zonas - $\sim80\%$ capacidad del mundo)}
+
+Finalmente, se ejecuta un último escenario correspondiente al 80\% de la carga total del mundo (cuyo limite es $700$ jugadores)
+con aproximadamente $550$ jugadores.
+Esta es la última prueba de carga incremental llevada a cabo, debido al uso de memoria y banda ancha
+que la ejecución de esta cantidad de Bots requiere, y a que los mismos son ejecutados por los integrantes del equipo
+utilizando un \textit{script}.
+
+\vspace{0.25cm}
+
+Al igual que con los anteriores escenarios, en este caso no hubo problemas de rendimiento en ninguna de las zonas,
+y como se puede observar en la siguiente figura la duración de los ticks se mantuvo estable, y gracias al pequeño ajuste hecho
+a la reserva de recursos tampoco tiene picos que sobrepasen la línea de \textit{Warn}.
+Por otro lado, la jugabilidad siguió siendo la esperada y no se detectaron deterioros de la calidad de juego.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{img/11-validation-and-tests/LT-4.jpg}
+\caption{Gráfico de rendimiento ante $\sim 550$ jugadores.}
+\end{figure}
+
+A modo de demostración de la cantidad total de jugadores activos concurrentemente en el mismo mundo durante
+la ejecución de esta prueba, se demuestran las siguientes capturas tomadas desde el \textit{backoffice} del proyecto.
+
+Vale la pena aclarar que como se mencionó anteriormente, los Bots reutilizaron las mismas cuentas (de las 100 cuentas Bot creadas) en diferentes conexiones con cada zoning server,
+es por esto que el total de jugadores es un número menor a la cantidad de jugadores activos en juego.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{img/11-validation-and-tests/LT-4-bo.jpg}
+\caption{Vista general del backoffice con la cantidad de usuarios activos.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{img/11-validation-and-tests/LT-4-bo-details.jpg}
+\caption{Vista de los detalles del mundo desplegado y su cantidad de jugadores historica.}
+\end{figure}
+
+Estas pruebas concluyen con evidencia empírica que se logró alcanzar el objetivo de que el juego sea considerado
+masivamente multijugador en línea (MMO) y soportar cientos de jugadores concurrentes en un mismo mundo dividiendo la carga
+de forma horizontal entre las diferentes zonas, que pueden o no, estar en el mismo nodo físico.
+
+\paragraph{Escenario $Alpha$ (antes \& después de optimización de colisiones)}
+
+Durante las pruebas \textit{Alpha} con usuarios reales (cuyos detalles se encuentran en la correspondiente sección), se realizó también
+una prueba de carga, obteniendo de esta forma las métricas del \textit{dashboard} de Datadog y retroalimentación de los jugadores.
+El mundo utilizado contiene en un espacio reducido, una cantidad alta de estructuras colisionables, \textit{NPCs}, enemigos y otras entidades como cofres
+que al abrirse dan una alta cantidad de tesoros, es decir, se asemeja a lo que se considera un \textit{lobby} donde todos los jugadores
+comienzan o usan como punto de encuentro y se tiene una alta carga de objetos.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{img/11-validation-and-tests/alpha-test.jpg}
+\caption{Captura de jugadores y Bots durante una prueba de carga.}
+\end{figure}
+
+Al momento de aumentar la carga de la zona siendo puesta a prueba al $100\%$ en los gráficos se observan picos altos y que no son momentáneos,
+sino que se sostienen por unos segundos hasta que el \textit{delay} vuelve a bajar. A su vez, los jugadores mencionaron la experiencia \textit{input lag},
+\texit{rubber banding} o disconformidad con la sensación de juego.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{img/11-validation-and-tests/LT-alpha-1.jpg}
+\caption{Gráfico de rendimiento antes de las optimizaciones.}
+\end{figure}
+
+Luego de obtener los resultados mencionados se llevaron a cabo una serie de mejoras y optimizaciones, principalmente en cuanto a las colisiones
+de los cuerpos rígidos presentes en una partida de juego.
+
+Es por esto que posteriormente se volvió a realizar la misma prueba, con el mismo servidor y la misma cantidad de jugadores concurrentes con el
+objectivo de detectar mejoras en las métricas pero principalmente en la experiencia de usuario.
+
+Como se puede observar en los gráficos de la segunda figura, si se hace foco tan solo en la curva de duración máxima por tick, se notan
+picos altos al igual que con la prueba anterior, sin embargo, en este caso son momentáneos y no se sostienen en el tiempo. Si bien
+esto indica que hay más espacio de optimizaciones, especialmente en el procesado de comandos, se logró que la alta duración de un tick
+no afecte negativamente a todos los subsiguientes.
+
+En cuanto a la experiencia de usuario, es una clara mejora, ya que los efectos del \textit{input lag} son muy cortos y no apreciables al jugador.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{img/11-validation-and-tests/LT-alpha-1-remake.jpg}
+\caption{Gráfico de rendimiento luego de las optimizaciones.}
+\end{figure}
+
