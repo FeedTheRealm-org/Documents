@@ -23,6 +23,12 @@ Luego de pasar por el proceso de login como administrador, se entra a la vista g
     \item Balance total de todos los creadores de mundos.
 \end{itemize}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{img/08-implemented-solution/websites/bo-dashboard.jpg}
+    \caption{Captura del Dashboard del Backoffice.}
+\end{figure}
+
 \paragraph{Usuarios}
 
 En esta vista se pueden observar todos los usuarios existentes de forma paginada, ver sus detalles, actualizar su cantidad de gemas,
@@ -30,6 +36,12 @@ otorgar privilegios de administrador o realizar búsquedas por email o estados (
 
 Dentro de los detalles de usuario se encuentran, su balance de gemas como jugador y \textit{USD} como creador (basado en las ventas de cosméticos ocurridas en un mundo creado por el mismo),
 sus cosméticos comprados y también sus cosméticos equipados o en uso.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{img/08-implemented-solution/websites/bo-users.jpg}
+    \caption{Captura de la sección de usuarios del Backoffice.}
+\end{figure}
 
 \paragraph{Mundos}
 
@@ -40,12 +52,24 @@ Adicionalmente, cada entrada de la lista cuenta con los detalles de dicho mundo,
 activos actualmente y tiempo promedio de juego, la lista de cosméticos creados y la lista de zonas existentes con sus direcciones en caso de estar \textit{online} y
 con la posibilidad de lanzar o parar los \textit{Nomad jobs} correspondientes a las mismas.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{img/08-implemented-solution/websites/bo-worlds.jpg}
+    \caption{Captura de la sección de mundos del Backoffice.}
+\end{figure}
+
 \paragraph{Métricas}
 
 Luego se tiene la vista asociada a métricas de negocio más detalladas, varias las cuales se muestran también en la sección del \textit{Dashboard}.
 
 Dentro de las mismas se encuentran otras adicionales, como lo puede ser el promedio de zonas por mundo, la ganancia total de \textit{Feed the Realm}
 obtenida por la venta de gemas y el precio promedio en gemas de los cosméticos.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{img/08-implemented-solution/websites/bo-metrics.jpg}
+    \caption{Captura de la sección de métricas del Backoffice.}
+\end{figure}
 
 \paragraph{Publicación de \textit{Releases}}
 
@@ -59,6 +83,12 @@ se compiló y el archivo en cuestión.
 Una vez hecha la publicación, se la puede marcar con la etiqueta \textit{latest}, y a partir de ese momento las próximas descargas del juego o editor de mundos
 obtendrán la nueva versión.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{img/08-implemented-solution/websites/bo-exports.jpg}
+    \caption{Captura de la sección de \textit{exports} del Backoffice.}
+\end{figure}
+
 \subsubsection{Landing page}
 
 Se implementó una segunda página web utilizando \textit{React} y \textit{Typescript} de libre acceso, con el objetivo de publicar
@@ -67,6 +97,12 @@ modo de \textit{onboarding} para nuevos posibles usuarios.
 
 Esta página es mayormente estática, pero hace uso de los \textit{endpoints} de lectura del \textit{Core-service} relacionados con los \textit{Releases} de cada aplicación, 
 como también hace uso del CDN para poder descargar los archivos.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{img/08-implemented-solution/websites/landing-home.jpg}
+    \caption{Captura del home de la landing page.}
+\end{figure}
 
 \vspace{0.25cm}
 
@@ -78,3 +114,9 @@ Las características principales de esta página son:
     \item \textbf{Media}: Contiene una galería de imágenes y videos del juego a modo de vista general con motivos de capturar el interés de posibles jugadores.
     \item \textbf{Blog}: Página de blogs para avisos de nuevas versiones, cambios o \textit{features} a lo largo del desarrollo y ciclo de vida del juego.
 \end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{img/08-implemented-solution/websites/landing-blog.jpg}
+    \caption{Captura de la sección de blog de la landing page.}
+\end{figure}

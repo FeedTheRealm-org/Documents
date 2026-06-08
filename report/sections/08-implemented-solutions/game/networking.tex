@@ -16,7 +16,7 @@ El flujo está dividido en dos direcciones:
     \item \textbf{Cliente → Servidor}: el jugador ejecuta una acción, el cliente la convierte en un \textit{command},
      un adaptador de red la envía al servidor y el \textit{GameLoop} la procesa de forma autoritativa.
     \item \textbf{Servidor → Cliente}: el servidor valida y resuelve la lógica, luego devuelve efectos, cambios de 
-    estado o \textit{feedback} visual mediante eventos que envía el servidor y variables compartidas que se sincronizan.
+    estado o \textit{feedback} visual mediante eventos y variables de sincronización compartidas.
 \end{itemize}
 
 La idea clave es que el servidor es la autoridad final sobre el estado del mundo. El cliente solo propone acciones 
@@ -82,7 +82,8 @@ El \textit{controller} luego de empaquetar el 'command', utiliza el adaptador de
 contenido en el mismo objeto que necesita enviar la información. Ese adaptador actúa como puente de red, quien completa 
 la información adicional necesaria como el \textit{NetId} perteneciente a la entidad local y envía los comandos 
 a través de \texttt{Mirror} (la librería de networking utilizada) al \textit{Network Adapter} de la misma entidad 
-existente en el servidor.
+existente en el servidor. Cabe destacar que se utiliza en conjunto con Mirror el protocolo \textbf{KCP}, que es un protocolo
+que agrega características de \textit{reliability} por sobre \textit{UDP} y está optimizado para estos casos de uso.
 
 \vspace{0.20cm}
 
@@ -133,17 +134,16 @@ lo procese en orden.
 
 \vspace{0.15cm}
 
-El \textit{gameloop}, ya explicado en la sección 8.3 (TODO: reference), es el encargado de procesar los 
+El \textit{gameloop}, ya explicado en la sección dedicada al \textit{server}, es el encargado de procesar los 
 \textit{commands} al obtenerlos de la cola y luego despacharlos a la entidad correspondiente dentro 
-del servidor. El flujo es marcado por el tick configurado en el servidor.
+del servidor.
 
 \vspace{0.15cm}
 
-Cuando encuentra la entidad, se le aplica el \textit{command}. El \textit{command} no conoce la lógica concreta de 
-la entidad que lo procesa. Solo sabe cómo aplicar su intención sobre un elemento dentro de una entidad, que 
-implemente la interfaz \texttt{ICommandable}. Por lo tanto la entidad expone un \texttt{Commandable}, que hereda 
-de un \textit{command handler} concreto de cada tipo de entidad, y luego cada uno tiene su propio 
-comportamiento específico.
+El \textit{command} no conoce la lógica concreta de 
+la entidad que lo procesa, sino que solo sabe cómo aplicar su intención sobre un elemento dentro de una entidad que 
+implemente la interfaz \texttt{ICommandable}. Por lo tanto, la entidad hereda 
+de un \textit{command handler} base y la extiende con su propio comportamiento específico.
 
 \vspace{0.25cm}
 
@@ -153,22 +153,11 @@ comportamiento específico.
 
 Como se dijo anteriormente, el \textit{command handler} define la interfaz de acciones de \textit{gameplay} del lado 
 servidor. Pero se desacopla al mismo tiempo de las funcionalidades puntuales, y las delega en \textit{systems} 
-especializados y puntuales para cada tipo de lógica de juego, como por ejemplo:
-\begin{itemize}
-    \item \texttt{MovementSystem}
-    \item \texttt{InventorySystem}
-    \item \texttt{QuestSystem}
-\end{itemize}
+especializados para cada tipo de lógica de juego.
+
 Eso mantiene cada \textit{feature} aislada y hace que el \textit{handler} solo actúe como orquestador de alto nivel.
 
 \vspace{0.25cm}
-
-\textbf{\underline{Los \textit{systems} ejecutan la lógica real}}
-
-\vspace{0.15cm}
-
-Estos contienen la lógica específica de cada funcionalidad, por ejemplo validar si una entidad se puede 
-mover, aplicar daño, procesar compras y cambios de inventario.
 
 En esta arquitectura, el \textit{command} dice “qué quiere hacer el jugador” y el \textit{system} resuelve “si se 
 puede hacer y qué estado cambia”.
@@ -189,7 +178,7 @@ Después de procesar \textit{commands}, el servidor genera salida hacia el clien
 
 Existe una clase base de evento del lado del servidor, y representa una respuesta del servidor que debe serializarse 
 y enviarse a uno o varios clientes, dependiendo si corresponde a un evento que afecta por ejemplo visualmente a todos 
-los usuarios que estén conectados y entidades, o si es un cambio de estado que solo afecta al usuario.
+los usuarios que estén conectados y entidades, o si es un cambio de estado que solo afecta a una entidad.
 
 Se crean en tal caso eventos específicos para cada acción esperada a enviar desde el servidor al cliente, donde 
 optimiza lo mayor posible la comunicación, ya que cada mínima acción en el cliente tiene que ser validada en el 
@@ -233,27 +222,15 @@ de dominio más específicos para \textit{UI}, sonido o animación. Ejemplos:
 \textbf{\underline{\textit{SyncVars}: sincronización de estado}}
 
 \vspace{0.15cm}
-Además de eventos puntuales, el proyecto usa \texttt{SyncVar} y \texttt{SyncList} para mantener el estado persistente 
-sincronizado.
+Además de eventos puntuales, el proyecto usa \texttt{SyncVar} y \texttt{SyncList} (implementaciones de la librería Mirror)
+para mantener el estado persistente sincronizado.
 
 \vspace{0.15cm}
 
-\texttt{CharacterStateStorage} sincroniza valores como:
-\begin{itemize}
-    \item posición
-    \item dirección
-    \item salud
-    \item ítem equipado
-\end{itemize}
-Cada cambio en servidor se replica automáticamente al cliente, y los \textit{hooks} notifican a la lógica local.
+Como se mencionó en la sección anterior, existe un \textit{CharacterStateStorage} y un 
+\textit{InventoryStateStorage} que sincroniza valores como posición, salud, \textit{stamina}, y posiciones de ítems en el inventario.
 
-\texttt{InventoryStateStorage} sincroniza:
-\begin{itemize}
-    \item \textit{items} añadidos con \texttt{SyncList}, ya sea por comprar o obtener del \textit{loot}.
-    \item cambios de inventario
-    \item \textit{slot} activo
-\end{itemize}
-Esto permite que el cliente actualice \textit{HUD} e inventario sin inventar el estado por su cuenta.
+Cada cambio en servidor se replica automáticamente al cliente, y se ejecutan \textit{hooks} que los notifican a la lógica local.
 
 \vspace{0.15cm}
 En resumen, la diferencia clave entre \texttt{SyncVars} y \texttt{ServerEvents} es su propósito y uso:
@@ -286,17 +263,17 @@ Ese diseño evita que el cliente decida la lógica final y mantiene el servidor 
 Sobre decisiones de diseño, con respecto a la decisión de utilizar \textit{protobuf}, su utilización a la hora 
 de serialización y deserialización reduce el ancho de banda, la latencia, el uso de memoria y tráfico total.
 
-Esto es primordial para el objetivo del proyecto que es obtener una gran cantidad de usuarios y entidades 
-presentes concurrentemente en un mismo servidor y que él tenga un buen rendimiento y capacidad para soportar 
+Esto es primordial para el objetivo del proyecto que es sostener una gran cantidad de usuarios y entidades 
+presentes concurrentemente en un mismo servidor y que este tenga un buen rendimiento y capacidad para soportar 
 dicha carga y el cliente un buen rendimiento para que no afecte la jugabilidad.
 
 Además otro aspecto es que dentro del protocolo que comparten ambos lados cliente-servidor se evite errores de 
 \textit{parsing} y al momento de cambios haya un solo punto de modificaciones que afecte todo el sistema.
 
-\vspace{0.5cm}
+\vspace{0.25cm}
 
-Se consideró entre otras herramientas a \texttt{Mirror} ya que era la mejor opción encontrada, según sugerencias 
-y recomendaciones a comparación de otras herramientas presentes en \texttt{Unity} para \textit{networking}, 
+Se eligió como herramienta de \textit{networking} a \texttt{Mirror}, ya que era la mejor opción encontrada, según sugerencias 
+y recomendaciones a comparación de otras herramientas presentes en \texttt{Unity}, 
 para el caso de nuestro proyecto que implica una gran cantidad de usuarios conectados en un mismo entorno y 
 que sea capaz de soportar la comunicación y sincronización en el servidor.
 
@@ -305,14 +282,7 @@ género para garantizar la seguridad frente a adulteración de datos, manipulaci
 Dado que el modelo económico implica pagos reales por parte de los usuarios, es imprescindible que el sistema sea 
 robusto y seguro.
 
-El servidor y el \textit{Core Service} son los que determinan si se lleva a cabo una acción. De no ser así, un cliente 
+El servidor es el que determina si se lleva a cabo una acción. De no ser así, un cliente 
 malicioso podría, por ejemplo, teletransportarse, volverse invencible u obtener ventajas injustas modificando su salud, 
-ítems, o manipular su moneda o transacciones, afectaría directamente la economía del juego y la experiencia de otros 
+ítems, o manipular su moneda o transacciones, lo que afectaría directamente la economía del juego y la experiencia de otros 
 jugadores.
-
-\vspace{0.5cm}
-
-Se explica las migraciones realizadas, tanto en la herramienta utilizada como arquitectura optada al principio y 
-final del proyecto, en el apéndice.
-
-% TODO:(reference) ver de hacer apéndice

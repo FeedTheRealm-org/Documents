@@ -15,11 +15,31 @@ Se consideró \textit{Godot} como alternativa, pero fue descartado en favor de \
 mayor madurez como plataforma, su ecosistema más consolidado y la mayor disponibilidad de documentación 
 y recursos de aprendizaje.
 
-\textbf{\underline{Mirror}}:
+\vspace{0.25cm}
+
+\textbf{\underline{Mirror}}: Para la implementación de la funcionalidad multijugador en el juego, 
+se utilizó la librería \textit{Mirror} para Unity. Se optó por \textit{Mirror} en lugar de 
+\textit{Netcode for GameObjects} (la solución oficial de Unity) debido a su naturaleza de código abierto 
+y su mayor flexibilidad en el transporte de red, que permite intercambiar  la capa de transporte (por ejemplo, KCP sobre UDP para baja latencia) 
+según las necesidades del proyecto. Además, \textit{Mirror} no impone un límite de usuarios concurrentes (CCU) y presenta un mayor 
+\textit{throughput} bruto, lo que lo hace más apto para soportar una cantidad elevada de jugadores 
+simultáneos, una característica especialmente relevante para un juego del género \textit{MMO} como el desarrollado. 
+Esta flexibilidad y su enfoque modular resultan particularmente convenientes para una arquitectura con 
+servidor dedicado y lógica autoritativa.
 
 \vspace{0.25cm}
 
 \textbf{\underline{VContainer}}:
+Para la gestión de dependencias en el proyecto, se optó por la librería de inyección de dependencias \textit{VContainer}.
+Esta herramienta permitió organizar el código de manera más modular y desacoplada, facilitando la escalabilidad y mantenibilidad del proyecto. 
+Lo que permitió al equipo implementar patrones de diseño como la inversión de control y la inyección de dependencias de manera eficiente.
+
+\vspace{0.25cm}
+
+\textbf{\underline{GLTFast}}: 
+Esta herramienta permitió importar modelos en formato \textit{.glb} de forma eficiente, con soporte para texturas, 
+animaciones y materiales.
+
 
 \vspace{0.25cm}
 
@@ -54,10 +74,15 @@ era demasiado ardua y difícil de configurar. Por lo que se opto por utilizar su
 \vspace{0.25cm}
 
 \textbf{\underline{Nomad}}:
+Para la orquestación de contenedores y el despliegue de los servidores de mundos, se utilizó \textit{Nomad} de HashiCorp.
+Esta herramienta permitió gestionar de forma eficiente el ciclo de vida de los contenedores, incluyendo su escalado automático y la
+asignación de recursos en función de la demanda. Se eligió \textit{Nomad} por su simplicidad, 
+su integración nativa con otras herramientas de HashiCorp como Terraform y Consul, y su capacidad para manejar cargas de trabajo heterogéneas, lo que se ajustaba a las necesidades del proyecto.
 
 \vspace{0.25cm}
 
 \textbf{\underline{Consul}}:
+Para el descubrimiento de servicios y la gestión de la configuración en el clúster de mundos, se utilizó \textit{Consul} de HashiCorp.
 
 \vspace{0.25cm}
 
@@ -105,6 +130,8 @@ sin necesidad de administrar infraestructura de correo propia.
 \vspace{0.25cm}
 
 \textbf{\underline{OSV Scanner}}:
+Herramienta de seguridad utilizada para escanear las dependencias del proyecto en busca de vulnerabilidades conocidas.
+Se integró en el pipeline de CI para ejecutar análisis de seguridad en cada PR, ayudando a identificar y mitigar riesgos asociados a las bibliotecas de terceros utilizadas en el proyecto.
 
 \vspace{0.25cm}
 
@@ -188,6 +215,3 @@ del core service. Permite visualizar y probar la API directamente desde el naveg
 equipo de backend y los consumidores de la API. Se integró con Gin Gonic para generar la documentación de forma automática 
 a partir de anotaciones en el código.
 
-\vspace{0.25cm}
-
-%TODO(fix): add GTLFAST
