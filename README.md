@@ -37,8 +37,6 @@ proposal:
 Compilation runs inside Docker to avoid requiring a local LaTeX installation.
 
 ```bash
-make image       # Build the Docker image with the LaTeX environment
-make run         # Compile all documents defined in files.yaml
-make run-<name>  # Compile only the specified document (replace <name> with document key)
-make clean       # Remove all generated PDF files from the root directory
+make image   # Build the Docker image with the LaTeX environment
+make run     # Compile all documents defined in files.yaml
 ```
