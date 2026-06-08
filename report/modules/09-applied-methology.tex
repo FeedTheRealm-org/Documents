@@ -74,7 +74,7 @@ sistemas del proyecto.
     \label{fig:discord}
 \end{figure}
 
-Relacionado a estas metodologías que tomamos como gestión, se estableció ya desde el principio de desarrollo del proyecto, 
+Relacionado a estas metodologías que se utilizó como herramienta degestión, se estableció ya desde el principio de desarrollo del proyecto, 
 que deben haber 3 reuniones semanales fijas en cierto horario, generalmente a las 14hrs los dias lunes, miercoles y viernes, 
 con el fin de actualizar los avances de todos los integrantes del grupo, hacer consenso de decisiones de diseño en las 
 diferentes US y hacer tareas de planificación como se ha nombrado antes en fechas de comienzo/fin de iteración y 
@@ -85,21 +85,21 @@ Por lo general se define un solo asignado a cada user story pero hubo casos dond
 principal por diferentes motivos que no pudo continuar, o se agregó un asignado más ya sea por una dificultad inesperada 
 o que otra US quedó parcialmente acoplada/relacionada a la dicha. La metodología implementada en todos los casos con la 
 salvedad en alguna excepción de prioridades en las US, tomar una US implicaría que el asignado a ella debe implementar 
-todas las características que se requieran en los distintos servicios para que esté correctamente funcionando. Tomamos 
-por tema de seguridad la regla de que un pull request antes de ser completado debe ser probado por otro integrante del 
-grupo que no sea el asignado a la US relacionada, ya que la herramienta de Unity al versionar sus archivos pueden generar 
-incongruencias o errores y puede llegar a no funcionar sin las configuraciones locales del integrante asignado, por 
-distintos motivos.
+todas las características que se requieran en los distintos servicios para que esté correctamente funcionando. Se tomó
+la decisión que por tema de seguridad la regla de que un pull request antes de ser completado debe ser probado 
+por otro integrante del grupo que no sea el asignado a la US relacionada, ya que la herramienta de Unity al 
+versionar sus archivos pueden generar incongruencias o errores y puede llegar a no funcionar sin las 
+configuraciones locales del integrante asignado, por distintos motivos.
 \vspace{0.25cm}
 
 \subsection{Gestión de iteraciones y versiones}
 
-Como se mencionó anteriormente, las versiones las hemos separado aproximadamente una por mes, para poder tener parámetros del 
-estado del proyecto a lo largo del tiempo y poder establecer un avance de él de forma incremental, ya que hay US que son 
-dependientes una de otras y deben realizarse en cierto orden. Además, cada versión contiene dos iteraciones de dos semanas 
-de duración aproximadamente, pudo llegar a extenderse la duración debido a problemas de demora general del equipo por 
-cuestiones las materias cursadas en paralelo al proyecto, o que un paquete de US esté casi por desplegarse y/o terminar 
-de probar su integración.
+Como se mencionó anteriormente, se ha separado cada versión con duración de aproximadamente un mes, para poder tener 
+parámetros del estado del proyecto a lo largo del tiempo y poder establecer un avance de él de forma incremental, 
+ya que hay US que son dependientes una de otras y deben realizarse en cierto orden. Además, cada versión contiene 
+dos iteraciones, cada una de dos semanas de duración aproximadamente. Ocasionalmente, se llegó a extender la duración debido a 
+problemas de demora general del equipo por distintas cuestiones, como las otras materias cursadas en paralelo al proyecto, o 
+que múltiples US esté casi por desplegarse y/o terminar de probar su integración.
 \vspace{0.25cm}
 
 La herramienta principal utilizada para reflejar el progreso más actualizado día a día fue Github Projects. Por lo tanto 
@@ -141,9 +141,9 @@ integrar los cambios en una rama se actualicen los servidores automáticamente.
 \vspace{0.25cm}
 
 En su momento se investigó y Unity ofrece un sistema para compilar en la nube pero es propia de Unity y otros flujos de 
-entrega de ejecutable compilado, pero son todos sistemas pagos y nos excedería en presupuesto para este proyecto.
+entrega de ejecutable compilado, pero son todos sistemas pagos y se excedería en presupuesto para este proyecto para el equipo.
 Por lo tanto se pactó con el tutor que para este entregable sería suficiente que se realice solo la parte de compilación 
-del ejecutable del servidor manualmente, y el resto del \textit{pipeline} automatizado. En la cual, nosotros generamos
+del ejecutable del servidor manualmente, y el resto del \textit{pipeline} automatizado. En la cual, primero se genera
 la imagen en Docker con el ejecutable del servidor ya compilado, y luego se realiza un tag con la versión correspondiente,
 todo este mecanismo activa el \textit{pipeline} para subir la imagen a la nube y actualizar los servidores con la nueva imagen.
 Por otro lado los microservicios y el backend involucrado se encuentran efectivamente automatizados, una vez integrado 
