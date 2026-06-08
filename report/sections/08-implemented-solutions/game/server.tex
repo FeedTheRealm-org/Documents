@@ -54,7 +54,7 @@ En su lugar, se desactiva la física automática de Unity y se delega
 su ejecución al \textit{Game Loop}, que la invoca manualmente en cada \textit{Physics Update} junto con el resto de la lógica del servidor.
 
 Para esto se desarrolló un \textit{Tick Driver}, que se encarga de ejecutar el ciclo principal del servidor y realizar llamadas
-al servicio de networking (encargado del envío de eventos) a razón de $60$ ticks por segundo (tps), y al servicio de \textit{game loop}
+al servicio de networking o \texttt{NetworkService} (encargado del envío de eventos) a razón de $60$ ticks por segundo (tps), y al servicio de \textit{game loop}
 a razón de $30 tps$. Esto es debido a que la interacción por medio de código con los objetos manejados por Unity, solamente 
 se puede realizar desde el hilo principal del proceso (\textit{Main thread}), limitando la posibilidad de realizar un programa
 con recepciones y envíos de red en múltiples hilos.
