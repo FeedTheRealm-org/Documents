@@ -22,11 +22,12 @@ correspondientes.
 El flujo de compra de gemas comienza cuando el usuario envía una petición a \texttt{POST /payments/} \texttt{checkout},
 que crea una sesión de \textit{checkout} de Stripe para el \textit{pack} seleccionado. Una vez que el usuario
 completa el pago en la plataforma de Stripe, esta notifica al sistema a través del \textit{endpoint} de
-\textit{webhook} \texttt{POST /payments/webhook/stripe}, que procesa el evento y acredita las gemas
+\textit{webhook} \, \texttt{POST /payments/webhook/stripe}, que procesa el evento y acredita las gemas
 correspondientes en el balance del usuario. El evento esperado es \texttt{payment\_intent.succeeded}.
+
 \vspace{0.25cm}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.75\textwidth]{img/08-implemented-solution/core-service/payment-service-case-1.jpg}
     \caption{Diagrama de secuencia del flujo de compra de gemas}
@@ -40,8 +41,10 @@ automáticamente un correo electrónico al jugador confirmando la transacción y
 \vspace{0.25cm}
 
 El sistema ofrece un mecanismo de suscripción para que los creadores puedan habilitar zonas en sus mundos. La suscripción 
-se gestiona por \textit{slots}, donde cada \textit{slot} permite a un creador activar un mundo. El estado de la suscripción 
-activa del usuario puede consultarse, en cualquier momento, mediante \texttt{GET /subscriptions/status}.
+se gestiona por \textit{slots}, donde cada \textit{slot} permite a un creador activar una zona en el mundo. 
+El estado de la suscripción activa del usuario puede consultarse, en cualquier momento, mediante 
+\texttt{GET /subscriptions/status}.
+
 \vspace{0.25cm}
 
 El flujo de alta de una suscripción comienza con \texttt{POST /subscriptions/checkout}, que crea una sesión de
@@ -50,7 +53,7 @@ de \texttt{POST /subscriptions/webhook/stripe}, que procesa los eventos de alta,
 suscripciones. Similar a las gemas, sin embargo aquí se recibe el evento \texttt{customer.subscription.created}.
 \vspace{0.25cm}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.75\textwidth]{img/08-implemented-solution/core-service/payment-service-case-2.jpg}
     \caption{Diagrama de secuencia del flujo de subscripcion}
@@ -58,8 +61,9 @@ suscripciones. Similar a las gemas, sin embargo aquí se recibe el evento \textt
 \end{figure}
 
 Una vez activa la suscripción, el usuario puede ajustar la cantidad de \textit{slots} contratados mediante
-\texttt{PUT /subscriptions/slots}, y cancelarla mediante \texttt{DELETE /subscriptions}, siempre que no tenga
-\textit{slots} en uso en ese momento. Los eventos que se reciben, respectivamente, son \texttt{customer.subscription.updated}
+\texttt{PUT /subscriptions/slots} (aplicando los cambios de tarifas correspondientes), y cancelarla mediante 
+\texttt{DELETE /subscriptions}, siempre que no tenga \textit{slots} en uso en ese momento. 
+Los eventos que se reciben, respectivamente, son \texttt{customer.subscription.updated}
 y \texttt{customer.subscription.deleted}.
 \vspace{0.25cm}
 
@@ -80,7 +84,7 @@ identificador de su creador. A continuación, verifica que el balance de gemas d
 cubrir dicho precio; si no lo es, retorna un error indicando gemas insuficientes.
 \vspace{0.25cm}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.95\textwidth]{img/08-implemented-solution/core-service/payment-service-case-3.jpg}
     \caption{Diagrama de secuencia de la compra de un cosmético}
@@ -96,18 +100,15 @@ las gemas del balance del usuario.
 Finalmente, si el cosmético tiene un precio mayor a cero y fue creado por un usuario distinto al sistema, se
 acredita una porción de las gemas al creador en forma de balance en dólares. El monto se calcula aplicando
 el porcentaje de reparto configurado (\texttt{CreatorRevenuePercent}) sobre el precio en gemas, convertido
-a dólares mediante la tasa de cambio configurada (\texttt{DollarsGems} \texttt{Ratio}). Adicionalmente, se actualizan
-las métricas globales de gemas gastadas.
-\vspace{0.25cm}
+a dólares mediante la tasa de cambio configurada (\texttt{DollarsGems} \texttt{Ratio}). Este balance se 
+acumula a lo largo del tiempo con cada compra. Adicionalmente, se actualizan las métricas globales de 
+gemas gastadas en las compras. 
 
-Cada vez que un usuario adquiere un cosmético creado por otro usuario, el sistema acredita automáticamente una
-porción del valor de la venta al creador en su balance, expresado en dólares. Este balance se acumula a lo largo
-del tiempo con cada compra que reciba alguno de sus cosméticos.
 \vspace{0.25cm}
 
 Un creador puede consultar su propio balance en cualquier momento mediante \texttt{GET /payments} \texttt{/balances/creators},
-que retorna el monto acumulado asociado al usuario autenticado. Los administradores disponen adicionalmente del
-\textit{endpoint} \texttt{GET /payments/balances/creators/all}, que retorna los balances de la totalidad de los
+que retorna el monto acumulado. Los administradores disponen adicionalmente del
+\textit{endpoint} \, \texttt{GET /payments/balances/creators/all}, que retorna los balances de la totalidad de los
 creadores del sistema.
 \vspace{0.25cm}
 
