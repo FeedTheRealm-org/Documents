@@ -58,7 +58,7 @@ portales (\textit{Portals}).
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/empty-zone.jpg}
+  \includegraphics[width=0.6\textwidth]{img/08-implemented-solution/world-editor/empty-zone.jpg}
   \caption{Un ejemplo de una zona nueva sin objetos colocados, con la textura de suelo y cielo predeterminados.}
   \label{fig:empty-zone}
 \end{figure}
@@ -80,15 +80,10 @@ estructura puede configurarse como tienda (\textit{Shop}), habilitando la compra
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/structure-transform.jpg}
-    \caption{Estructura seleccionada.}
+    \includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/structure.jpg}
+    \caption{Estructura seleccionada donde se puede ver tambien las pestañas de transformacion y colisionadores.}
 \end{figure}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/cube-collider.jpg}
-    \caption{Estructuras con colisionador de tipo cubo con transformaciones aplicadas.}
-\end{figure}
 
 \begin{figure}[H]
     \centering
@@ -100,11 +95,6 @@ Al iniciar el juego por primera vez, se verá que el usuario no tiene estructura
 por lo que el editor ofrece una biblioteca de modelos predeterminados que los creadores pueden descargar libremente mediante la seccion de \textit{Default Content}.
 Estos modelos predeterminados ofrecen una variedad de opciones para enriquecer la ambientación y composición visual de las zonas.
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/downloading-default.jpg}
-    \caption{Panel de descarga de contenido predeterminado.}
-\end{figure}
 
 Uno de los \textit{features} más enriquecedores del editor es la posibilidad de importar modelos 3D personalizados, 
 lo que permite a los creadores diseñar y utilizar sus propios \textit{assets} visuales en el juego. Para lograr esto, se integró la librería \texttt{GLTFast}, que facilita la carga de modelos en formato \texttt{.glb} 
@@ -123,21 +113,10 @@ y generador de jugadores (\textit{Player Spawner}).
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/spawner-player.jpg}
-  \caption{Generador de jugadores colocado en la escena.}
+  \includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/spawners.jpg}
+  \caption{Todos los tipos de generadores colocado en la escena.}
 \end{figure}
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/spawner-npc.jpg}
-  \caption{Generador de NPCs colocado en la escena.}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/spawner-enemy.jpg}
-  \caption{Generador de enemigos colocado en la escena.}
-\end{figure}
 
 La tercera y última de ellas son los \textbf{Objetos Misceláneos (\textit{Miscellaneous Objects})}, que son elementos que no se ajustan a las categorías anteriores, pero
 contribuyen a la composición del mundo. Actualmente, se encuentran disponibles dos variantes:
@@ -309,12 +288,6 @@ configuradas por el creador. Más información sobre los flujos de zonas se encu
 \nameref{sec:payment-service}, mientras que los detalles de cómo funciona la economía se encuentran en la sección 
 \nameref{sec:business-model}.
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/transactions.jpg}
-\caption{Panel de transacciones.}
-\label{fig:transactions}
-\end{figure}
 
 \subsubsection{Gestión de Recursos en Memoria}
 
