@@ -7,9 +7,8 @@ gestión de mundos, la gestión de zonas y el registro de servidores.
 \vspace{0.25cm}
 
 Un mundo se crea mediante \texttt{POST /world}, donde el usuario proporciona un nombre, una descripción y los
-datos de configuración del mundo en formato JSON. El nombre debe tener entre 1 y 24 caracteres, sin espacios ni
-caracteres especiales, y debe ser único en el sistema; de lo contrario, se retorna un error de conflicto. Esto proporciona
-un ID al mundo en los datos del mundo (\textit{world data}), con el cual se puede actualizar el mundo ya creado con
+datos de configuración del mundo en formato JSON. Esto proporciona un ID al mundo en los datos del mundo 
+(\textit{world data}), con el cual se puede actualizar el mundo ya creado con
 \texttt{PUT /world/\{id\}}. Adicionalmente, mundo almacena además un campo \texttt{createable\_data}, que contiene la 
 configuración de los objetos que pueden ser instanciados en él y que puede actualizarse de forma independiente mediante
 \texttt{PUT /world/\{id\}/createable-data}.
@@ -17,8 +16,9 @@ configuración de los objetos que pueden ser instanciados en él y que puede act
 
 La consulta de un mundo se realiza mediante \texttt{GET /world/\{id\}}, que retorna la configuración completa
 junto con los metadatos de sus zonas. El listado de mundos se obtiene mediante \texttt{GET /world}, que admite
-paginación a través de los parámetros obligatorios \texttt{offset} y \texttt{limit}, con un máximo de 100
-resultados por página, y permite filtrar por propietario mediante el parámetro opcional \texttt{user\_id}. 
+paginación y busqueda por filtros utilizando los parámetros \texttt{offset}, \texttt{limit} y \texttt{user\_id}, 
+este último en caso de querer buscar un mundo bajo el creado del mundo. 
+
 \vspace{0.25cm}
 
 Cada mundo se divide en zonas, identificadas por un número entero positivo. Una zona se publica o actualiza
@@ -28,7 +28,7 @@ estado: \texttt{is\_active}, que indica si la zona tiene un servidor de juego as
 que indica si dicho servidor está en ejecución en ese momento.
 \vspace{0.25cm}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \begin{adjustbox}{width=1.10\textwidth, center}
         \includegraphics{img/08-implemented-solution/core-service/world-service-case-1.jpg}
@@ -48,7 +48,7 @@ consumido. El consumo de esos \textit{slots} es chequeado por \texttt{GET /subsc
 se cancela una suscripción.
 \vspace{0.25cm}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{img/08-implemented-solution/core-service/world-service-case-2.jpg}
     \caption{Diagrama de secuencia de la actualización de los servidores}
