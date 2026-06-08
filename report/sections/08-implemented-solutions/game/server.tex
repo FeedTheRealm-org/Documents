@@ -1,6 +1,6 @@
 \subsubsection{Server}
 
-El servidor del juego es el componente con autoridad sobre la lógica del mundo: procesa las acciones de los jugadores, mantiene el estado de
+El servidor del juego es el componente con autoridad sobre la lógica del mundo, este procesa las acciones de los jugadores, mantiene el estado de
 las entidades y distribuye las actualizaciones a los clientes conectados. Está implementado como un proyecto Unity compilado en modo
 \textit{headless} (sin interfaz gráfica) y se ejecuta dentro de contenedores Docker desplegados dinámicamente por el \textit{Core Service}. Cada
 instancia es responsable de una única zona del mundo, por lo que un mundo con múltiples zonas implica que se ejecuten varias instancias de servidor en paralelo, 
@@ -9,23 +9,36 @@ cada una gestionando su propia zona y los jugadores que se encuentren en ella.
 \paragraph{Inicializacion}
 Cada instancia de zona del servidor se ejecuta dentro de un contenedor Docker. La imagen se construye a partir de una base de Debian mínima
 sobre la cual se instalan las dependencias necesarias para ejecutar el binario del servidor de Unity en modo \textit{headless},
-junto con las credenciales requieridas para obtener recursos desde el \textit{Core Service} en el momento del arranque.
-La imagen expone dos puertos: el 7777 para el tráfico del juego (\textit{KCP} y \textit{UDP}) y el 7778 para el
+junto con las credenciales requeridas (inyectadas vía variable de entorno) para obtener recursos desde el \textit{Core Service} en el momento del arranque.
+La imagen expone dos puertos, uno es el 7777/udp para el tráfico del juego y otro es el 7778/tcp para el
 \textit{healthcheck}. Al iniciar el contenedor, el servidor recibe como argumentos el identificador del mundo (\texttt{world-id}) y de la zona
  (\texttt{zone-id}) que debe cargar.
 
 \vspace{0.25cm}
 
-Con esos parámetros, el servidor inicia una secuencia de inicialización mediante varios \textit{Loaders}: 
-consulta al \textit{Core Service} la información de la zona, por ejemplo, los elementos colocables 
-(\textit{Placeables}) y los no colocables (\textit{Creatables}), y la utiliza para cargarla.
+Con esos parámetros, el servidor inicia una secuencia de inicialización mediante varios \textit{Loaders}. 
+Primero consulta al \textit{Core Service} la información de la zona, por ejemplo, los elementos colocables 
+(\textit{Placeables}) y los no colocables (\textit{Creatables}), y la utiliza para cargar los registros y crear los colisionadores.
 
 \vspace{0.25cm}
 
-Una vez completada la carga, el servidor establece la conexión con la base de datos no relacional que persiste la información del jugador en el mundo (ultima posición en la zona, inventario de ese mundo, etc) , levanta el servidor de \textit{healthcheck} y 
-notifica al \textit{Core Service} que la zona está activa y lista para recibir jugadores. En caso de fallo en cualquier etapa, 
-el proceso se cancela y el servidor notifica igualmente al \textit{Core Service} del estado fallido. Al apagarse, 
-el proceso inverso ocurre: el servidor notifica al \textit{Core Service} que la zona pasó a estado \textit{offline}.
+Una vez completada la carga, el servidor establece conexión con la base de datos no relacional encargada de persistir 
+la información del jugador dentro del mundo (última posición en la zona, inventario, cantidad de oro, entre otros datos).
+
+Si dicha base de datos exclusiva para este mundo no existe previamente, se crea dentro del mismo clúster de Mongo
+con el correspondiente identificador de mundo.
+
+Luego, inicializa el servicio de \textit{healthcheck}, utilizado por los \textit{Nomad Clients} para verificar el 
+estado operativo de la instancia cuyo funcionamiento e integración se describen con mayor detalle en la sección de Infraestructura.
+
+\vspace{0.25cm}
+
+Finalizada esta etapa, el servidor notifica al \textit{Core Service} que la zona se encuentra activa y lista para recibir jugadores.
+Si ocurre un fallo en cualquiera de las fases del proceso, la inicialización se cancela y el servidor informa al \textit{Core Service}
+el estado fallido de la instancia.
+
+De forma análoga, durante el servidor notifica al \textit{Core Service} que la zona ha 
+pasado al estado \textit{offline}.
 
 \paragraph{Game Loop}
 
