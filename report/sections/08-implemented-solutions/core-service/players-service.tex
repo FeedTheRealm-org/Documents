@@ -6,11 +6,10 @@ El servicio se divide en dos componentes principales: la gestión de la informac
 de acceso a los mundos mediante tokens.
 \vspace{0.25cm}
 
-Cada jugador dispone de un personaje asociado a su cuenta, cuya información puede actualizarse mediante
-\texttt{PATCH /player/character}. La petición debe incluir el nombre del personaje y adicionalmente su biografía, la 
-\textit{skin}, cabello y ojos.  El nombre debe tener entre 3 y 24 caracteres, no puede contener espacios ni caracteres 
-especiales inválidos, y debe ser único en el sistema; si ya está en uso, se retorna un error de conflicto. La biografía 
-admite hasta 256 caracteres. Los colores son opcionales y, de no proporcionarse, se aplican valores por defecto.
+Cada jugador dispone de un perfil asociado a su cuenta, cuya información puede actualizarse mediante
+\texttt{PATCH /player/character}. La petición debe incluir el nombre del personaje, de forma opcional su biografía y 
+la configuración de \textit{skin} (cosmeticos elegidos). El nombre del perfil debe ser único en el sistema; si 
+ya está en uso, se retorna un error de conflicto.
 \vspace{0.25cm}
 
 Internamente, la actualización se realiza en tres pasos: primero se actualiza la información base del personaje,
@@ -20,7 +19,7 @@ mediante \texttt{GET /player/character} para el usuario autenticado, o mediante 
 para consultar el personaje de otro jugador.
 \vspace{0.25cm}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.85\textwidth]{img/08-implemented-solution/core-service/players-service-case-1.jpg}
     \caption{Diagrama de secuencia del consumo de un token para unirse a un mundo}

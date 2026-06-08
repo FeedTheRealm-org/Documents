@@ -10,8 +10,7 @@ puede ser marcada como la versión más reciente (\textit{latest}) para su combi
 
 La subida de una nueva versión se realiza mediante una petición \textit{multipart/form-data} a
 \texttt{PUT /exports/zip}. La petición debe incluir los campos \texttt{app}, \texttt{version} y \texttt{os}, junto
-con el archivo comprimido bajo el campo \texttt{file}. El sistema valida que el nombre de la aplicación y el sistema
-operativo correspondan a valores permitidos, que la versión cumpla el formato \texttt{vX.Y.Z} y que el archivo sea
+con el archivo comprimido bajo el campo \texttt{file}. El sistema valida que todos estos campos y que el formato del archivo sea
 efectivamente un ZIP. Si ya existe una entrada para la misma combinación de aplicación, versión y sistema operativo,
 el sistema retorna un error de conflicto. De lo contrario, el archivo se almacena y se persiste el \textit{path}
 resultante en la base de datos.
@@ -29,4 +28,7 @@ de la petición los campos \texttt{app}, \texttt{version} y \texttt{os}. El sist
 exista previamente y, de ser así, la marca como \textit{latest} para esa combinación de aplicación y sistema
 operativo. Finalmente, una versión puede eliminarse mediante \texttt{DELETE /exports/zip}, indicando los parámetros 
 \texttt{app}, \texttt{version} y \texttt{os}, los tres obligatorios.
+
+Para más información donde se utilizan específicamente estos \textit{endpoints}, ver la sección de \nameref{sec:backoffice}.
+
 \vspace{0.25cm}

@@ -7,9 +7,9 @@ los mismos, así como también el control de tokens de acceso, en lo referente a
 que los usuarios puedan recuperar sus contraseñas.
 \vspace{0.25cm}
 
-Los usuarios de nuestra aplicación presentan dos niveles o tipos de autorización: usuarios o \textit{players} y
-administradores. Los usuarios tienen acceso a la mayoría de los \textit{endpoints}, excepto a los relacionados con
-cuestiones específicas, mientras que los administradores pueden acceder a todos los \textit{endpoints}.
+Nuestra aplicación presentan dos niveles o tipos de autorización. Por un lado los usuarios o \textit{players}, 
+que estos tienen acceso a la mayoría de los \textit{endpoints}, excepto a los relacionados con
+cuestiones específicas, y por el otro los administradores, que pueden acceder a todos los \textit{endpoints}.
 \vspace{0.25cm}
 
 La información requerida para cada usuario es el email para identificarlos de forma unívoca y enviarles correos
@@ -18,12 +18,11 @@ usuario es un \textit{player} o un administrador.
 \vspace{0.25cm}
 
 El flujo de registro para un \textit{player} consiste en enviar una petición a \texttt{POST /auth/signup}, donde facilita su
-email y su contraseña. La contraseña requiere un mínimo de 8 caracteres y debe contener al menos un número y una letra.
-A continuación se le envía un código por correo para verificar su identidad; dicho código tiene una longitud de 8 caracteres 
-alfanuméricos.
+email y su contraseña. Una vez creada su cuenta, a continuación se le envía un código por correo para verificar su identidad.
+
 \vspace{0.25cm}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.55\textwidth]{img/08-implemented-solution/core-service/auth-service-case-1.jpg}
     \caption{Diagrama de secuencia del flujo de registro}
@@ -58,7 +57,7 @@ El flujo de recuperación de contraseña consta de tres pasos. En primer lugar, 
 cuenta registrada, se genera un código OTP (\textit{One-Time Password}) y se envía al correo del usuario.
 \vspace{0.25cm}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.65\textwidth]{img/08-implemented-solution/core-service/auth-service-case-2.jpg}
     \caption{Diagrama de secuencia del recuepero de contraseña}
@@ -69,10 +68,6 @@ A continuación, el usuario debe verificar el código recibido mediante el \text
 proporcionando su correo y el OTP. El sistema contempla distintas casuísticas de error, como código incorrecto,
 código expirado o número máximo de intentos superado. Si el código es válido, se emite un token de restablecimiento
 (\textit{reset token}) de corta duración. Y usuario completa el proceso enviando el \textit{reset token} junto con la 
-nueva contraseña a \texttt{POST /auth/password/reset}. 
-\vspace{0.25cm}
-
-El sistema valida el token, comprueba que la contraseña cumpla el formato requerido y, de ser así, actualiza las credenciales 
-e invalida todas las sesiones activas del usuario. Si el token ha expirado o ya fue utilizado, el usuario deberá iniciar 
+nueva contraseña a \texttt{POST /auth/password/reset}. Si el token ha expirado o ya fue utilizado, el usuario deberá iniciar 
 el flujo desde el principio.
 \vspace{0.25cm}

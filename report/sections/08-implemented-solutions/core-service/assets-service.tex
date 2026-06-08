@@ -5,8 +5,8 @@ El \textit{assets service} es el encargado de administrar y gestionar los \texti
 formados por los siguientes \textit{assets}:
 
 \begin{itemize}
-    \item \underline{\textit{Cosmetics}}: Corresponden a los \textit{sprites} que los jugadores pueden comprar para
-    utilizarlos en sus personajes a través de los \textit{shops}.
+    \item \underline{\textit{Cosmetics}}: Corresponden a los \textit{sprites} que pueden estar asignados en los NPC en cada mundo, y los 
+    disponibles en los \textit{shops} para que los jugadores puedan comprar por gemas y utilizarlos en sus personajes.
     \item \underline{\textit{Items}}: Corresponden a los \textit{sprites} utilizados como íconos de las armas y consumibles
     del juego, así como a los elementos que el personaje tiene equipados.
     \item \underline{\textit{Materials}}: Corresponden a las imágenes para cambiar las texturas del suelo y el cielo
@@ -50,7 +50,7 @@ persistiendo el \textit{path} en la base de datos. Los \textit{endpoints} corres
 La subida de modelos 3D se realiza mediante \texttt{PUT /assets/models/world/\{world\_id\}} y, a diferencia de los
 materiales e ítems, admite un único modelo por petición. El archivo debe estar en formato GLB y debe acompañarse del
 campo \texttt{model\_id} que lo identifica. Al igual que con los cosméticos \textit{default}, si el \texttt{world\_id} es
-nulo la operación queda restringida a administradores; de lo contrario, se verifica la propiedad del mundo antes
+nulo (\texttt{0000...0000}) la operación queda restringida a administradores; de lo contrario, se verifica la propiedad del mundo antes
 de almacenar el archivo en el \textit{content bucket}.
 \vspace{0.25cm}
 
@@ -88,11 +88,10 @@ la combinación de valores enviados, tal como se resume en el siguiente cuadro.
 \end{longtable}
 
 Cuando se proporciona un \texttt{player\_id} distinto al del usuario autenticado, el sistema exige que la sesión
-tenga privilegios de administrador; de lo contrario, la petición es rechazada. Los resultados se paginan mediante
-los parámetros \texttt{offset} y \texttt{limit}, con valores por defecto de \texttt{0} y \texttt{24}
-respectivamente y un tope máximo de \texttt{200} elementos por página. La respuesta incluye el campo
-\texttt{total\_count} con el total de cosméticos disponibles para la consulta realizada, lo que permite al cliente
-calcular el número de páginas necesarias.
+tenga privilegios de administrador; de lo contrario, la petición es rechazada. Los cosméticos se paginan mediante
+los parámetros \texttt{offset} y \texttt{limit}, \texttt{total\_count}, lo que permite al cliente visualizar correctamente 
+el contenido con su sistema de paginación.
+
 \vspace{0.25cm}
 
 El registro de la compra de un cosmético por parte de un usuario se realiza a través de un \textit{endpoint} interno,
