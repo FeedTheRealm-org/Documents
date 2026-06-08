@@ -1,0 +1,324 @@
+El \textit{World Editor} es una herramienta destinada a la creación y edición de mundos dentro del juego.
+Está construido como un cliente de Unity que se comunica con el \textit{Core Service} a través del \textit{API Gateway}.
+El editor permite a los jugadores crear nuevos mundos,
+modificar la configuración de zonas existentes, gestionar \textit{assets}, publicar y mediante una subscripción activar dichos mundos.
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/world-editor-intro.jpg}
+  \caption{Un ejemplo de mundo en construcción dentro del editor}
+  \label{fig:world-editor-example}
+\end{figure}
+
+A continuación se enumera de forma resumida las funcionalidades principales de parte del \texttt{World Editor}:
+
+\begin{itemize}
+  \item Creación y publicación de mundos personalizados para la comunidad de Feed the Realm.
+  \item Organización de múltiples zonas interconectadas dentro de cada mundo.
+  \item Colocación de estructuras, objetos de entorno, bases, rampas y assets decorativos.
+  \item Personalización de materiales de suelo, colores y presentación visual.
+  \item Definición de puntos de aparición de jugadores.
+  \item Configuración de generadores de enemigos, NPCs y cofres de \textit{loot} (botín).
+  \item Importación de modelos y sprites personalizados al mundo.
+  \item Acceso a una biblioteca de modelos predeterminados y contenido reutilizable.
+  \item Creación y personalización de enemigos, NPCs y sus apariencias visuales.
+  \item Configuración de árboles de diálogo de NPCs e interacciones con quests (misiones).
+  \item Construcción de cadenas de quests completas con objetivos, recompensas e integración de diálogos.
+  \item Creación de objetivos basados en derrotas de enemigos o interacciones.
+  \item Configuración de recompensas de quests incluyendo ítems y moneda.
+  \item Creación de armas, consumibles, tablas de \textit{loot} y \textit{drops} (recompensas) de ítems.
+  \item Asignación de tablas de \textit{drops} y recompensas de \textit{loot} a enemigos.
+  \item Construcción de tiendas en el mundo y definición de productos comprables.
+  \item Configuración de precios de ítems en oro y cosméticos en gemas.
+  \item Creación de portales y vinculación a zonas específicas.
+  \item Monitoreo del estado del mundo y los servidores desde el editor.
+  \item Publicación y actualización instantánea de mundos y zonas.
+\end{itemize}
+
+\subsubsection{Estructura de un Mundo}
+
+Un mundo se compone de tres elementos principales:
+
+\begin{itemize}
+  \item \textbf{Zonas (\textit{Zones})}: Subdivisiones de un mundo con diferentes áreas.
+  \item \textbf{Objetos Creables (\textit{Creatables})}: Objetos instanciados dinámicamente en tiempo de ejecución, como \textit{NPCs},
+  enemigos o ítems. A diferencia de los \textit{Placeables}, no pueden ser posicionados manualmente durante la fase de diseño,
+  sino que son generados por la lógica del juego.
+  \item \textbf{Objetos Colocables (\textit{Placeables})}: Objetos posicionados manualmente en el editor durante la fase de diseño,
+  que permanecen estáticos en tiempo de ejecución. Se clasifican en estructuras (\textit{Structures}), generadores
+  (\textit{Spawners}) y objetos diversos (\textit{Miscellaneous Objects}).
+\end{itemize}
+
+\paragraph{Zonas (\textit{Zones})}
+
+Los creadores de mundos pueden crear nuevas zonas dentro del editor, configurando parámetros como la textura
+del terreno, la textura del cielo (\textit{Skybox}) y también configurar cómo un jugador se transporta de una zona a otra mediante
+portales (\textit{Portals}).
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.6\textwidth]{img/08-implemented-solution/world-editor/empty-zone.jpg}
+  \caption{Un ejemplo de una zona nueva sin objetos colocados, con la textura de suelo y cielo predeterminados.}
+  \label{fig:empty-zone}
+\end{figure}
+
+\paragraph{Objetos Colocables (\textit{Placeable Objects})}
+
+Los \textit{Placeables} son objetos posicionados manualmente en el editor durante la fase de diseño y permanecen estáticos en
+tiempo de ejecución. Se clasifican en tres categorías principales:
+
+\vspace{0.25cm}
+
+La primera de ellas son las \textbf{Estructuras (\textit{Structures})}, estas son objetos estáticos que forman parte del entorno del juego, como edificios,
+árboles o rocas. Al ser colocados, su posición, rotación y escala pueden editarse mediante \textit{Gizmos} o a través
+de su panel de configuración. Cada estructura permite configurar sus colisionadores (\textit{Colliders}), que definen
+las interacciones físicas con el jugador y otros elementos del juego. Actualmente se soportan dos tipos de colisionador:
+cubo (\textit{Cube}), de uso general, y rampa (\textit{Slope}), un colisionador de forma piramidal diseñado para
+superficies inclinadas que permiten al jugador desplazarse hacia zonas de mayor altura. Adicionalmente, cualquier
+estructura puede configurarse como tienda (\textit{Shop}), habilitando la compra de ítems por parte de los jugadores.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/structure.jpg}
+    \caption{Estructura seleccionada donde se puede ver tambien las pestañas de transformacion y colisionadores.}
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/slope-collider.jpg}
+    \caption{Estructuras con colisionador de tipo rampa con transformaciones aplicadas.}
+\end{figure}
+
+Al iniciar el juego por primera vez, se verá que el usuario no tiene estructuras disponibles para colocar, 
+por lo que el editor ofrece una biblioteca de modelos predeterminados que los creadores pueden descargar libremente mediante la seccion de \textit{Default Content}.
+Estos modelos predeterminados ofrecen una variedad de opciones para enriquecer la ambientación y composición visual de las zonas.
+
+
+Uno de los \textit{features} más enriquecedores del editor es la posibilidad de importar modelos 3D personalizados, 
+lo que permite a los creadores diseñar y utilizar sus propios \textit{assets} visuales en el juego. Para lograr esto, se integró la librería \texttt{GLTFast}, que facilita la carga de modelos en formato \texttt{.glb} 
+durante la ejecución del editor, permitiendo a los creadores incorporar contenido único y personalizado en sus mundos.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/import-model.jpg}
+    \caption{Modelo importado en la escena.}
+\end{figure}
+
+La segunda de ellas son los \textbf{Generadores (\textit{Spawners})}, que son objetos que crean entidades en tiempo de ejecución, como enemigos o \textit{NPCs}.
+Pueden configurarse con parámetros como frecuencia de aparición, rango y tipo de entidad a generar. Actualmente, se
+encuentran disponibles tres tipos: generador de enemigos (\textit{Enemy Spawner}), generador de \textit{NPCs} (\textit{NPC Spawner})
+y generador de jugadores (\textit{Player Spawner}).
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/spawners.jpg}
+  \caption{Todos los tipos de generadores colocado en la escena.}
+\end{figure}
+
+
+La tercera y última de ellas son los \textbf{Objetos Misceláneos (\textit{Miscellaneous Objects})}, que son elementos que no se ajustan a las categorías anteriores, pero
+contribuyen a la composición del mundo. Actualmente, se encuentran disponibles dos variantes:
+\begin{itemize}
+    \item \textbf{Cofres (\textit{Chests})}: Objetos interactuables que los jugadores pueden abrir para obtener recompensas.
+        Configurables con distintos tipos de botín, tiempo de reseteo y apariencia en estado abierto y cerrado. La aparicencia se puede configurar y seleccionar distintos modelos 3D para el cofre, ya sea de los modelos predeterminados o de modelos personalizados importados por el usuario.
+        \begin{figure}[H]
+          \centering
+          \includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/chest.jpg}
+          \caption{Cofre colocado en la escena.}
+        \end{figure}
+    \item \textbf{Portales (\textit{Portals})}: Objetos que permiten transportar al jugador a otra ubicación, incluso entre zonas distintas
+        del mundo. Al interactuar con un \textit{Portal}, el jugador es teletransportado a la zona de destino configurada,
+        conservando su estado y progresión.
+        \begin{figure}[H]
+          \centering
+          \includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/portal.jpg}
+          \caption{Portal colocado en la escena.}
+        \end{figure}
+\end{itemize}
+
+\paragraph{Objetos Creables (\textit{Creatable Objects})}
+
+Los \textit{Creatables} son objetos instanciados dinámicamente en tiempo de ejecución. A diferencia de los \textit{Placeables}, no se
+posicionan directamente en el mundo, sino que se configuran y gestionan a través de paneles de edición dedicados.
+Actualmente se encuentran disponibles los siguientes tipos:
+
+\begin{itemize}
+  \item \textbf{\textit{NPC} Pasivo (\textit{Passive NPC})}: Personajes no hostiles con los que el jugador puede
+  interactuar mediante diálogos, como aldeanos o comerciantes. El creador puede asignarles diálogos predefinidos
+  para que el jugador obtenga información, inicie \textit{Quests} o simplemente enriquezca la ambientación del mundo.
+
+  \item \textbf{\textit{NPC} Agresivo / Enemigos (\textit{Aggressive NPC / Enemies})}: Personajes hostiles que atacan al jugador al
+  detectarlo dentro de un rango determinado. Configurables con estadísticas de salud, tipos de armas que utilizan
+  y tabla de botín que sueltan al ser derrotados.
+
+  \item \textbf{Objetos Consumibles (\textit{Consumable Items})}: Ítems que el jugador puede recoger y utilizar durante
+  el juego, como pociones de salud o comida. Se consumen al ser utilizados y pueden otorgar distintos efectos
+  según su configuración.
+
+  \item \textbf{Armas (\textit{Weapon Items})}: Ítems que el jugador puede recoger y equipar para atacar \textit{NPCs} agresivos
+  u otros jugadores. Configurables con tipo de arma (cuerpo a cuerpo o a distancia), daño, alcance, velocidad
+  de ataque y textura.
+
+  \item \textbf{Tablas de Botín (\textit{Loot Tables})}: Configuraciones que definen qué ítems y qué cantidad de oro
+  se obtienen al interactuar con un elemento del juego, también se puede configurar la probabilidad de aparición de cada ítem. 
+  Se asignan a enemigos y \textit{Chests}, donde cada ítem de la tabla tiene una probabilidad de aparición determinada.
+
+  \item \textbf{Diálogos (\textit{Dialogs})}: Conjuntos de mensajes asignables a \textit{NPCs} pasivos que habilitan la
+  interacción con el jugador. Permiten estructurar flujos de conversación y vincular \textit{Quests} a mensajes
+  específicos, posibilitando mostrar distintos diálogos según el progreso del jugador.
+
+  \item \textbf{Misiones (\textit{Quests})}: Misiones asignables a \textit{NPCs} que el jugador puede completar para obtener
+  recompensas. Los objetivos disponibles actualmente incluyen eliminar una cantidad determinada de enemigos o
+  interactuar con \textit{NPCs} específicos. Al completarse, el jugador puede recibir experiencia, oro o ítems especiales.
+
+  \item \textbf{Tienda (\textit{Shop})}: Configuración asignable a estructuras que habilita la compra de ítems al
+  interactuar con ellas. Soporta dos tipos de productos: ítems consumibles y armas, adquiribles con oro
+  obtenido durante el juego, y cosméticos, adquiribles con gemas.
+
+  \item \textbf{Cosméticos (\textit{Cosmetics})}: Objetos de personalización estética como ropa, accesorios o \textit{skins}
+  que no afectan la jugabilidad. Se adquieren con gemas, una moneda \textit{premium} obtenida con dinero real, y
+  pueden configurarse en tiendas con distintos precios y cantidades disponibles.
+\end{itemize}
+
+
+\subsubsection{Atributos de Calidad}
+Un aspecto fundamental del editor es su enfoque en la usabilidad, con una interfaz intuitiva y accesible que permite a los 
+creadores de mundos diseñar experiencias complejas sin necesidad de conocimientos técnicos avanzados. 
+Se implementaron paneles de configuración claros y herramientas de edición visual que facilitan la colocación y 
+personalización de objetos, así como la gestión de recursos y la publicación de mundos.
+
+\paragraph{Gizmos}
+Para mejorar la experiencia de edición, se implementaron \textit{Gizmos} personalizados 
+que permiten a los creadores manipular visualmente la posición, rotación y escala de los objetos colocados en la escena.
+
+  \begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/gizmos.jpg}
+  \caption{Gizmos implementados.}
+  \label{fig:gizmos}
+\end{figure}
+
+\paragraph{Editor de Models 3D}
+La importación de modelos 3D desde internet puede introducir problemas de escala o rotación, ya que el formato \texttt{.glb} 
+no define una convención de orientación, lo que con frecuencia produce modelos importados con resultados no deseables. 
+Para resolver esto, se incorporó un editor de modelos 3D, que permite a los  creadores ajustar visualmente la escala
+y la rotación antes de finalizar la importación al mundo, garantizando que el 
+modelo se integre correctamente en la escena sin necesidad de herramientas externas. El editor también permite 
+definir si el modelo tendrá o no colisiones al colocarse, lo que resulta útil para elementos decorativos que no 
+requieren colisionadores y mejora la experiencia al ubicar múltiples modelos sin tener que configurar cada 
+uno de forma individual luego de su colocación. El editor de modelos también cuenta con una pestaña 
+dedicada a configurar qué modelo de cofre se utiliza por defecto al colocar uno.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/model-editor.jpg}
+\caption{Editor de modelos 3D.}
+\label{fig:model-editor}
+\end{figure}
+
+
+\paragraph{Editor de Zonas}
+Para facilitar la edición de zonas, se implementó un editor de zonas que permite configurar visualmente las texturas de suelo y cielo.
+Los ususarios pueden seleccionar entre una variedad de texturas predeterminadas (Asumiendo que el ususario ya importó el default content mencionado previamente) 
+o importar sus propias texturas personalizadas. 
+
+\vspace{0.25cm}
+
+Para la textura del suelo, se puede configurar la granularidad del mismo,
+lo que determina la escala de repetición de la textura y permite ajustar su apariencia para adaptarse mejor a la composición visual de la zona. 
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/zone-editor.jpg}
+\caption{Editor de zonas.}
+\label{fig:zone-editor}
+\end{figure}
+
+\subsubsection{Gestión de Mundos}
+
+El editor cuenta con un sistema de guardado y apertura de mundos similar al de otros programas de edición,
+permitiendo retomar la edición en distintas sesiones de trabajo.
+
+Los mundos se persisten localmente utilizando \texttt{Application.persistentDataPath} de Unity, una ruta
+del sistema de archivos gestionada por el motor que garantiza permisos de escritura en todas las plataformas
+soportadas. Cada mundo se almacena como un directorio independiente con el nombre del mundo, con la
+siguiente estructura:
+
+\begin{verbatim}
+<mundo>/
+|- world.data
+|- creatables.data
+|- zone_1.world
+|- zone_2.world
+|- ...
+|- zone_n.world
+\end{verbatim}
+
+\begin{itemize}
+  \item \texttt{world.data}: Contiene la configuración general del mundo, incluyendo nombre, descripción
+  e identificador asignado al momento de su publicación.
+  \item \texttt{creatables.data}: Almacena la definición de todos los objetos creables configurados
+  para el mundo, como \textit{NPCs}, enemigos, ítems y misiones.
+  \item \texttt{zone\_\{n\}.world}: Representa el estado de una zona independiente, almacenando todos
+  los \textit{Placeables} colocados en ella junto con su posición, rotación, escala y propiedades configuradas.
+  Se genera un archivo por cada zona que compone el mundo.
+\end{itemize}
+
+\subsubsection{Economía}
+
+El sistema cuenta con paneles de gestión económica destinados a los creadores de mundos, que centralizan
+el seguimiento de sus mundos publicados. Desde esta sección, el creador puede visualizar el
+estado de cada mundo publicado, ver la fecha de renovación de su período de suscripción y
+administrar sus publicaciones.
+\vspace{0.25cm}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/subscriptions.jpg}
+\caption{Panel de suscripciones.}
+\label{fig:subscriptions}
+\end{figure}
+
+Adicionalmente, existe un panel de ingresos que permite a los creadores recaudar las
+ganancias generadas en sus mundos. Dichos ingresos provienen de las compras realizadas por jugadores
+con gemas dentro del mundo, correspondientes a la adquisición de cosméticos disponibles en las tiendas
+configuradas por el creador. Más información sobre los flujos de zonas se encuentra explicados en la sección 
+\nameref{sec:payment-service}, mientras que los detalles de cómo funciona la economía se encuentran en la sección 
+\nameref{sec:business-model}.
+
+
+\subsubsection{Gestión de Recursos en Memoria}
+
+La gestión de recursos en memoria se organiza mediante un sistema de managers y repositorios internos, 
+donde cada tipo de dato cuenta con su propio repositorio especializado que encapsula la lógica de 
+serialización y acceso a disco de su dominio.
+
+Los \textit{Placeables}, al estar representados físicamente en la escena, son rastreados individualmente y 
+notifican al sistema mediante eventos cuando su estado es modificado, determinando si deben incluirse 
+en el próximo ciclo de guardado.
+
+Los \textit{Creatables}, al no tener representación física en la escena, son gestionados por un manager dedicado 
+que mantiene en memoria el conjunto de objetos creables del mundo, permitiendo su consulta, modificación 
+y persistencia de forma centralizada.
+
+\subsubsection{Publicación de Mundos}
+
+Una vez finalizado el diseño, el creador puede publicar su mundo para que pueda ser accedido mediante el cliente de juego.
+El proceso requiere haber iniciado sesión y se realiza desde el panel de publicación. Al confirmar la publicación,
+se inicia una secuencia de carga hacia el \textit{Core Service} que sigue el siguiente orden:
+
+\begin{enumerate}
+  \item \textbf{Datos del Mundo (\textit{World Data})}: Los datos estructurales del mundo en formato \textit{JSON}, que incluyen la configuración
+  de zonas, objetos y sus propiedades.
+  \item \textbf{Modelos 3D}: Los modelos utilizados en el mundo, excluyendo aquellos que forman parte del
+  conjunto de \textit{assets} predeterminados del sistema.
+  \item \textbf{\textit{Assets} de Ítems}: Las imágenes e iconos asociados a los ítems creados por el usuario.
+  \item \textbf{Cosméticos}: Los \textit{assets} visuales correspondientes a los cosméticos configurados en el mundo.
+  \item \textbf{\textit{Assets} de Entorno}: Las texturas de suelo (\textit{ground textures}) y cielos
+  (\textit{skybox textures}) asociadas a cada zona del mundo.
+\end{enumerate}
+
+Luego que el mundo es publicado, este debe ser activado mediante el panel de economía, lo cual requiere una cierta cantidad de \textit{slots}
+igual a la cantidad de zonas que se quieran desplegar y estos se obtienen a partir de suscripciones.
