@@ -1,5 +1,5 @@
-A continuación se tratará con más detalle el sistema de creacion de personajes, que es un componente fundamental 
-para la experiencia de juego, ya que los personajes ayuda dar vida a los mundos creados, 
+A continuación se tratará con más detalle el sistema de creación de personajes, que es un componente fundamental 
+para la experiencia de juego, ya que los personajes ayudan a dar vida a los mundos creados, 
 y permiten a los jugadores interactuar con el entorno y con otros personajes dentro del juego.
 
 \vspace{0.25cm}
@@ -13,10 +13,10 @@ los segundos son diseñados por los creadores de mundos.
 A su vez, los \textit{NPCs} se dividen en dos subtipos: los pasivos, con los que el jugador puede interactuar 
 mediante diálogos, y los agresivos o enemigos, personajes hostiles que atacan al jugador.
 
-\paragraph{NPCs Pasivos}
+\subs{NPCs Pasivos}
 
 Para un creador de mundos, es esencial poder colocar \textit{NPCs} en su mundo para que el personaje pueda 
-interactuar con ellas. Sumado a esto, es importante que el creador pueda configurar sus aparencias para 
+interactuar con ellos. Sumado a esto, es importante que el creador pueda configurar sus apariencias para 
 poder crear un mundo con una ambientación específica, y darle personalidad a su mundo. 
 
 Para esto, se han implementado funcionalidades de personalización de personajes, que permiten a los 
@@ -46,7 +46,7 @@ El sistema de interaccion con ellos se verá con mayor detalle en la siguiente s
 \end{figure}
 
 
-\paragraph{NPCs Agresivos}
+\subs{NPCs Agresivos}
 
 Los \textit{NPCs} agresivos representan una amenaza para los jugadores. 
 Se les puede asignar un arma específica, lo que afecta su comportamiento de ataque. 
@@ -68,11 +68,11 @@ enemigos se les puede asignar una tabla de botín que se recompensan al ser derr
   \caption{NPC agresivo en el juego.}
 \end{figure}
 
-\paragraph{Generadores de Personajes}
+\subs{Generadores de Personajes}
 
-Por último, como carácteristica de personalización del mundo, se ha diseñado un sistema de generación de 
+Por último, como característica de personalización del mundo, se ha diseñado un sistema de generación de 
 personajes, que permite a los creadores colocar generadores dentro de su mundo. Los 
-\textbf{Generadores (\textit{Spawners})}, que son objetos que crean personajes en tiempo de ejecución y 
+\textbf{Generadores (\textit{Spawners})} son objetos que crean personajes en tiempo de ejecución y 
 pueden configurarse con parámetros como frecuencia de aparición, rango y tipo de entidad a generar. 
 Actualmente, se encuentran disponibles tres tipos: generador de enemigos (\textit{Enemy Spawner}), 
 generador de \textit{NPCs} (\textit{NPC Spawner}) y generador de jugadores (\textit{Player Spawner}).
@@ -80,5 +80,5 @@ generador de \textit{NPCs} (\textit{NPC Spawner}) y generador de jugadores (\tex
 \begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{img/08-implemented-solution/product/spawners.jpg}
-  \caption{Todos los tipos de generadores colocado en la escena.}
+  \caption{Todos los tipos de generadores colocados en la escena.}
 \end{figure}
