@@ -1,6 +1,6 @@
 Las misiones (\textit{Quests}) son uno de los pilares del género MMORPG: gran parte de la experiencia de juego gira en torno 
 a ellas, ya que son el principal motor de progresión del jugador dentro del mundo. Juegos icónicos 
-del género como \textit{World of Warcraft} o \textit{RuneScape} deben buenaparte de su identidad 
+del género como \textit{World of Warcraft} o \textit{RuneScape} deben buena parte de su identidad 
 precisamente a sus sistemas de misiones, que guían al jugador, le dan objetivos concretos y lo 
 recompensan por explorar el mundo.
 
@@ -20,20 +20,20 @@ el \textit{NPC}, ya que estos diálogos una vez creados y configurados, pueden s
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.65\textwidth]{img/08-implemented-solution/product/dialog-creation.jpg}
+    \includegraphics[width=0.55\textwidth]{img/08-implemented-solution/product/dialog-creation.jpg}
     \caption{Captura de pantalla del creador de diálogos.}
     \label{fig:dialog-creation}
 \end{figure}
 
 
 Las misiones se crean dentro del editor de misiones, y luego se pueden vincular a los diálogos, específicamente 
-a un mensaje dentro de un dialogo (solo se permite una misión por dialogo). En estas misiones actualmente se puede 
+a un mensaje dentro de un diálogo (solo se permite una misión por diálogo). En estas misiones actualmente se puede 
 asignar un objetivo, por el momento solo se ha implementado el objetivo de matar a un número específico de enemigos, 
 o de interactuar con otro \textit{NPC} específico, pero el sistema de misiones está diseñado para ser flexible y 
 permitir la adición de nuevos tipos de objetivos en el futuro. 
 Además, se pueden configurar las recompensas que el jugador recibirá, ya sea un valor en monedas de oro, items 
 específicos o directamente un \textit{loot table} que se ha creado previamente, lo que permite una gran variedad de 
-probabilidad de recompensas. 
+configuración de recompensas. 
 
 
 \begin{figure}[H]
@@ -50,11 +50,9 @@ haya aceptado la misión y aún no la haya completado. También se pueden config
 lo que significa que los jugadores pueden completarlas varias veces, recibiendo recompensas cada vez que las 
 completen, o seguir intentando acertar la chance de obtener una recompensa específica de una tabla de recompensas.
 
-Al agregar una misión a un diálogo, esto permite seguir agregando nuevos diálogos contiguos en el mismo \textit{NPC}, de 
+Al agregar una misión a un diálogo, se permite seguir agregando nuevos diálogos contiguos en el mismo \textit{NPC}. De 
 esta forma se crea un flujo de progresión de misiones que se van desbloqueando a medida que el jugador avanza en las 
-misiones, lo que permite crear historias más complejas y ramificadas, y esto queda a disposición del creador del 
-mundo pueda decidir como quiere diseñar la experiencia de sus jugadores y también añadiendo una progresión de 
-dificultad en su mundo.
+misiones, lo que permite crear historias más complejas y ramificadas.
 
 
 \begin{figure}[H]
@@ -67,11 +65,9 @@ dificultad en su mundo.
 
 \vspace{0.25cm}
 
-
-Como se nombró en parte antes, para los jugadores, el sistema de diálogos y misiones se presenta a través de la 
+Como se mencionó anteriormente, para los jugadores, el sistema de diálogos y misiones se presenta a través de la 
 interacción con los \textit{NPCs} en el mundo. Cuando un jugador interactúa con un \textit{NPC}, se muestran los mensajes 
 del primer diálogo y si una misión está vinculada a uno de esos mensajes, el jugador puede aceptarla o rechazarla. 
-
 
 \begin{figure}[H]
     \centering
@@ -82,10 +78,10 @@ del primer diálogo y si una misión está vinculada a uno de esos mensajes, el 
 
 
 Si el jugador acepta la misión, esta se agrega a su lista de misiones activas, y el progreso de la misión 
-se muestra el progreso en su pantalla. El jugador puede revisar los detalles de la misión en cualquier 
+se muestra en su pantalla. El jugador puede revisar los detalles de la misión en cualquier 
 momento a través del menú de misiones
 
-Una vez se llega al objetivo de la misión, automáticamente se completa la misión, y el jugador recibe las 
+Una vez se llega al objetivo de la misión, automáticamente se completa la misma, y el jugador recibe las 
 recompensas configuradas. Si el creador tiene más diálogos configurados después de la misión, el jugador 
 puede seguir interactuando con el \textit{NPC} para avanzar en el progreso.
 
