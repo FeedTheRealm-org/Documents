@@ -1,0 +1,99 @@
+Las quests son uno de los pilares del género MMORPG: gran parte de la experiencia de juego gira en torno 
+a ellas, ya que son el principal motor de progresión del jugador dentro del mundo. Juegos icónicos 
+del género como \textit{World of Warcraft} o \textit{RuneScape} deben buenaparte de su identidad 
+precisamente a sus sistemas de quests, que guían al jugador, le dan objetivos concretos y lo 
+recompensan por explorar el mundo.
+
+En esta sección se describen las soluciones implementadas para la gestión de diálogos y misiones en el juego, 
+comenzando con las funcionalidades disponibles para el creador de mundos y luego las funcionalidades para 
+los jugadores.
+
+\vspace{0.25cm}
+
+El sistema de diálogos y misiones está estrechamente integrado. Los diálogos se crean en el editor de mundos,
+que a su vez se componen de una serie de mensajes que se pueden crear y configurar, y quedan agrupados dentro 
+del diálogo. 
+
+De esta forma se crea así el flujo de conversación que luego el jugador verá al interactuar con 
+el \textit{NPC}, ya que estos diálogos una vez creados y configurados, pueden ser asignados a los 
+\textit{NPCs} dentro del mundo, y el progreso de las misiones se muestra a través de los diálogos.
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{img/08-implemented-solution/product/dialog-creation.jpg}
+    \caption{Captura de pantalla del creador de diálogos}
+    \label{fig:dialog-creation}
+\end{figure}
+
+
+Las misiones se crean dentro del editor de misiones, y luego se pueden vincular a los diálogos, específicamente 
+a un mensaje dentro de un dialogo (solo se permite una misión por dialogo). En estas misiones actualmente se puede 
+asignar un objetivo, por el momento solo se ha implementado el objetivo de matar a un número específico de enemigos, 
+o de interactuar con otro \textit{NPC} específico, pero el sistema de misiones está diseñado para ser flexible y 
+permitir la adición de nuevos tipos de objetivos en el futuro. 
+Además, se pueden configurar las recompensas que el jugador recibirá, ya sea un valor en monedas de oro, items 
+específicos o directamente un \textit{loot table} que se ha creado previamente, lo que permite una gran variedad de 
+probabilidad de recompensas. 
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{img/08-implemented-solution/product/quest-creation.jpg}
+    \caption{Captura de pantalla del creador de misiones}
+    \label{fig:quest-creation}
+\end{figure}
+
+
+Una vez creada la misión, y es agregada a un diálogo en el panel, se permite configurar funcionalidades adicionales, 
+como poder agregar un diálogo adicional, con el fin de mostrar el diálogo una vez que el jugador 
+haya aceptado la misión y aún no la haya completado. También se pueden configurar misiones para que se repitan, 
+lo que significa que los jugadores pueden completarlas varias veces, recibiendo recompensas cada vez que las 
+completen, o seguir intentando acertar la chance de obtener una recompensa específica de una tabla de recompensas.
+
+Al agregar una misión a un diálogo, esto permite seguir agregando nuevos diálogos contiguos en el mismo NPC, de 
+esta forma se crea un flujo de progresión de quests que se van desbloqueando a medida que el jugador avanza en las 
+misiones, lo que permite crear historias más complejas y ramificadas, y esto queda a disposición del creador del 
+mundo pueda decidir como quiere diseñar la experiencia de sus jugadores y también añadiendo una progresión de 
+dificultad en su mundo.
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{img/08-implemented-solution/product/quest-npc.jpg}
+    \caption{Captura de pantalla de un NPC con una misión asignada}
+    \label{fig:quest-npc}
+\end{figure}
+
+
+\vspace{0.25cm}
+
+
+Como se nombró en parte antes, para los jugadores, el sistema de diálogos y misiones se presenta a través de la 
+interacción con los \textit{NPCs} en el mundo. Cuando un jugador interactúa con un \textit{NPC}, se muestran los mensajes 
+del primer diálogo y si una misión está vinculada a uno de esos mensajes, el jugador puede aceptarla o rechazarla. 
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{img/08-implemented-solution/product/quest-accept.jpg}
+    \caption{Captura de pantalla de un jugador aceptando una misión}
+    \label{fig:quest-accept}
+\end{figure}
+
+
+Si el jugador acepta la misión, esta se agrega a su lista de misiones activas, y el progreso de la misión 
+se muestra el progreso en su pantalla. El jugador puede revisar los detalles de la misión en cualquier 
+momento a través del menú de misiones
+
+Una vez se llega al objetivo de la misión, automáticamente se completa la misión, y el jugador recibe las 
+recompensas configuradas. Si el creador tiene más diálogos configurados después de la misión, el jugador 
+puede seguir interactuando con el NPC para avanzar en el progreso.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{img/08-implemented-solution/product/quest-completed.jpg}
+    \caption{Captura de pantalla de un jugador completando una misión}
+    \label{fig:quest-completed}
+\end{figure}
+
