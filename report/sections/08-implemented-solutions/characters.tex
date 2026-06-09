@@ -1,17 +1,17 @@
-A continuación se tratará con más detalle el sistema de generación de personajes, que es un componente clave 
-para la creación de mundos dinámicos y brindar la aparencia de un mundo con vida. 
+A continuación se tratará con más detalle el sistema de creacion de personajes, que es un componente fundamental 
+para la experiencia de juego, ya que los personajes ayuda dar vida a los mundos creados, 
+y permiten a los jugadores interactuar con el entorno y con otros personajes dentro del juego.
 
 \vspace{0.25cm}
 
 Este sistema se categoriza en dos tipos principales: los jugadores (\textit{players}) y los \textit{NPCs} 
-(\textit{Non-Playable Character}). Los jugadores son los personajes controlados por los usuarios, 
-mientras que los \textit{NPCs} son personajes que son diseñados por los creadores de mundos.
+(\textit{Non-Playable Characters}). Los primeros son los personajes controlados por los usuarios, mientras que 
+los segundos son diseñados por los creadores de mundos.
 
-Dentro de los \textit{NPCs} se encuentran dos subtipos: los \textit{NPCs} pasivos y los \textit{NPCs} 
-agresivos o enemigos.
+\vspace{0.25cm}
 
-Los \textit{NPCs} pasivos con los que el jugador puede interactuar mediante diálogos. Mientras que 
-los \textit{NPCs} agresivos son personajes hostiles que atacan al jugador.
+A su vez, los \textit{NPCs} se dividen en dos subtipos: los pasivos, con los que el jugador puede interactuar 
+mediante diálogos, y los agresivos o enemigos, personajes hostiles que atacan al jugador.
 
 \paragraph{NPCs Pasivos}
 
@@ -23,7 +23,11 @@ Para esto, se han implementado funcionalidades de personalización de personajes
 creadores configurar la apariencia de todos los \textit{NPCs}, pudiendo elegir entre distintas opciones de 
 ropa, accesorios y colores para cada parte del cuerpo.
 
-\vspace{0.25cm}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/08-implemented-solution/product/npc-editor.jpg}
+  \caption{Opciones de personalización de la apariencia de NPCs en el editor de mundos.}
+\end{figure}
 
 A continuación se muestra una captura de pantalla del editor de mundos para la creación los \textit{NPCs} 
 pasivos. En ellos se pueden configurar sus diálogos, su apariencia, y también se les puede asignar 
