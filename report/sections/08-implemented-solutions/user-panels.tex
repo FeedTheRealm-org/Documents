@@ -59,12 +59,20 @@ entre el menú principal y el juego, y al momento de iniciar el juego se cargan 
 
 \subsubsection{Interfaz del juego}
 
-Una vez dentro del juego, los jugadores tienen acceso a un \textit{HUD} (Heads-Up Display) que les proporciona 
-información esencial sobre su personaje, su entorno y sus interacciones. El HUD incluye elementos como la barra 
-de salud, la barra de energía, sus monedas actuales, el inventario rápido y el seguimiento de misiones.
-Se podrá observar en las imágenes de las demás características mencionadas a continuación.
+Una vez dentro del juego, los jugadores tienen acceso a un \textit{HUD} (Heads-Up Display o Visualizacion 
+de Interfaz en la Pantalla) que les proporciona información esencial sobre su personaje, su entorno y sus interacciones. 
+El \textit{HUD} incluye elementos como la barra de salud, la barra de energía, sus monedas actuales, el 
+inventario de acceso rápido y el seguimiento de misiones. 
 
-Además del HUD, los jugadores pueden acceder a un menú inventario completo, donde pueden organizar su inventario, 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{img/08-implemented-solution/product/hud.jpg}
+    \caption{Captura de pantalla del HUD}
+    \label{fig:hud}
+\end{figure}
+
+
+Además del \textit{HUD}, los jugadores pueden acceder a un menú inventario completo, donde pueden organizar su inventario, 
 equipar armas y consumibles, y revisar las estadísticas de los items.
 
 
@@ -76,3 +84,28 @@ equipar armas y consumibles, y revisar las estadísticas de los items.
 \end{figure}
 
 
+Con respecto a las misiones, los jugadores pueden acceder a un menú de misiones donde pueden revisar las misiones 
+activas, sus objetivos y su progreso. Este menú también proporciona información sobre las misiones completadas, 
+permitiendo a los jugadores mantenerse organizados. Dentro de este menú se puede modificar la lista del seguimiento 
+de misiones, para mostrar solo las misiones que el jugador desea seguir en su HUD.
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{img/08-implemented-solution/product/quest-journal.jpg}
+    \caption{Captura de pantalla del diario de misiones}
+    \label{fig:quest-journal}
+\end{figure}
+
+
+Por último, dentro de los mundos pueden existir estructuras con la particularidad de ser interactuables como tiendas, 
+donde los jugadores pueden comprar items del mundo, utilizando las monedas de oro que pueden obtenerse en el mundo, 
+y también si el creador del mundo lo ha configurado, pueden comprar cosméticos utilizando gemas.
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{img/08-implemented-solution/product/shop.jpg}
+    \caption{Captura de pantalla de la tienda}
+    \label{fig:shop}
+\end{figure}
