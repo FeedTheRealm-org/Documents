@@ -27,3 +27,11 @@ o en el proyecto de juego, si dicha funcionalidad requiere modificar el \textit{
 responsabilidad del desarrollador verificar que los cambios introducidos no generen efectos secundarios
 ni rompan la compilación del otro proyecto. Esto implica validar ambos proyectos Unity ante cualquier
 modificación en los DTOs o servicios compartidos antes de integrar los cambios.
+
+\subsubsection{Caché de recursos compartidos}
+Una de las funcionalidades implementadas en el \textit{Shared Package} es un sistema de caché de recursos, 
+que optimiza la carga de aquellos compartidos entre el editor y el juego. Por el momento, solo se utiliza 
+para recursos relacionados con los cosméticos. En el caso del juego, para evitar demoras en la carga de las 
+zonas al acceder, se cachean los modelos 3D; de esta forma, en entradas posteriores al mundo se cargan 
+directamente desde la caché, evitando llamadas innecesarias al \textit{Core Service}.
+
