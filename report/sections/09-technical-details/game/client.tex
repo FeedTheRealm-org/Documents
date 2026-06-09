@@ -49,7 +49,7 @@ experiencia de juego.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=1\textwidth]{img/08-implemented-solution/game/client-init.jpg}
+\includegraphics[width=1\textwidth]{img/09-technical-details/game/client-init.jpg}
 \caption{Visión general del flujo de inicialización del cliente.}
 \end{figure}
 
@@ -83,10 +83,6 @@ y el cliente solo se encarga de representar y ejecutar lo que el servidor le ind
 El módulo de \textit{UI} del cliente es la capa que entrega toda la experiencia visual e interactiva del jugador 
 fuera de la simulación de jugabilidad. Su función es presentar información, opciones y controles al 
 usuario, y traducir las acciones de la interfaz en eventos que el resto del cliente consume.
-
-Esto incluye elementos que visualizan el estado del juego, como barras de salud, inventario, 
-menús de misiones, diálogos, etc. También está involucrado todo el flujo de navegación como el menú principal, 
-selección de mundo, y el contenido gráfico interactuable o no dentro de la escena.
 
 Se integra con el resto del cliente mediante eventos y controladores de cada elemento de \textit{UI}. De esta forma, 
 al tener la \textit{UI} en su propio módulo, el cliente puede cambiar la presentación sin modificar la lógica de 

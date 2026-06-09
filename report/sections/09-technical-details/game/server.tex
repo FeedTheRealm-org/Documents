@@ -95,52 +95,6 @@ Para que estos sistemas puedan comunicarse y compartir el estado de la entidad, 
 \textit{State Storage}. En el caso de los jugadores, el \textit{CharacterStateStorage} centraliza toda la información relevante de la entidad
 posición, dirección de movimiento, salud, stamina, ítem equipado, entre otros, y es la única fuente de verdad sobre su estado.
 
-\paragraph{Networked Objects}
-A continuación se describen los distintos tipos de objetos de red que componen el mundo del juego.
-\begin{itemize}
-    \item \textbf{Jugador (\textit{Player})}:
-    representa a un usuario conectado en el mundo. Es la entidad principal del juego, este puede moverse, interactuar con otros objetos, 
-    equipar ítems, completar quests y acumular recursos.
-
-    \item \textbf{NPC Pasivo (\textit{Passive NPC})}: personaje no jugador presente en el
-    mundo con el que el jugador puede iniciar una conversación al acercarse. Gestiona
-    sesiones de diálogo individuales por jugador, avanzando por una secuencia de mensajes
-    que varía según el estado de las quests activas de quien interactúa. Cuando no está siendo interactuado,
-    el NPC deambula de forma autónoma por un área definida alrededor de su punto de aparición, utilizando el sistema
-    de navegación de Unity (\textit{NavMesh}).
-
-    \item \textbf{NPC Agresivo (\textit{Aggressive NPC})}: enemigo controlado por el
-    servidor cuyo comportamiento está gobernado por una máquina de estados con tres modos:
-    inactivo, deambulación y persecución. Cuando está deambulando se comporta de forma
-    similar al NPC pasivo, pero cuando un jugador entra
-    en su zona de detección, el NPC entra en modo persecución y recalcula su ruta hacia el
-    jugador periódicamente y lo sigue hasta alcanzar su rango de ataque, que depende del
-    arma que tenga equipada. Si el jugador abandona el área de detección, el NPC regresa
-    al estado de reposo. Al ser derrotado, puede generar ítems de \textit{loot} en el mundo.
-
-
-    \item \textbf{Bolsa de loot (\textit{Loot Bag})}: objeto que aparece en el mundo al derrotar un enemigo o como recompensa 
-    de abrir un cofre. Contiene un ítem o una cantidad de oro que el jugador puede recoger al acercarse. Su posición, tipo de ítem
-    y cantidad están sincronizados con todos los clientes. Una vez recogido, el objeto desaparece del mundo. En caso de no ser
-    recogido en un tiempo determinado, el servidor lo elimina automáticamente mediante el \texttt{Entity Reaper}, que se encarga de
-    limpiar el mundo de entidades obsoletas o sin interacción durante un período prolongado.
-
-    \item \textbf{Portal}: punto de interacción fijo en el mundo que permite al jugador viajar a otra zona.
-    Al interactuar con él, el servidor valida que el jugador esté dentro del rango permitido y le envía un evento de
-    confirmación con el nombre del destino. Si el jugador acepta, se inicia el proceso de teletransportación. Los destinos pueden
-    ser una posición en la misma zona o una zona completamente diferente, lo que implica que el cliente debe desconectarse 
-    del servidor actual y conectarse al nuevo servidor que hospeda la zona de destino.
-
-    \item \textbf{Cofre (\textit{Chest})}: contenedor interactuable ubicado en el mundo que guarda ítems o recompensas.
-    Tiene dos estados posibles:
-    \begin{itemize}
-        \item \textbf{Cerrado}: cualquier jugador puede acercarse y abrirlo para recibir sus recompensas.
-            El servidor procesa la interacción, entrega el contenido al jugador y actualiza el estado del cofre a abierto.
-        \item \textbf{Abierto}: una vez abierto, el cofre no puede ser interactuado hasta ser reseteado 
-            luego de un determinado periodo de tiempo configurado por el creador del mundo.
-    \end{itemize}
-\end{itemize}
-
 \paragraph{Player Persistence}
 La persistencia del jugador es el mecanismo por el cual el estado de un jugador (inventario, oro, posición y progreso de quests) se conserva
 en la base de datos y se restaura cada vez que el jugador se conecta a una zona.
@@ -153,29 +107,7 @@ jugador no tiene datos previos (primera vez que juega), se inicializa con valore
 \vspace{0.25cm}
 
 Durante la sesión, los guardados ocurren en dos modalidades: de forma \textbf{reactiva}, cuando ocurre un cambio relevante (el jugador recoge un ítem,
-gasta oro o avanza en una quest, el cambio se persiste inmediatamente); y de forma \textbf{periódica}, mediante un guardado automático que se ejecuta
+gasta oro o avanza en una quest o la completa, el cambio se persiste inmediatamente); y de forma \textbf{periódica}, mediante un guardado automático que se ejecuta
 cada cierto intervalo de tiempo configurable. Al desconectarse, se realiza un guardado final de todos los datos para garantizar que ningún
 progreso reciente se pierda.
-
-\paragraph{Quest Progression}
-% TODO(reference)
-Las quests son uno de los pilares del género MMORPG: gran parte de la experiencia de juego gira en torno a ellas, ya que son el principal
-motor de progresión del jugador dentro del mundo. Juegos icónicos del género como \textit{World of Warcraft} o \textit{RuneScape} deben buena
-parte de su identidad precisamente a sus sistemas de quests, que guían al jugador, le dan objetivos concretos y lo recompensan por explorar el
-mundo.
-
-\vspace{0.25cm}
-
-En \textit{Feed the Realm}, cada jugador tiene un \texttt{QuestSystem} propio que mantiene dos listas: las quests activas, con su progreso
-actual, y las quests completadas. Las quests se obtienen mediante la interacción con NPCs pasivos, cuyo diálogo varía según el estado de las
-quests del jugador. Actualmente el sistema soporta dos tipos de objetivos: eliminar una cantidad determinada de enemigos (\textit{EnemySlays})
-e interactuar con un NPC específico (\textit{NpcInteract}). 
-
-\vspace{0.25cm}
-
-El progreso se actualiza de forma \textbf{reactiva}, cuando el jugador mata un enemigo o interactúa con un NPC.
-Al alcanzar el objetivo, la quest se marca como completada y se otorgan las recompensas
-definidas, que pueden ser oro, un ítem específico o ítems aleatorios extraídos de una tabla de loot con probabilidades configurables. 
-Cada cambio de progreso se persiste inmediatamente en la base de datos, garantizando que el avance del jugador no se pierda ante cualquier
-interrupción.
 
