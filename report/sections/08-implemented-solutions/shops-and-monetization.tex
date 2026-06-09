@@ -41,20 +41,38 @@ jugadores obtienen mediante la compra de \textit{packs} de gemas en el juego.
 De esta manera, los cosméticos constituyen un elemento clave para la monetización del mundo, ya que permiten a los 
 creadores venderlos a cambio de gemas y, posteriormente, convertir esas gemas en dinero real.
 
+\paragraph{Publicar Mundos}
+Una vez que el creador ha diseñado su mundo, puede publicarlo para que otros jugadores lo exploren. Para ello solo 
+debe seleccionar qué zonas desea publicar. Luego de la primera publicación, tiene además la opción de publicar 
+únicamente cambios parciales, como el nombre del mundo, sus objetos no colocables o una zona en particular por 
+separado. El creador puede actualizar su mundo cuando lo desee, lo que le permite iterar y mejorar la experiencia 
+de juego con el tiempo.
+
+\vspace{0.25cm}
+
+Tras publicar el mundo, el creador debe dirigirse al panel de suscripciones para activar las zonas. Según la 
+cantidad de zonas activas, un mundo puede encontrarse en tres estados:
+
+\begin{itemize}
+  \item \textbf{\textit{Online}}: el mundo está publicado y todas sus zonas están activas, por lo que los jugadores 
+  pueden acceder a él sin restricciones.
+  \item \textbf{\textit{Offline}}: el mundo está publicado pero inactivo, por lo que los jugadores no pueden 
+  acceder a él.
+  \item \textbf{\textit{Degraded}}: solo una parte de las zonas del mundo están activas, por lo que los jugadores 
+  pueden acceder a él, aunque con limitaciones.
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{img/08-implemented-solution/product/publish.jpg}
+\caption{Captura del proceso de publicación de un mundo.}
+\label{fig:publish}
+\end{figure}
+
 \subsubsection{Monetización para creadores}
 
 El creador de mundos cuenta con paneles de gestión económica destinados a los creadores de mundos, que centralizan
 el seguimiento de sus mundos publicados. Desde esta sección, el creador puede visualizar el
 estado de cada mundo publicado, ver la fecha de renovación de su período de suscripción y
-administrar sus publicaciones.
-\vspace{0.25cm}
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=\textwidth]{img/08-implemented-solution/world-editor/subscriptions.jpg}
-\caption{Panel de suscripciones.}
-\label{fig:subscriptions}
-\end{figure}
-
-Adicionalmente, existe un panel de ingresos que permite a los creadores recaudar las
+administrar sus publicaciones. Adicionalmente, los creadores tienen un panel de ingresos que permite a los creadores recaudar las
 ganancias generadas en sus mundos.
