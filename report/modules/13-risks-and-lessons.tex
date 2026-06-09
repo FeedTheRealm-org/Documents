@@ -23,18 +23,32 @@ es tener claras las decisiones a tomar en caso de que alguno de estos riesgos se
 \caption{Tabla resumen de los riesgos identificados inicialmente (2/2)}
 \end{figure}
 
-
 \begin{figure}[H]
 \centering
 \includegraphics[width=1\textwidth]{img/13-risks-and-lessons/new-risks.jpg}
 \caption{Tabla resumen de los nuevos riesgos detectados durante el desarrollo}
 \end{figure}
 
-\vspace{0.25cm}
 
 A lo largo del proyecto se materializaron algunos riesgos que, gracias a la buena organización del equipo, 
-pudieron preverse en su mayoría, permitiendo tomar medidas de mitigación oportunas. Estos riesgos estuvieron 
-vinculados principalmente a cuestiones técnicas y a la falta de experiencia con algunas herramientas.
+pudieron preverse en su mayoría, permitiendo tomar medidas de mitigación oportunas o alternativas sin restar valor.
+Estos riesgos estuvieron vinculados principalmente a cuestiones técnicas y a la falta de experiencia con algunas herramientas.
+
+\vspace{0.25cm}
+
+En la figura anterior que contiene los nuevos riesgos detectados, se marca en rojo los materializados.
+
+El primero de los mismos trata sobre optimización del servidor, este problema surgió durante la prueba con jugadores externos
+y cargando el servidor en el que estaban al $100\%$ de su capacidad. Esto se detalla en la sección de Pruebas de carga, pero
+a modo de resumen, el riesgo fue mitigado realizando ciertas optimizaciones.
+
+El segundo riesgo materializado habla de la incapacidad del sistema de realizar pagos a los creadores de contenido. Este riesgo
+se aceptó, proponiendo como solución provisoria lo mencionado como plan de contingencia en la tabla.
+
+Finalmente, un riesgo materializado importante fue la imposibilidad de importar cualquier tipo de textura 3D personalizada
+al creador de mundos, esto se debió a trabas impuestas por las herramientas proporcionadas por Unity. Dicho riesgo
+se aceptó y se buscó una alternativa funcional y que no afecta negativamente a la experiencia de juego, la misma consistió
+en acotar el rango de diferentes formatos aceptados a tan solo uno que contiene texturas embebidas.
 
 \subsection{Retrospectiva del proyecto}
 
