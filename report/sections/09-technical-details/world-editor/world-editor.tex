@@ -3,6 +3,22 @@ Está construido como un cliente de Unity que se comunica con el \textit{Core Se
 El editor permite a los jugadores crear nuevos mundos,
 modificar la configuración de zonas existentes, gestionar \textit{assets}, publicar y mediante una subscripción activar dichos mundos.
 
+\subsubsection{Importación de modelos 3D}
+Una de las funcionalidades centrales del editor es la capacidad de importar modelos 3D
+personalizados por los creadores. Sin embargo, Unity no permite instanciar modelos 3D
+en tiempo de ejecución a partir de archivos externos, ya que sus mecanismos de carga de
+recursos están pensados para activos conocidos en tiempo de compilación. Para resolver
+esta limitación se optó por la librería GLTFast, que permite importar modelos en formato
+\texttt{.glb} de forma dinámica durante la ejecución.
+
+\vspace{0.25cm}
+
+El formato \texttt{.glb} es un formato abierto y ampliamente soportado para la
+representación de escenas 3D, con la ventaja de contener tanto la geometría del modelo
+como sus texturas y materiales en un único archivo, lo que simplifica el proceso de
+importación y la gestión de recursos. GLTFast se utiliza no solo en el editor de mundos,
+sino también en el cliente del juego, que descarga los modelos desde el Core Service.
+
 
 \subsubsection{Gestión de Mundos}
 
@@ -68,3 +84,10 @@ se inicia una secuencia de carga hacia el \textit{Core Service} que sigue el sig
 
 Luego que el mundo es publicado, este debe ser activado mediante el panel de economía, lo cual requiere una cierta cantidad de \textit{slots}
 igual a la cantidad de zonas que se quieran desplegar y estos se obtienen a partir de suscripciones.
+
+\vspace{0.25cm}
+
+Una optimización importante del proceso de publicación es evitar la recarga de recursos
+que ya se encuentran en el servidor. Esto se logra omitiendo tanto los recursos que
+forman parte del conjunto de \textit{assets} predeterminados del sistema como los modelos
+3D personalizados que ya hayan sido subidos en publicaciones anteriores.
