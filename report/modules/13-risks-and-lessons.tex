@@ -23,18 +23,32 @@ es tener claras las decisiones a tomar en caso de que alguno de estos riesgos se
 \caption{Tabla resumen de los riesgos identificados inicialmente (2/2)}
 \end{figure}
 
-
 \begin{figure}[H]
 \centering
 \includegraphics[width=1\textwidth]{img/13-risks-and-lessons/new-risks.jpg}
 \caption{Tabla resumen de los nuevos riesgos detectados durante el desarrollo}
 \end{figure}
 
-\vspace{0.25cm}
 
 A lo largo del proyecto se materializaron algunos riesgos que, gracias a la buena organización del equipo, 
-pudieron preverse en su mayoría, permitiendo tomar medidas de mitigación oportunas. Estos riesgos estuvieron 
-vinculados principalmente a cuestiones técnicas y a la falta de experiencia con algunas herramientas.
+pudieron preverse en su mayoría, permitiendo tomar medidas de mitigación oportunas o alternativas sin restar valor.
+Estos riesgos estuvieron vinculados principalmente a cuestiones técnicas y a la falta de experiencia con algunas herramientas.
+
+\vspace{0.25cm}
+
+En la figura anterior que contiene los nuevos riesgos detectados, se marca en rojo los materializados.
+
+El primero de los mismos trata sobre optimización del servidor, este problema surgió durante la prueba con jugadores externos
+y cargando el servidor en el que estaban al $100\%$ de su capacidad. Esto se detalla en la sección de Pruebas de carga, pero
+a modo de resumen, el riesgo fue mitigado realizando ciertas optimizaciones.
+
+El segundo riesgo materializado habla de la incapacidad del sistema de realizar pagos a los creadores de contenido. Este riesgo
+se aceptó, proponiendo como solución provisoria lo mencionado como plan de contingencia en la tabla.
+
+Finalmente, un riesgo materializado importante fue la imposibilidad de importar cualquier tipo de textura 3D personalizada
+al creador de mundos, esto se debió a trabas impuestas por las herramientas proporcionadas por Unity. Dicho riesgo
+se aceptó y se buscó una alternativa funcional y que no afecta negativamente a la experiencia de juego, la misma consistió
+en acotar el rango de diferentes formatos aceptados a tan solo uno que contiene texturas embebidas.
 
 \subsection{Retrospectiva del proyecto}
 
@@ -49,12 +63,12 @@ parte del equipo. A su vez hubo riesgos no previstos que se lograron mitigar a t
 El equipo tomó la determinación de desarrollar diferentes partes de forma aislada, dado que con la
 idea de que cada parte tenga un \textit{owner} y un \textit{co-owner}. El tutor dio advertencia a tiempo sobre 
 esta práctica y se logró rectificarla. Sin embargo, en el inconsciente colectivo del equipo esta idea de mantener \textit{owner} 
-y \textit{co-owner} en cada uno de los repositorios seguía presente y se materializo en la contribución a cada uno de ellos.
+y \textit{co-owner} en cada uno de los repositorios seguía presente y se materializó en la contribución a cada uno de ellos.
 
 \vspace{0.25cm}
 
 Las desventajas de separar cada repositorio entre un \textit{owner} y un \textit{co-owner}, es que desalienta el 
-\textit{colective ownership} del proyecto completo y crea una necesidad de comunicación mas extendida entre los miembros 
+\textit{colective ownership} del proyecto completo y crea una necesidad de comunicación más extendida entre los miembros 
 del equipo. Pero dada la frecuencia de reuniones entre los miembros del equipo, el conocimiento de prácticamente todas 
 las partes del código es casi total, para cada uno de los miembros del equipo.
 
@@ -68,20 +82,20 @@ cambios en ellas.
 
 \vspace{0.25cm}
 
-Eso tornó poco practico el proceso de revisión y pruebas de las partes del código, ya que de realizar cambios solo o el 
-\textit{game} o el \textit{editor}. No solo habría que probarlo en el repositorio afectado, sino que también en el otro. 
-Añadiendo mas trabajo al proceso de revisión y a quien realizo los cambios, para que tenga que arreglar los \textit{bugs} 
+Eso tornó poco práctico el proceso de revisión y pruebas de las partes del código, ya que de realizar cambios solo en el 
+\textit{game} o en el \textit{editor}, no solo habría que probarlo en el repositorio afectado, sino que también en el otro. 
+Añadiendo más trabajo al proceso de revisión y a quien realizo los cambios, para que tenga que arreglar los \textit{bugs} 
 introducidos.
 
 \vspace{0.25cm}
 
-En retrosptiva, se puede decir que el trabajo hubiera sido más fácil sin la existencia de este tercer repositorio y 
-se podría reemplazar con una libreria propia solo para comunicación del \textit{core-service} y testeado contra el mismo o 
+En retrospectiva, se puede decir que el trabajo hubiera sido más fácil sin la existencia de este tercer repositorio y 
+se podría reemplazar con una librería propia solo para comunicación del \textit{core-service} y testeado contra el mismo o 
 directamente sin este tercer repositorio. A su vez, no se puede dudar de la practicidad y versatilidad de la herramienta de 
 control de versiones \textit{git}. Como equipo, se concluyó que \textit{git} no es del todo compatible con \textit{Unity}, 
-dado que el motor genera archivos de metadatos binarios que, ante la aparición de conflictos, resultan difíciles de resolver 
+dado que el motor genera archivos de metadatos que, ante la aparición de conflictos, resultan difíciles de resolver 
 manualmente. El equipo cometió algunas imprudencias propias de la metodología elegida de revisión de contribuciones, que llevo a conflictos 
-mal resueltos, que luego se tradujeron en \textit{bugs}. O a sin querer omitir la subidad de estos archivos importantes.
+mal resueltos, que luego se tradujeron en \textit{bugs}.
 
 \vspace{0.25cm}
 
@@ -92,11 +106,11 @@ los distintos componentes del proyecto.
 
 \vspace{0.25cm}
 
-Esto es grave, por al conectar las diferentes partes del mismo, se presentaban \textit{bugs} y una desconexion total, lo 
+Esto es grave, porque al conectar las diferentes partes del mismo, se presentaban \textit{bugs} y una desconexión total, lo 
 que ponía en riesgo la realización del proyecto en sí. Este riesgo hubiese sido mitigado de forma total, si el grupo hubiera 
 puesto en práctica el concepto del \textit{walking skeleton}. El mismo aparece mencionado en libro: 
 \textit{Growing Object-Oriented Software, guided by Tests} de \textit{Steve Freeman} y \textit{Nat Pryce}, pero en realidad 
-fue presentada por primera vez por \textit{Alistair Cockburn}, en su libro: \textit{Crystal Clear: A Human-Powered 
+fue presentado por primera vez por \textit{Alistair Cockburn}, en su libro: \textit{Crystal Clear: A Human-Powered 
 Methodology for Small Teams (Cockburn, 2005, p. 49)}.
 
 \vspace{0.25cm}
@@ -105,19 +119,20 @@ El concepto \textit{walking skeleton}, de acuerdo con el primer libro, consiste 
 posible, que pueda ser automaticamente construida, deployeada y testeada de punta a punta" (Freeman & Pryce, 2010, p. 32)}. 
 Si bien este concepto, esta pensado para realizar entrega rápida y continua de producto y está enmarcado en contexto de 
 realizar fácilmente \textit{Test Driven-Development} (TDD). Esta práctica de realizar una implementacion mínima de punta 
-a punta, hubiese facilitado y mitagado muchos riesgos de funcionalidad. Es el ejemplo de como buenas prácticas metodológicas 
+a punta, hubiese facilitado y mitagado muchos riesgos de funcionalidad. Este es el ejemplo de cómo buenas prácticas metodológicas 
 y organizativas, pueden llevar a buenas prácticas funcionales.
 
 \vspace{0.25cm}
 
 Por otro lado, el equipo presento como un riesgo el colapso de la economía o la aparición de fraudes dentro del juego. Si
-bien esto es un riesgo, y desde el equipo se presentó la posibilidad de realizar un modelo económico. Por el riesgo mayor
-que presentaba las decisiones arquitectónicas y la falta de cohesion entre los diferentes componentes del proyecto, se 
-decidió darle mas prioridad a este riesgo, que al modelo económico. Finalmente, se recorto el alcance del mismo a un modelo 
-económico-financiero para analizar la viabilidad del proyecto y la puesta en marcha del proyecto, a través de
+bien esto es un riesgo, y desde el equipo se presentó la posibilidad de realizar un modelo económico que lo mitigue, por el riesgo mayor
+que presentaba las decisiones arquitectónicas y la falta de cohesión entre los diferentes componentes del proyecto, se 
+decidió darle más prioridad a este último, que al modelo económico.
+
+Finalmente, se recortó el alcance del mismo a un modelo 
+económico-financiero para analizar la viabilidad del proyecto y la puesta en marcha del mismo, a través de
 inversiones semilla o inversores ángeles. Es decir, que la parte de modelado, análisis y detección de fraude queda para 
 trabajo futuro.
-
 
 \subsection{Lecciones aprendidas}
 
@@ -126,38 +141,37 @@ A continuación se mencionan cuales fueron las lecciones aprendidas por todos lo
 \vspace{0.25cm}
 
 \textbf{\underline{Comunicación}}: Si bien no hubo mucha interacción entre los miembros del equipo, en la primera parte 
-del proyecto y muchos presentaron agotamiento y/o cansancion de mantener reuniones 3 veces por semana. La comunicación
-resultó ser el pilar fundamental para sobrellevar el proyecto en la segunda parte del mismo, estan no solo mantuvo la
-moral alta del equipo en momentos de tensión. Permitió el conocimiento total de cada parte del proyecto por cada miembro,
+del proyecto y muchos presentaron agotamiento y/o cansancio de mantener reuniones 3 veces por semana. La comunicación
+resultó ser el pilar fundamental para sobrellevar el proyecto en la segunda parte del mismo, esto no solo mantuvo la
+moral alta del equipo en momentos de tensión, sino que permitió el conocimiento total de cada parte del proyecto por cada miembro,
 compartir y delegar tareas entre todos los miembros. Es importante destacar que la comunicación no solo fue mantenida cara
 a cara, sino que a través de chats de \textit{WhatsApp} de forma grupal y uno a uno entre todos.
 
 \vspace{0.25cm}
 
-\textbf{\underline{Planificación, organización y coordinación}}: El equipo logró llevar el estado al proyecto actual, 
+\textbf{\underline{Planificación, organización y coordinación}}: El equipo logró llevar el proyecto al estado actual, 
 a pesar de no estar muy activo en la primera parte. Gracias una correcta planificación de cada una de las decisiones que 
-se fueron tomando, las decisiones no fueron solo de implementacion, sino también de diseño. El hecho de que el equipo se haya
+se fueron tomando, las decisiones no fueron solo de implementación, sino también de diseño. El hecho de que el equipo se haya
 organizado y coordinado a través de herramientas colaborativas como \textit{Miro} o \textit{Excalidraw}, no solo para pensar 
-en como resolver el problema, sino para preever casos borde y posibles deficiencias en cada decision, llevo a lograr de 
+en como resolver el problema, sino para prever casos bordes y posibles deficiencias en cada decisión, llevó a concluir de 
 forma exitosa el MVP, a pesar de los contratiempos.
 
 \vspace{0.25cm}
 
-\textbf{\underline{Sobreestimacion y subestimacion de las tareas}}: El hecho de que la mayor cantidad de las tareas haya sido 
-subestimadas y algunas de ellas sobreestimadas. Llevo a varios recortes de funcionalidades y de alcances del mismo. 
-Esto se debe a que, como se comentó antes, el equipo estaba altamente motivado por el proyecto. Sin embargo, no esperaba 
-las consecuencias de una reducción de actividad y un alto aislamiento en la primera parte del proyecto. Esto lleva a 
-considerar, que el proceso creativo es importante, pero tambien en que hacer todo no es posible y hubiese sido necesario revisar 
-de forma mas frecuente cada una de las funcionalidades.
+\textbf{\underline{Sobreestimación y subestimación de las tareas}}: El hecho de que la mayoría de las tareas hayan sido subestimadas,
+mientras que otras fueron sobreestimadas, derivó en la necesidad de realizar diversos recortes tanto en funcionalidades como en el
+alcance del proyecto. Esta experiencia pone de manifiesto la importancia del proceso creativo,
+pero también la necesidad de reconocer las limitaciones existentes. En retrospectiva, habría sido conveniente realizar revisiones
+más frecuentes de las funcionalidades planificadas para ajustar expectativas, prioridades y alcances de manera oportuna.
 
 \vspace{0.25cm}
 
-\textbf{\underline{Impacto de las decisiones de diseño e implementacion}}: Las decisiones son el medidor del éxito de un 
-proyecto, aqui aparece un contraste interesante. Desde el equipo, se planificaron las decisiones de diseño 
-mitigando casos borde y posibles \textit{bugs}. Pero a la hora de la verdad, es decir la implementacion, se encontró dificultades 
+\textbf{\underline{Impacto de las decisiones de diseño e implementación}}: Las decisiones son el medidor del éxito de un 
+proyecto, aquí aparece un contraste interesante. Desde el equipo, se planificaron las decisiones de diseño 
+mitigando casos bordes y posibles \textit{bugs}. Pero a la hora de la verdad, es decir la implementación, se encontró dificultades 
 por no saber como desarrollar ciertas partes, como el editor de mundos o el despliegue en servidores. Esto llevó a realizar
-\textit{refactors} de alguna partes del código, algunas incluso varias veces. Algunas fueron resueltas de manera colectiva, otras 
-gracias al tutor. Se cree que lo importante para mitigar esto en futuros proyectos, es a través de colaboración 
-colectiva, un aprendizaje mayor de la herramientas e investigación de las mismas, antes de un dirigirse directamente a 
+\textit{refactors} de alguna partes del código, incluso en casos específicos varias veces. Algunas fueron resueltas de manera colectiva, otras 
+gracias a las sugerencias tutor. Se cree que lo importante para mitigar esto en futuros proyectos, es a través de la colaboración 
+colectiva, un aprendizaje mayor de las herramientas e investigación de las mismas, antes de un dirigirse directamente a 
 implementar.
 
