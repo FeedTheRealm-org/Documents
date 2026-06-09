@@ -9,7 +9,7 @@ por explorar el mundo.
 En esta sección se describen las soluciones implementadas para la gestión de diálogos y misiones, comenzando por 
 cómo un creador puede implementarlas en su mundo y, luego, cómo se presentan a los jugadores dentro del juego.
 
-\paragraph{Diálogos}
+\subsubsection{Diálogos}
 Los diálogos son la forma principal de interacción entre los jugadores y los \textit{NPCs} pasivos del juego, 
 y son el medio a través del cual se presentan las misiones.
 
@@ -24,7 +24,7 @@ y configurar si el diálogo agregado queda asociado a una misión.
     \label{fig:dialog-creation}
 \end{figure}
 
-\paragraph{Misiones}
+\subsubsection{Misiones}
 Las misiones son tareas que los jugadores pueden aceptar y completar dentro del juego. Por el momento se ofrecen 
 solo dos tipos de objetivos: matar un número específico de enemigos o interactuar con otro \textit{NPC} específico, 
 aunque el sistema de misiones está diseñado para ser flexible y permitir la incorporación de nuevos tipos de objetivos 
@@ -42,7 +42,7 @@ de opciones.
 Una vez creada una misión, el creador puede vincularla a un diálogo específico, de modo que el jugador pueda 
 aceptarla o rechazarla al interactuar con el \textit{NPC} asociado a ese diálogo.
 
-\paragraph{Progresión de misiones}
+\subsubsection{Progresión de misiones}
 Una funcionalidad interesante que se ha implementado es la posibilidad de crear una progresión de misiones a través 
 de los diálogos. Esto se logra al permitir agregar nuevos diálogos contiguos a un mismo \textit{NPC} después de haber 
 añadido una misión a uno de sus diálogos. De esta forma, el creador puede diseñar una experiencia de juego más compleja 
