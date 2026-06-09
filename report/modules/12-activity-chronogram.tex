@@ -54,18 +54,20 @@ de diálogos con NPCs. En el editor se habilitó la configuración de spawners d
 NPCs, tablas de botín y precios de ítems en oro y gemas. A nivel técnico, se migró el servidor dedicado 
 de NetCode a Mirror y se refactorizó la arquitectura del editor de mundos, reemplazando el sistema de 
 grillas por un sistema de colocación libre de objetos, mejorando significativamente la flexibilidad 
-y mantenibilidad del proyecto. También se creó la landing page del proyecto, con información general 
-del proyecto, un blog del desarrollo y links a las redes sociales.
+y mantenibilidad. También se creó la landing page del proyecto, con información general,
+un blog del desarrollo y links a las redes sociales.
 
 \subsection{v0.4.0: 06 de marzo, 2026}
 
 Durante esta versión no se logró completar el backlog planificado debido a compromisos académicos 
 externos que el equipo debió atender, principalmente la preparación de exámenes finales de materias pendientes.
-Lo unico que se logro resolver era arreglar bugs en el editor de mundos.
+Lo único que se logró resolver fue arreglar bugs en el editor de mundos, y completar refactorizaciones en el servidor
+de juego.
 
 \subsection{v0.5.0: 06 de abril, 2026}
 
-Versión dedicada principalmente a la estabilización y refactorización de los sistemas existentes. 
+Versión dedicada principalmente a la estabilización y refactorización de los sistemas existentes adaptandolos
+a la nueva implementación del servidor.
 Se reestructuraron los módulos de salud, ataque, dash, stamina, inventario, botín, spawners y diálogos. 
 Se integró Nomad para el despliegue dinámico de servidores y Datadog para la observabilidad del sistema. 
 Se incorporaron portales para el viaje entre zonas, la tienda de gemas con método de pago y la 
@@ -76,28 +78,22 @@ inteligencia artificial de enemigos con comportamiento de persecución y ataque.
 Por primera vez, los creadores pudieron diseñar mundos con múltiples zonas ejecutándose en servidores independientes, 
 habilitando mundos de escala ilimitada. También se implementó la lógica de bots para pruebas de carga 
 masivas, complementada con la integración de Datadog para la recolección de métricas durante dichas pruebas. 
-Esta versión marcó un hito al realizarse la primera demo con personas externas al equipo, cuyo feedback 
-resultó valioso para definir las funcionalidades prioritarias del MVP.
 
-\subsection{v0.6.0: 11 de mayo, 2026}
+\subsection{v0.6.0: 10 de mayo, 2026}
 
 Versión avanzada orientada a completar las funcionalidades del producto mínimo viable. Se implementó el 
 sistema de cosméticos con inventario global, la persistencia del personaje entre sesiones, el chat 
 flotante en multijugador y los nametags sobre los personajes. Se incorporaron cofres, rampas, cambio 
 de material de suelo y cielo, música ambiental y efectos de sonido. 
 
-\vspace{0.25cm}
-
 A nivel económico, se completó el sistema de suscripciones, transferencias a creadores y compra de 
-cosméticos con gemas. Se incorporó el Back Office para que los administradores puedan gestionar mundos, 
-cuentas de usuarios y contenido de la plataforma. La landing page fue actualizada para incluir 
-la descarga del cliente de juego y el editor de mundos. 
+cosméticos con gemas.
 
 \vspace{0.25cm}
 
-En infraestructura, se realizaron pruebas iniciales de carga con bots, se configuró MongoDB 
-y se finalizó la integración con Nomad mediante HTTPS y dominio propio. Esta versión marcó el punto 
-en que el proyecto comenzó a percibirse como un producto consolidado, lo que impactó positivamente 
+Esta versión marcó un hito al realizarse la primera demo con personas externas al equipo, cuyo feedback 
+resultó valioso para definir las funcionalidades prioritarias del MVP.
+También marcó el punto en que el proyecto comenzó a percibirse como un producto consolidado, lo que impactó positivamente 
 en la motivación del equipo para llevar el MVP a su estado final.
 
 \subsection{v0.7.0: 05 de junio, 2026}
@@ -105,6 +101,10 @@ en la motivación del equipo para llevar el MVP a su estado final.
 Versión de cierre del proyecto, orientada a la corrección de bugs, ajustes finales y mejoras de 
 calidad de vida (\textit{Quality of Life}). Se integró pruebas unitarias, de integración y de aceptación
 en el core service con el fin de aumentar la cobertura de pruebas y mejorar la estabilidad del sistema. 
+
+Se incorporó el Back Office para que los administradores puedan gestionar mundos, 
+cuentas de usuarios y contenido de la plataforma. La landing page fue actualizada para incluir 
+la descarga del cliente de juego y el editor de mundos.
 
 \vspace{0.25cm}
 
