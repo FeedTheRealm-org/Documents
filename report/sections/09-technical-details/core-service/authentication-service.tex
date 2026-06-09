@@ -25,8 +25,7 @@ email y su contraseña. Una vez creada su cuenta, a continuación se le envía u
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.55\textwidth]{img/09-technical-details/core-service/auth-service-case-1.jpg}
-    \caption{Diagrama de secuencia del flujo de registro}
-    \label{fig:auth-service-case-1}
+    \caption{Diagrama de secuencia del flujo de registro.}    \label{fig:auth-service-case-1}
 \end{figure}
 
 La verificación se realiza mediante \texttt{POST /auth/verify}, y el código se puede regenerar con 
@@ -60,8 +59,7 @@ cuenta registrada, se genera un código OTP (\textit{One-Time Password}) y se en
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.65\textwidth]{img/09-technical-details/core-service/auth-service-case-2.jpg}
-    \caption{Diagrama de secuencia del recuepero de contraseña}
-    \label{fig:auth-service-case-2}
+    \caption{Diagrama de secuencia del recuepero de contraseña.}    \label{fig:auth-service-case-2}
 \end{figure}
 
 A continuación, el usuario debe verificar el código recibido mediante el \textit{endpoint} \texttt{POST /auth/password/verify-code},

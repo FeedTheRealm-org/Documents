@@ -30,8 +30,7 @@ correspondientes en el balance del usuario. El evento esperado es \texttt{paymen
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75\textwidth]{img/09-technical-details/core-service/payment-service-case-1.jpg}
-    \caption{Diagrama de secuencia del flujo de compra de gemas}
-    \label{fig:payment-service-case-1}
+    \caption{Diagrama de secuencia del flujo de compra de gemas.}    \label{fig:payment-service-case-1}
 \end{figure}
 
 Una vez completada la transacción, Stripe redirige al usuario a una página de confirmación o error según el resultado del pago.
@@ -56,8 +55,7 @@ suscripciones. Similar a las gemas, sin embargo aquí se recibe el evento \textt
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75\textwidth]{img/09-technical-details/core-service/payment-service-case-2.jpg}
-    \caption{Diagrama de secuencia del flujo de subscripcion}
-    \label{fig:payment-service-case-2}
+    \caption{Diagrama de secuencia del flujo de subscripcion.}    \label{fig:payment-service-case-2}
 \end{figure}
 
 Una vez activa la suscripción, el usuario puede ajustar la cantidad de \textit{slots} contratados mediante
@@ -87,8 +85,7 @@ cubrir dicho precio; si no lo es, retorna un error indicando gemas insuficientes
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\textwidth]{img/09-technical-details/core-service/payment-service-case-3.jpg}
-    \caption{Diagrama de secuencia de la compra de un cosmético}
-    \label{fig:payment-service-case-3}
+    \caption{Diagrama de secuencia de la compra de un cosmético.}    \label{fig:payment-service-case-3}
 \end{figure}
 
 Si el balance es suficiente, se registra la compra en el \textit{assets service} mediante el \textit{endpoint}
