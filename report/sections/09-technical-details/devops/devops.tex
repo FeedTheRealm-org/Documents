@@ -48,7 +48,7 @@ se lleva a cabo el despliegue en \textit{AWS EC2}.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.5\textwidth]{img/08-implemented-solution/devops/core-workflow.jpg}
+\includegraphics[width=0.5\textwidth]{img/09-technical-details/devops/core-workflow.jpg}
 \caption{Visión general del 'workflow' de integración y despliegue continuo del \textit{core-service}.}
 \end{figure}
 
@@ -63,7 +63,7 @@ asi como tambien visualizar las partes del codigo con menor cubrimiento por medi
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.75\textwidth]{img/08-implemented-solution/devops/test-pipeline.jpg}
+\includegraphics[width=0.75\textwidth]{img/09-technical-details/devops/test-pipeline.jpg}
 \caption{Pipeline de ejecución de Tests.}
 \end{figure}
 
@@ -82,7 +82,7 @@ de subir la imagen al registro de contenedores, estas son las siguientes:
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.75\textwidth]{img/08-implemented-solution/devops/build-pipeline.jpg}
+\includegraphics[width=0.75\textwidth]{img/09-technical-details/devops/build-pipeline.jpg}
 \caption{Pipeline de construcción de la imagen de docker y subida a ECR.}
 \end{figure}
 
@@ -94,7 +94,7 @@ desde \textbf{ECR} y la ejecución el contenedor por medio de \textit{docker run
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.8\textwidth]{img/08-implemented-solution/devops/deploy-pipeline.jpg}
+\includegraphics[width=0.8\textwidth]{img/09-technical-details/devops/deploy-pipeline.jpg}
 \caption{Pipeline de despliegue del contenedor y ejecución en EC2.}
 \end{figure}
 
@@ -121,7 +121,7 @@ los zoning servers (ftr-server) que se encuentran activos en ese momento.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.5\textwidth]{img/08-implemented-solution/devops/server-workflow.jpg}
+\includegraphics[width=0.5\textwidth]{img/09-technical-details/devops/server-workflow.jpg}
 \caption{Visión general del 'workflow' de actualización de la imagen de los \textit{ftr-server}.}
 \end{figure}
 
@@ -201,7 +201,7 @@ servicios por nombre. Tanto esto como el flujo de despliegue de nuevos 'zoning s
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=1\textwidth]{img/08-implemented-solution/devops/deployment.jpg}
+\includegraphics[width=1\textwidth]{img/09-technical-details/devops/deployment.jpg}
 \caption{Vista general de la infraestructura desplegada.}
 \end{figure}
 
@@ -227,7 +227,7 @@ y utiliza para resolver las mismas una serie de dependencias como lo son:
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.5\textwidth]{img/08-implemented-solution/devops/core-robust.jpg}
+\includegraphics[width=0.5\textwidth]{img/09-technical-details/devops/core-robust.jpg}
 \caption{Diagrama del uso del core-service y sus dependencias.}
 \end{figure}
 
@@ -246,7 +246,7 @@ se utiliza el algoritmo \textit{RAFT} para mantener un consenso de los \textit{s
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.6\textwidth]{img/08-implemented-solution/devops/nomad-robust.jpg}
+\includegraphics[width=0.6\textwidth]{img/09-technical-details/devops/nomad-robust.jpg}
 \caption{Flujo de despliegue e inicio de zone server.}
 \end{figure}
 
@@ -266,7 +266,7 @@ ya que los mismos también usan el algoritmo \textit{RAFT} para mantener consens
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.6\textwidth]{img/08-implemented-solution/devops/consul-robust.jpg}
+\includegraphics[width=0.6\textwidth]{img/09-technical-details/devops/consul-robust.jpg}
 \caption{Flujo de descubrimiento de dirección de zone server (por mundo y zona).}
 \end{figure}
 
@@ -277,7 +277,7 @@ a su vez el zoning server almacena la información del jugador en la base de dat
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.65\textwidth]{img/08-implemented-solution/devops/game-robust.jpg}
+\includegraphics[width=0.65\textwidth]{img/09-technical-details/devops/game-robust.jpg}
 \caption{Diagrama de uso de zone server y sus dependencias \textit{(cliente in-game)}.}
 \end{figure}
 
