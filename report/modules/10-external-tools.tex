@@ -1,6 +1,6 @@
 \section{Herramientas externas utilizadas}
 
-Las diferentes herramientas que el equipo utilizo para el desarrollo del MVP, va desde bases de datos, lenguajes de programación, 
+Las diferentes herramientas que el equipo utilizo para el desarrollo del MVP, van desde bases de datos, lenguajes de programación, 
 herramientas de virtualizacion, librerías, \textit{frameworks}, motores para desarrollo continuo y computación en la nube. 
 A continuación se mencionan todas ellas:
 \vspace{0.25cm}
@@ -10,7 +10,7 @@ por el motor \textit{Unity}, principalmente por su curva de aprendizaje accesibl
 su amplia comunidad y la gran disponibilidad de tutoriales, documentación y herramientas de terceros. Entre 
 las desventajas encontradas se destacan la dificultad de integración con algunas herramientas externas, el 
 costo de ciertos recursos de pago (\textit{Assets que fueron comprados para mejorar la calidad del juego en terminos de UX/UI}), 
-la complejidad del manejo del LSP de .NET subyacente y el impacto en el  rendimiento local del proyecto a medida que este crecía en tamaño y complejidad.
+la complejidad del manejo del LSP de .NET subyacente y el impacto en el rendimiento local del proyecto a medida que este crecía en tamaño y complejidad.
 Se consideró \textit{Godot} como alternativa, pero fue descartado en favor de \textit{Unity} debido a su 
 mayor madurez como plataforma, su ecosistema más consolidado y la mayor disponibilidad de documentación 
 y recursos de aprendizaje.
@@ -20,7 +20,7 @@ y recursos de aprendizaje.
 \textbf{\underline{Mirror}}: Para la implementación de la funcionalidad multijugador en el juego, 
 se utilizó la librería \textit{Mirror} para Unity. Se optó por \textit{Mirror} en lugar de 
 \textit{Netcode for GameObjects} (la solución oficial de Unity) debido a su naturaleza de código abierto 
-y su mayor flexibilidad en el transporte de red, que permite intercambiar  la capa de transporte (por ejemplo, KCP sobre UDP para baja latencia) 
+y su mayor flexibilidad en el transporte de red, que permite intercambiar la capa de transporte (por ejemplo, KCP sobre UDP para baja latencia) 
 según las necesidades del proyecto. Además, \textit{Mirror} no impone un límite de usuarios concurrentes (CCU) y presenta un mayor 
 \textit{throughput} bruto, lo que lo hace más apto para soportar una cantidad elevada de jugadores 
 simultáneos, una característica especialmente relevante para un juego del género \textit{MMO} como el desarrollado. 
@@ -48,7 +48,7 @@ animaciones y materiales.
 es lenguaje. Además se prefirió un lenguaje tipado, para garantizar la mínima cantidad de errores y facilitar la detección
 de \textit{bugs}. Cuenta además con la posibilidad de utilizar y llevar de manera practica, confiable y segura el uso de librerías
 externas para diferentes funcionalidades requeridas. Como la conexión con bases de datos, servicios externos o la posibilidad 
-de escribir endpoints de forma rapida, práctica y sencilla.
+de escribir \textit{endpoints} de forma rapida, práctica y sencilla.
 
 \vspace{0.25cm}
 
@@ -132,7 +132,8 @@ sin necesidad de administrar infraestructura de correo propia.
 
 \textbf{\underline{OSV Scanner}}:
 Herramienta de seguridad utilizada para escanear las dependencias del proyecto en busca de vulnerabilidades conocidas.
-Se integró en el pipeline de CI para ejecutar análisis de seguridad en cada PR, ayudando a identificar y mitigar riesgos asociados a las bibliotecas de terceros utilizadas en el proyecto.
+Se integró en el pipeline de CI para ejecutar análisis de seguridad en cada PR, ayudando a identificar y mitigar riesgos 
+asociados a las bibliotecas de terceros utilizadas en el proyecto.
 
 \vspace{0.25cm}
 
