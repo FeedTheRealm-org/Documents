@@ -1,6 +1,7 @@
 % TODO(reference): add archi section pointer
-En esta sección se detallan las decisiones infraestructurales tomadas para llevar la arquitectura previamente mencionada, a la práctica teniendo en cuenta el uso de recursos de las aplicaciones,
-el presupuesto del equipo y las necesidades actuales, a su vez permitiendo el escalamiento y crecimiento del proyecto.
+En esta sección se detallan las decisiones infraestructurales tomadas para llevar la arquitectura mencionada en la sección de \nameref{sec:architecture}, 
+a la práctica teniendo en cuenta el uso de recursos de las aplicaciones, el presupuesto del equipo y las necesidades actuales, 
+a su vez permitiendo el escalamiento y crecimiento del proyecto.
 
 Por otro lado, se especifica el proceso de integración y despliegue de código de forma continua y por versiones,
 como también las revisiones automatizadas de errores de código, inconsistencia de formatos y de filtrado de credenciales.
@@ -31,6 +32,7 @@ requiere inicialmente una infraestructura masiva, se buscó una plataforma que p
 sin necesidad de rediseñar componentes fundamentales.
 
 \subsubsection{CI/CD \& Workflows}
+\label{sec:ci-cd}
 
 El sistema cuenta con pipelines de integración y despliegue continuo (\textit{CI/CD}) implementados mediante 
 GitHub Actions, que automatizan el proceso de validación, construcción y despliegue de los distintos 
@@ -138,6 +140,7 @@ Luego de ser compiladas, se comprimen y se realiza un \textit{Release} de la nue
 De esta forma los usuarios tendrán acceso a la última versión disponible de las aplicaciones obteniéndolas de la página principal del juego.
 
 \subsubsection{Infraestructura}
+\label{sec:infrastructure}
 
 A continuación se explica el estado actual de la infraestructura cuya especificación y configuración pertenece al repositorio
 de \textbf{IaC}, el cual define la misma por medio de la herramienta \textbf{Terraform}, como también la solución implementada para el despliegue
