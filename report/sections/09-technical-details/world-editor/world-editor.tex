@@ -1,0 +1,93 @@
+El \textit{World Editor} es una herramienta destinada a la creación y edición de mundos dentro del juego.
+Está construido como un cliente de Unity que se comunica con el \textit{Core Service} a través del \textit{API Gateway}.
+El editor permite a los jugadores crear nuevos mundos,
+modificar la configuración de zonas existentes, gestionar \textit{assets}, publicar y mediante una subscripción activar dichos mundos.
+
+\subsubsection{Importación de modelos 3D}
+Una de las funcionalidades centrales del editor es la capacidad de importar modelos 3D
+personalizados por los creadores. Sin embargo, Unity no permite instanciar modelos 3D
+en tiempo de ejecución a partir de archivos externos, ya que sus mecanismos de carga de
+recursos están pensados para activos conocidos en tiempo de compilación. Para resolver
+esta limitación se optó por la librería GLTFast, que permite importar modelos en formato
+\texttt{.glb} de forma dinámica durante la ejecución.
+
+\vspace{0.25cm}
+
+El formato \texttt{.glb} es un formato abierto y ampliamente soportado para la
+representación de escenas 3D, con la ventaja de contener tanto la geometría del modelo
+como sus texturas y materiales en un único archivo, lo que simplifica el proceso de
+importación y la gestión de recursos. GLTFast se utiliza no solo en el editor de mundos,
+sino también en el cliente del juego, que descarga los modelos desde el Core Service.
+
+
+\subsubsection{Gestión de Mundos}
+
+El editor cuenta con un sistema de guardado y apertura de mundos similar al de otros programas de edición,
+permitiendo retomar la edición en distintas sesiones de trabajo.
+
+Los mundos se persisten localmente utilizando \texttt{Application.persistentDataPath} de Unity, una ruta
+del sistema de archivos gestionada por el motor que garantiza permisos de escritura en todas las plataformas
+soportadas. Cada mundo se almacena como un directorio independiente con el nombre del mundo, con la
+siguiente estructura:
+
+\begin{verbatim}
+<mundo>/
+|- world.data
+|- creatables.data
+|- zone_1.world
+|- zone_2.world
+|- ...
+|- zone_n.world
+\end{verbatim}
+
+\begin{itemize}
+  \item \texttt{world.data}: Contiene la configuración general del mundo, incluyendo nombre, descripción
+  e identificador asignado al momento de su publicación.
+  \item \texttt{creatables.data}: Almacena la definición de todos los objetos creables configurados
+  para el mundo, como \textit{NPCs}, enemigos, ítems y misiones.
+  \item \texttt{zone\_\{n\}.world}: Representa el estado de una zona independiente, almacenando todos
+  los \textit{Placeables} colocados en ella junto con su posición, rotación, escala y propiedades configuradas.
+  Se genera un archivo por cada zona que compone el mundo.
+\end{itemize}
+
+
+\subsubsection{Gestión de Recursos en Memoria}
+
+La gestión de recursos en memoria se organiza mediante un sistema de managers y repositorios internos, 
+donde cada tipo de dato cuenta con su propio repositorio especializado que encapsula la lógica de 
+serialización y acceso a disco de su dominio.
+
+Los \textit{Placeables}, al estar representados físicamente en la escena, son rastreados individualmente y 
+notifican al sistema mediante eventos cuando su estado es modificado, determinando si deben incluirse 
+en el próximo ciclo de guardado.
+
+Los \textit{Creatables}, al no tener representación física en la escena, son gestionados por un manager dedicado 
+que mantiene en memoria el conjunto de objetos creables del mundo, permitiendo su consulta, modificación 
+y persistencia de forma centralizada.
+
+\subsubsection{Publicación de Mundos}
+
+Una vez finalizado el diseño, el creador puede publicar su mundo para que pueda ser accedido mediante el cliente de juego.
+El proceso requiere haber iniciado sesión y se realiza desde el panel de publicación. Al confirmar la publicación,
+se inicia una secuencia de carga hacia el \textit{Core Service} que sigue el siguiente orden:
+
+\begin{enumerate}
+  \item \textbf{Datos del Mundo (\textit{World Data})}: Los datos estructurales del mundo en formato \textit{JSON}, que incluyen la configuración
+  de zonas, objetos y sus propiedades.
+  \item \textbf{Modelos 3D}: Los modelos utilizados en el mundo, excluyendo aquellos que forman parte del
+  conjunto de \textit{assets} predeterminados del sistema.
+  \item \textbf{\textit{Assets} de Ítems}: Las imágenes e iconos asociados a los ítems creados por el usuario.
+  \item \textbf{Cosméticos}: Los \textit{assets} visuales correspondientes a los cosméticos configurados en el mundo.
+  \item \textbf{\textit{Assets} de Entorno}: Las texturas de suelo (\textit{ground textures}) y cielos
+  (\textit{skybox textures}) asociadas a cada zona del mundo.
+\end{enumerate}
+
+Luego que el mundo es publicado, este debe ser activado mediante el panel de economía, lo cual requiere una cierta cantidad de \textit{slots}
+igual a la cantidad de zonas que se quieran desplegar y estos se obtienen a partir de suscripciones.
+
+\vspace{0.25cm}
+
+Una optimización importante del proceso de publicación es evitar la recarga de recursos
+que ya se encuentran en el servidor. Esto se logra omitiendo tanto los recursos que
+forman parte del conjunto de \textit{assets} predeterminados del sistema como los modelos
+3D personalizados que ya hayan sido subidos en publicaciones anteriores.

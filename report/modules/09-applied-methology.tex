@@ -3,8 +3,8 @@
 En la primera etapa del proyecto se concretaron múltiples reuniones con todos los integrantes del grupo para unificar 
 las ideas principales, entre ellas los primeros pasos para comenzar con el diseño de arquitectura, los servicios 
 y los repositorios a crear, junto a sus \textit{templates} de directorios y \textit{pipelines} necesarios. En esta etapa 
-también se logró estimar las fases del proyecto, como dividir módulos por lógica, features en las fases, y realizar un 
-\textit{brainstorming} sobre features obligatorias y secundarias que existirían en la totalidad del proyecto.
+también se logró estimar las versiones del proyecto, dividir módulos por lógica, y realizar un 
+\textit{brainstorming} sobre \textit{features} obligatorias y secundarias que existirían en la totalidad del proyecto.
 
 \subsection{Herramientas de planificación, visualización y Comunicación}
 
@@ -19,36 +19,31 @@ planificación al tutor a lo largo del tiempo y mostrar las modificaciones que p
 \vspace{0.25cm}
 
 Dentro de estos esquemas lo más utilizado por nosotros y el tutor, fue tener 
-un seguimiento de las versiones y su progreso en el tiempo, y poder estimar mejor que features habría que darle más prioridad, 
+un seguimiento de las versiones y su progreso en el tiempo, y poder estimar mejor a qué \textit{features} habría que darle más prioridad, 
 cuáles se pueden aplazar y cuáles descartar en caso de no llegar para la entrega del producto. Junto a las \textit{User Stories} 
-(US) dentro de cada versión, se agregó características con mayor nivel de complejidad que afectan todo o la mayor parte 
-del proyecto que son primordiales y deben ser completadas en cada versión, ya que son características troncales y 
-requeridas para cumplir los objetivos del proyecto en sí.
+(US) se agregó una etiqueta a la versión con las tareas mas riesgosas y por ende de mayor prioridad
+para tenerlas presentes durante el desarrollo.
 
 \vspace{0.25cm}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.85\textwidth]{img/miro.jpg}
-    \caption{Captura del Miro utilizado para planificación}
-    \label{fig:miro}
+    \caption{Captura del Miro utilizado para planificación.}    \label{fig:miro}
 \end{figure}
 
 \textbf{\underline{GitHub Projects}}: una vez que el grupo y el tutor revisaron y confirmaron las \textit{user stories} 
 que se desarrollarían en cada iteración, se migraron desde el USM diagramado en Miro hacia el \textit{Backlog}. 
-Al comienzo de cada iteración, con una duración de dos semanas, se revisan las \textit{user stories} que deben encontrarse 
-en progreso, así como las planificadas para la siguiente iteración de la misma versión. Todas ellas deben contar con una 
-estimación aproximada de dificultad y, si superan cierto umbral, se dividen en otras historias o \textit{substories}.
+Al comienzo de cada iteración de dos semanas, se revisan las \textit{user stories} planificadas y las que quedaron en progreso 
+o pendientes en la iteración anterior, para llegar a un consenso si estas últimas historias deben transferirse a la nueva iteracion,
+almacenarse a futuro o simplemente marcarse como fuera de alcance. Todas ellas deben contar con una 
+estimación aproximada de dificultad y, si superan cierto umbral, se dividen en otras historias o sub-historias.
 
 \vspace{0.25cm}
 
 También se corrobora con consenso grupal cuáles son los criterios de aceptación (CA) utilizando el formato o método 
 \textbf{Given-When-Then} para cada user story, para evitar confusiones de nombres similares pero diferentes tareas 
-dependiendo del repositorio correspondiente. Cumpliendo lo anterior, si una US no llegó a iniciarse o quedó parcialmente 
-completa, en la reunión a fin de iteración se llega a un consenso si debe pasarse a siguiente iteración o almacenarse a 
-futuro junto con otras para determinar si entra en el alcance del proyecto.
-
-\vspace{0.25cm}
+dependiendo del repositorio correspondiente.
 
 \begin{figure}[H]
     \centering
@@ -58,9 +53,7 @@ futuro junto con otras para determinar si entra en el alcance del proyecto.
 \end{figure}
 
 \textbf{\underline{Excalidraw}}: para realizar esquemas, croquis, posibles diseños de UI y diagramas de funcionamiento 
-del flujo de sistemas más complejos. Algunos son públicos para complementar la documentación y otros son privados con el 
-fin de visualizar ideas entre los integrantes.
-\vspace{0.25cm}
+del flujo de sistemas más complejos, con el fin de visualizar ideas entre los integrantes.
 
 \begin{figure}[H]
     \centering
@@ -70,9 +63,8 @@ fin de visualizar ideas entre los integrantes.
 \end{figure}
 
 \textbf{\underline{Discord}}: para compartir guías, tareas pendientes, información de spikes, comandos relevantes para 
-ejecuciones y variables de entorno locales o temporales para comunicar cambios en entorno de desarrollo de los distintos 
+ejecuciones y para comunicar cambios en los entornos de desarrollo de los distintos 
 sistemas del proyecto.
-\vspace{0.25cm}
 
 \begin{figure}[H]
     \centering
@@ -81,68 +73,56 @@ sistemas del proyecto.
     \label{fig:discord}
 \end{figure}
 
-Relacionado a estas metodologías que se utilizó como herramienta degestión, se estableció ya desde el principio de desarrollo del proyecto, 
+Relacionado con estas metodologías que se utilizó como herramienta de gestión, se estableció ya desde el principio de desarrollo del proyecto, 
 que deben haber 3 reuniones semanales fijas en cierto horario, generalmente a las 14hrs los dias lunes, miercoles y viernes, 
 con el fin de actualizar los avances de todos los integrantes del grupo, hacer consenso de decisiones de diseño en las 
-diferentes US y hacer tareas de planificación como se ha nombrado antes en fechas de comienzo/fin de iteración y 
+diferentes US y hacer tareas de planificación en fechas de comienzo/fin de iteración y 
 comienzo/fin de nueva versión.
 \vspace{0.25cm}
 
 Por lo general se define un solo asignado a cada user story pero hubo casos donde se requirió suplantar al asignado 
 principal por diferentes motivos que no pudo continuar, o se agregó un asignado más ya sea por una dificultad inesperada 
-o que otra US quedó parcialmente acoplada/relacionada a la dicha. La metodología implementada en todos los casos con la 
-salvedad en alguna excepción de prioridades en las US, tomar una US implicaría que el asignado a ella debe implementar 
+o que otra US quedó parcialmente acoplada/relacionada. La metodología implementada en todos los casos con la 
+salvedad de alguna excepción de prioridades en las US, tomar una US implicaría que el asignado a ella debe implementar 
 todas las características que se requieran en los distintos servicios para que esté correctamente funcionando. Se tomó
-la decisión que por tema de seguridad la regla de que un pull request antes de ser completado debe ser probado 
-por otro integrante del grupo que no sea el asignado a la US relacionada, ya que la herramienta de Unity al 
-versionar sus archivos pueden generar incongruencias o errores y puede llegar a no funcionar sin las 
-configuraciones locales del integrante asignado, por distintos motivos.
+la decisión de aplicar reglas para que un \textit{pull request} antes de ser completado deba ser testeado y aprobado 
+por otro integrante del grupo que no sea el asignado a la US relacionada, ya que entre otros motivos, la herramienta de Unity al 
+versionar sus archivos puede generar incongruencias o errores que llevan a comportamiento errático sin las 
+configuraciones locales del integrante asignado.
 \vspace{0.25cm}
 
 \subsection{Gestión de iteraciones y versiones}
 
 Como se mencionó anteriormente, se ha separado cada versión con duración de aproximadamente un mes, para poder tener 
-parámetros del estado del proyecto a lo largo del tiempo y poder establecer un avance de él de forma incremental, 
+parámetros del estado del proyecto a lo largo del tiempo y poder establecer un avance del mismo, de forma incremental, 
 ya que hay US que son dependientes una de otras y deben realizarse en cierto orden. Además, cada versión contiene 
 dos iteraciones, cada una de dos semanas de duración aproximadamente. Ocasionalmente, se llegó a extender la duración debido a 
 problemas de demora general del equipo por distintas cuestiones, como las otras materias cursadas en paralelo al proyecto, o 
-que múltiples US esté casi por desplegarse y/o terminar de probar su integración.
+que múltiples US estén cercanas a desplegarse y/o a terminarse de probar en integración.
 \vspace{0.25cm}
 
 La herramienta principal utilizada para reflejar el progreso más actualizado día a día fue Github Projects. Por lo tanto 
 si se detecta algún \textit{bug} relacionado a una US fuera de su etapa de desarrollo por lo general se informa informalmente 
-al asignado de ella en las reuniones. En el caso que involucre un cambio complejo su solución o se requiere registrar como 
+al asignado de ella en las reuniones. En el caso que su solución involucre un cambio complejo o se requiere registrar cómo 
 replicar el \textit{bug}, se crea un ticket en esta plataforma para ser solucionado dentro de la iteración o para la etapa final 
-de solución de \textit{bugs} y pulido de features y UI, dependiendo de la gravedad del \textit{bug}, si es necesario mitigar 
-riesgos o si ese \textit{bug} puede afectar otra US y desencadenar fallas difíciles de detectar.
+de solución de \textit{bugs} y pulido de features y UI.
 \vspace{0.25cm}
 
-Como se mencionó anteriormente se decidió que las últimas dos iteraciones del total de ellas, sean destinadas a la última 
-etapa de pulir últimos cambios y desarrollo de informe. Con últimos cambios se infiere a soluciones de \textit{bugs} 
-pendientes, desarrollar aspectos a mejorar que en su momento se obviaron para tener US con funcionalidad suficiente, mejoras 
-en la UI pendientes o para perfeccionar, features opcionales que mejoran la jugabilidad de los clientes y optimizaciones 
-importantes para mejorar el rendimiento ya sea de los clientes como de los servidores.
-
-\vspace{0.25cm}
-
-Queda a aclarar que todas las US que fueron limitadas en su alcance fueron o diagramadas de tal forma previamente al 
-momento de crear los CA al comienzo de iteración, o en las reuniones al ver qué la dificultad de la US fue subestimada 
-y/o se extendió mucho la entrega completa de tal US con respecto a los tiempos de la iteración. Entonces o bien se crea 
-una nueva US con las características a desarrollar pendientes en la próxima iteración o se crea una US para asignarse en 
-la última etapa del proyecto.
+Se decidió que las últimas dos iteraciones, sean destinadas a la última 
+etapa de pulir los últimos cambios y el desarrollo del informe. Con últimos cambios se refiere a solucionar los \textit{bugs} 
+pendientes, mejorar algunas implementaciones, mejorar la interfaz de usuario, implementar features opcionales 
+que mejoran la jugabilidad y optimizaciones varias.
 
 \vspace{0.25cm}
 
-Con respecto a las etapas del proyecto, se organizaron de forma de que para la entrega intermedia se tenga algunas o las 
-mayorías características principales del proyecto funcionando y también la mayor parte de lo pactado con el tutor y lo 
+Con respecto a las etapas del proyecto, se organizaron de forma que la entrega intermedia tenga algunas o la 
+mayoría de características principales del proyecto funcionando y también la mayor parte de lo pactado con el tutor y lo 
 escrito en la propuesta entregada antes de comenzar el proyecto. Se podría decir que logró un buen resultado con la gestión 
 implementada, ya que se llegó a la etapa final con todas las características y funcionalidades principales esperadas 
-completadas. Y además las US desestimadas no fueron en general features determinantes o muy relevantes con respecto a 
+completadas. Y además las US desestimadas no fueron en general \textit{features} determinantes o muy relevantes con respecto a 
 las realizadas sino más bien extras o complementarias.
 
-\vspace{0.25cm}
-
-\subsection{Métricas de planificación y gestión}
+\subsection{Métricas de planificación y gestión e indicadores}
 
 A continuación se mostrará las métricas obtenidas al final del proyecto, con el fin de analizar la planificación 
 y gestión del mismo a lo largo del tiempo.
@@ -151,7 +131,7 @@ Para comenzar, se muestra la evolución del backlog a lo largo de las iteracione
 la cantidad de US, y en el eje horizontal las iteraciones. 
 Se puede observar que a lo largo del tiempo se mantuvo una cantidad desarrollada relativamente estable, 
 con un pico sobre el final del proyecto, debido a que se agregaron US para mejorar/arreglar características ya 
-desarrolladas o para agregar nuevas features complementarias y de diseño, lo cuales contaron con una mayor cantidad de US 
+desarrolladas o para agregar nuevas features complementarias y de diseño, los cuales contaron con una mayor cantidad de US 
 desarrolladas pero de menor complejidad y tiempo empleado para completarlas.
 
 \begin{figure}[H]
@@ -183,13 +163,13 @@ a pesar de ello la distribución fue equitativa.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.85\textwidth]{img/09-applied-methology/team-division.jpg}
+    \includegraphics[width=1\textwidth]{img/09-applied-methology/team-division.jpg}
     \caption{Distribución de las US por integrante del grupo.}
     \label{fig:team-division}
 \end{figure}
 
 
-En cuanto a las US realizadas, se puede ver en el siguiente gráfico la distinción por tipo, se contabiliza en el 
+En cuanto a las US realizadas, se puede ver en el siguiente gráfico la distinción por tipo. Se contabiliza en el 
 eje vertical la cantidad, y en el eje horizontal sus tipos.
 
 
@@ -202,10 +182,10 @@ eje vertical la cantidad, y en el eje horizontal sus tipos.
 
 
 Con respecto a métricas de \textit{velocity}, se mostrarán a continuación dos gráficas. La primera se muestra con
-respecto a la cantidad de US completadas por versión, se contabiliza en el eje vertical la cantidad de US, y 
+respecto a la cantidad de US completadas por versión. Se contabiliza en el eje vertical la cantidad de US, y 
 en el eje horizontal las versiones. Se puede observar que a lo largo del proyecto se mantuvo una cantidad relativamente 
 homogénea de US completadas por iteración, con un pico sobre el final del proyecto debido a lo ya explicado anteriormente 
-sobre la acción en la última etapa.
+sobre las tareas de la última etapa.
 
 
 \begin{figure}[H]
@@ -216,9 +196,12 @@ sobre la acción en la última etapa.
 \end{figure}
 
 
-Luego, se muestra la velocidad del equipo a lo largo de las versiones por puntos de estimación, propuestas en las reuniones 
-de planificación de cada iteración utilizando la metodología de \textit{Planning Poker}, se contabiliza en el eje 
-vertical la cantidad de puntos de estimación, y en el eje horizontal las versiones.
+Luego, se muestra la velocidad del equipo a lo largo de las versiones por puntos de estimación propuestos en las reuniones 
+de planificación de cada iteración utilizando la metodología de \textit{Planning Poker}. 
+Estas estimaciones son un numero de la serie \textit{Fibonacci} representando la dificultad o tiempo de desarrollo
+de las tareas.
+
+Se contabiliza en el eje vertical la cantidad de puntos de estimación, y en el eje horizontal las versiones.
 
 
 \begin{figure}[H]
@@ -229,15 +212,17 @@ vertical la cantidad de puntos de estimación, y en el eje horizontal las versio
 \end{figure}
 
 
-Por último, se puede observar en la siguiente gráfica el \textit{burn up} del proyecto, donde se contabiliza 
-en el eje vertical la cantidad de US , y en el eje horizontal las fechas durante el proyecto en etapa de desarrollo. 
-Se puede observar que a lo largo del proyecto se mantuvo una cantidad relativamente estable de US completadas en relación 
-a lo que se planificaba tener realizado, como se explicó en esta sección, se hacía un analisis si se postergaba cada US 
-a la siguiente iteración, o si se descartaba, y se puede observar en el gráfico que en determinada fecha a inicios de 
-marzo, donde ya se planificaba el cierre de la etapa de desarrollo, que un número de US ya se determinaron como fuera del 
-alcance del proyecto, y se decidió no desarrollarlas, lo cual se refleja en el gráfico como el incremento de US cerradas, 
-y la brecha entre lo planificado y lo realizado se disminuye al llegar al fin.
+Por último, en la siguiente gráfica se presenta el \textit{burn up} del proyecto. En el eje vertical se representa la cantidad
+de historias de usuario (US), mientras que en el eje horizontal se muestran las fechas correspondientes al desarrollo del proyecto.
 
+Puede observarse que, a lo largo de la ejecución, se mantuvo una cantidad relativamente estable de US completadas en relación
+con las planificadas. 
+
+Como se explicó en esta sección, ante cada desviación se analizaba si una US debía postergarse a la siguiente
+iteración o descartarse definitivamente.
+Asimismo, se aprecia que, a comienzos de marzo varias US 
+fueron definidas como fuera del alcance del proyecto y, en consecuencia, se decidió no implementarlas. Esto se refleja en 
+la gráfica mediante la línea gris bajo la curva de historias completadas.
 
 \begin{figure}[H]
     \centering

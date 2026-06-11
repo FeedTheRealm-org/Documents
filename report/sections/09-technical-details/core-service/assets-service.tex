@@ -1,0 +1,102 @@
+\subsubsection{\textit{Assets service}}
+\label{sec:assets-service}
+
+El \textit{assets service} es el encargado de administrar y gestionar los \textit{assets} de los mundos. Estos están
+formados por los siguientes \textit{assets}:
+
+\begin{itemize}
+    \item \underline{\textit{Cosmetics}}: Corresponden a los \textit{sprites} que pueden estar asignados en los NPC en cada mundo, y los 
+    disponibles en los \textit{shops} para que los jugadores puedan comprar por gemas y utilizarlos en sus personajes.
+    \item \underline{\textit{Items}}: Corresponden a los \textit{sprites} utilizados como íconos de las armas y consumibles
+    del juego, así como a los elementos que el personaje tiene equipados.
+    \item \underline{\textit{Materials}}: Corresponden a las imágenes para cambiar las texturas del suelo y el cielo
+    del mundo del creador.
+    \item \underline{\textit{Models}}: Corresponden a los modelos 3D de los objetos colocados (\textit{placeables}).
+\end{itemize}
+
+Cada uno de estos \textit{assets} no se almacenan directamente en el \textit{core service}, sino que el mismo los guarda
+a traves de los \textit{buckets}. Estos se dividen en \textit{cosmetics buckets} solo para los cosmeticos y en \textit{content buckets}
+para todos los demas \textit{assets}, el \textit{core service} solo almacena el \textit{path} del \textit{asset}. No se almacena
+la URL completa, esto es asi para poder utilizar los \textit{buckets} de Amazon para produccion y para \textit{testing}
+se utiliza un \textit{local bucket} que es un simple servidor en \textit{Python}.
+\vspace{0.25cm}
+
+La subida de \textit{assets} se realiza en todos los casos mediante peticiones \textit{multipart/form-data}, dado que
+las mismas deben incluir tanto archivos binarios como metadatos asociados. Para los cosméticos, la petición a
+\texttt{PUT /assets/cosmetics/categories/\{category\_id\}} debe incluir el \texttt{world\_id}, el \texttt{price} y
+el archivo de imagen en formato PNG o JPEG bajo el campo \texttt{sprite}. 
+\vspace{0.25cm}
+
+El sistema valida que el archivo no supere el tamaño máximo permitido y que el formato sea el correcto. Si el \texttt{world\_id} 
+corresponde al valor nulo, la operación queda restringida a administradores, ya que se trata de un cosmético \textit{default}; 
+en caso contrario, se verifica que el usuario sea el propietario del mundo antes de proceder. 
+\vspace{0.25cm}
+
+Una vez validados los datos, el archivo se almacena en el \textit{cosmetics bucket} y se persiste el \textit{path} resultante 
+en la base de datos. Se puede de crear un cosmético a partir de un \textit{sprite} ya existente, mediante
+\texttt{PUT /assets/cosmetics/categories/\{category\_id\}/sprites/\{sprite\_id\}}, en cuyo caso el sistema reutiliza
+la URL del \textit{sprite} existente, aunque opcionalmente se puede adjuntar un nuevo archivo de imagen para sobreescribirlo.
+\vspace{0.25cm}
+
+La subida de materiales e ítems sigue un esquema similar entre sí y permite enviar múltiples archivos en una misma
+petición. Cada archivo debe ir acompañado de su identificador en los campos indexados \texttt{ids[i]}, mientras que
+los archivos se envían bajo los campos \texttt{materials[i]} o \texttt{sprites[i]} según corresponda. En el caso de
+los materiales, además se requiere un nombre por cada entrada bajo el campo \texttt{names[i]}. El sistema itera sobre
+estos pares hasta procesar la totalidad de los enviados, almacenando cada archivo en el \textit{content bucket} y
+persistiendo el \textit{path} en la base de datos. Los \textit{endpoints} correspondientes son
+\texttt{PUT /assets/materials/world/\{world\_id\}} y \texttt{PUT /assets/items/world/\{world\_id\}} respectivamente.
+\vspace{0.25cm}
+
+La subida de modelos 3D se realiza mediante \texttt{PUT /assets/models/world/\{world\_id\}} y, a diferencia de los
+materiales e ítems, admite un único modelo por petición. El archivo debe estar en formato GLB y debe acompañarse del
+campo \texttt{model\_id} que lo identifica. Al igual que con los cosméticos \textit{default}, si el \texttt{world\_id} es
+nulo (\texttt{0000...0000}) la operación queda restringida a administradores; de lo contrario, se verifica la propiedad del mundo antes
+de almacenar el archivo en el \textit{content bucket}.
+\vspace{0.25cm}
+
+El \textit{endpoint} \texttt{GET /assets/cosmetics/categories/\{id\}} admite los parámetros opcionales
+\texttt{world\_id} y \texttt{player\_id} para filtrar los cosméticos retornados. El comportamiento varía según
+la combinación de valores enviados, tal como se resume en el siguiente cuadro.
+\vspace{0.25cm}
+
+\renewcommand{\arraystretch}{1.4}
+\begin{longtable}{|l|l|p{7cm}|}
+\hline
+\textbf{\texttt{player\_id}} & \textbf{\texttt{world\_id}} & \textbf{Cosméticos retornados} \\
+\hline
+\endfirsthead
+\hline
+\textbf{\texttt{player\_id}} & \textbf{\texttt{world\_id}} & \textbf{Cosméticos retornados} \\
+\hline
+\endhead
+\endfoot
+
+\texttt{XXXX...XXXX} & \texttt{0000...0000} & Solo los cosméticos \textit{default}. \\
+\hline
+\texttt{XXXX...XXXX} & \texttt{YYYY...YYYY} & Los cosméticos del mundo \texttt{YYYY...YYYY} que fueron adquiridos por el jugador \texttt{XXXX...XXXX}, junto con los cosméticos \textit{default}. \\
+\hline
+\texttt{XXXX...XXXX} & \textit{empty/null}  & Todos los cosméticos adquiridos por el jugador \texttt{XXXX...XXXX} junto con los cosméticos \textit{default}. \\
+\hline
+\textit{empty/null}  & \texttt{0000...0000} & Solo los cosméticos \textit{default}. \\
+\hline
+\textit{empty/null}  & \texttt{YYYY...YYYY} & Todos los cosméticos del mundo \texttt{YYYY...YYYY} junto con los cosméticos \textit{default}. \\
+\hline
+\textit{empty/null}  & \textit{empty/null}  & Todos los cosméticos de la categoría indicada en el \textit{path} junto con los cosméticos \textit{default}. \\
+\hline
+\caption{Comportamiento del filtrado por \texttt{world\_id} y \texttt{player\_id}.}\label{tab:cosmetics-filter}
+\end{longtable}
+
+Cuando se proporciona un \texttt{player\_id} distinto al del usuario autenticado, el sistema exige que la sesión
+tenga privilegios de administrador; de lo contrario, la petición es rechazada. Los cosméticos se paginan mediante
+los parámetros \texttt{offset} y \texttt{limit}, \texttt{total\_count}, lo que permite al cliente visualizar correctamente 
+el contenido con su sistema de paginación.
+
+\vspace{0.25cm}
+
+El registro de la compra de un cosmético por parte de un usuario se realiza a través de un \textit{endpoint} interno,
+\texttt{POST /assets/internal/users/\{user\_id\}/cosmetics}, destinado a la comunicación entre servicios. Este
+\textit{endpoint} recibe el identificador del cosmético y verifica que el usuario no lo haya adquirido previamente;
+de ser así, retorna un error de conflicto. También existe el \textit{endpoint} interno
+\texttt{GET /assets/internal/cosmetics/\{cosmetic\_id\}}, que expone el precio y el creador de un cosmético para
+que otros servicios puedan consultarlo sin necesidad de autenticación de usuario.
+\vspace{0.25cm}

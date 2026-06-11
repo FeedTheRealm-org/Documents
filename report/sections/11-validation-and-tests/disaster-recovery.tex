@@ -29,7 +29,7 @@ En el caso que el nodo caído estaba alojando zoning servers previamente, los mi
 o fallaron por crash la totalidad de los mismos, se forma una lista de 'jobs' pendientes que se ejecutaran automáticamente ni bien se registre un cliente de Nomad nuevo.
 
 Sin embargo, si el nodo caído afecta al core-service, se debe volver a desplegar el servicio por medio del pipeline correspondiente, ya que este utiliza
-\textt{AWS SSM} como se mencionó en la sección de \textit{Devops} en lugar de ser desplegado por un orquestador como Nomad.
+\textt{AWS SSM} como se mencionó en la sección de \nameref{sec:devops} en lugar de ser desplegado por un orquestador como Nomad.
 
 \subsubsection{Falla localizada a un zoning server}
 

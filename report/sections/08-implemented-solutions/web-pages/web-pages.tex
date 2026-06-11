@@ -1,15 +1,41 @@
 En esta sección se detallan las páginas web asociadas a \textif{Feed the Realm} desarrolladas, el objetivo de su creación y qué características principales
 tienen las mismas, entre otros detalles de implementación.
 
+\subsubsection{Landing page}
+
+Se implementó una página web de libre acceso utilizando \textit{React} y \textit{Typescript}, con el objetivo de publicar
+información sobre \textbf{Feed the Realm}, detalles de su desarrollo, videoclips e imágenes y opciones de descarga de las aplicaciones a
+modo de \textit{onboarding} para nuevos posibles usuarios.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{img/08-implemented-solution/websites/landing-home.jpg}
+    \caption{Captura del home de la landing page.}
+\end{figure}
+
+\vspace{0.25cm}
+
+Las características principales de esta página son:
+
+\begin{itemize}
+    \item \textbf{Home}: Contiene una corta descripción del juego, un resumen del resto de secciones y enlaces de interés como lo son los de descarga de las aplicaciones para 
+    el sistema operativo deseado, el del canal de \textit{youtube} y el del servidor de \textit{discord} de la comunidad, entre otros.
+    \item \textbf{Media}: Contiene una galería de imágenes y videos del juego a modo de vista general con motivos de capturar el interés de posibles jugadores.
+    \item \textbf{Blog}: Página de blogs para avisos de nuevas versiones, cambios o \textit{features} a lo largo del desarrollo y ciclo de vida del juego.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{img/08-implemented-solution/websites/landing-blog.jpg}
+    \caption{Captura de la sección de blog de la landing page.}
+\end{figure}
+
 \subsubsection{Backoffice}
 \label{sec:backoffice}
 
-Se implementó una página web utilizando \textit{React} y \textit{Typescript} para uso administrativo por parte del equipo de desarrollo,
-con el objetivo de reducir tiempos de operaciones manuales como lo pueden ser lanzar o apagar un 'zoning server' manualmente,
+Se implementó una segunda página web utilizando \textit{React} y \textit{Typescript} para uso administrativo por parte del equipo de desarrollo,
+con el objetivo de reducir tiempos de operaciones manuales como lo pueden ser lanzar o apagar servidores manualmente,
 cambiar el balance de gemas de un usuario en específico o incluso llevar a cabo el \textit{Release} de una nueva versión de alguna de las aplicaciones.
-
-Esta página hace uso de varios \textit{endpoints} protegidos del \textit{Core-service} y de exclusivo acceso para administradores, 
-como también tiene acceso al CDN para poder obtener y visualizar cosméticos ligados a un mundo o a un usuario.
 
 \paragraph{Dashboard}
 
@@ -46,11 +72,11 @@ sus cosméticos comprados y también sus cosméticos equipados o en uso.
 \paragraph{Mundos}
 
 En la vista de los mundos se tiene la lista paginada de todos los mundos creados, que al igual que con los usuarios se pueden buscar por nombre
-o filtrar por estados, en este caso \textit{online}, \textit{offline} o \textit{degraded} (tiene al menos una zona activa, pero fuera de servicio).
+o filtrar por estados, en este caso \textit{online}, \textit{offline} o \textit{degraded}.
 
 Adicionalmente, cada entrada de la lista cuenta con los detalles de dicho mundo, donde se pueden ver métricas generales como cantidad de jugadores
 activos actualmente y tiempo promedio de juego, la lista de cosméticos creados y la lista de zonas existentes con sus direcciones en caso de estar \textit{online} y
-con la posibilidad de lanzar o parar los \textit{Nomad jobs} correspondientes a las mismas.
+con la posibilidad de lanzar o parar los servidores correspondientes a las mismas.
 
 \begin{figure}[H]
     \centering
@@ -87,36 +113,4 @@ obtendrán la nueva versión.
     \centering
     \includegraphics[width=0.7\textwidth]{img/08-implemented-solution/websites/bo-exports.jpg}
     \caption{Captura de la sección de \textit{exports} del Backoffice.}
-\end{figure}
-
-\subsubsection{Landing page}
-
-Se implementó una segunda página web utilizando \textit{React} y \textit{Typescript} de libre acceso, con el objetivo de publicar
-información sobre \textit{Feed the Realm}, detalles de su desarrollo, videoclips e imágenes y opciones de descarga de las aplicaciones a
-modo de \textit{onboarding} para nuevos posibles usuarios.
-
-Esta página es mayormente estática, pero hace uso de los \textit{endpoints} de lectura del \textit{Core-service} relacionados con los \textit{Releases} de cada aplicación, 
-como también hace uso del CDN para poder descargar los archivos.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.85\textwidth]{img/08-implemented-solution/websites/landing-home.jpg}
-    \caption{Captura del home de la landing page.}
-\end{figure}
-
-\vspace{0.25cm}
-
-Las características principales de esta página son:
-
-\begin{itemize}
-    \item \textbf{Home}: Contiene una corta descripción del juego, un resumen del resto de secciones y enlaces de interés como lo son los de descarga de las aplicaciones para 
-    el sistema operativo deseado, el del canal de \textit{youtube} y el del servidor de \textit{discord} de la comunidad, entre otros.
-    \item \textbf{Media}: Contiene una galería de imágenes y videos del juego a modo de vista general con motivos de capturar el interés de posibles jugadores.
-    \item \textbf{Blog}: Página de blogs para avisos de nuevas versiones, cambios o \textit{features} a lo largo del desarrollo y ciclo de vida del juego.
-\end{itemize}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.85\textwidth]{img/08-implemented-solution/websites/landing-blog.jpg}
-    \caption{Captura de la sección de blog de la landing page.}
 \end{figure}

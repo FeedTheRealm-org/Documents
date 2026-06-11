@@ -1,0 +1,84 @@
+A continuación se tratará con más detalle el sistema de creación de personajes, que es un componente fundamental 
+para la experiencia de juego, ya que los personajes ayudan a dar vida a los mundos creados, 
+y permiten a los jugadores interactuar con el entorno y con otros personajes dentro del juego.
+
+\vspace{0.25cm}
+
+Este sistema se categoriza en dos tipos principales: los jugadores (\textit{players}) y los \textit{NPCs} 
+(\textit{Non-Playable Characters}). Los primeros son los personajes controlados por los usuarios, mientras que 
+los segundos son diseñados por los creadores de mundos.
+
+\vspace{0.25cm}
+
+A su vez, los \textit{NPCs} se dividen en dos subtipos: los pasivos, con los que el jugador puede interactuar 
+mediante diálogos, y los agresivos o enemigos, personajes hostiles que atacan al jugador.
+
+\subsubsection{NPCs Pasivos}
+
+Para un creador de mundos, es esencial poder colocar \textit{NPCs} en su mundo para que el personaje pueda 
+interactuar con ellos. Sumado a esto, es importante que el creador pueda configurar sus apariencias para 
+poder crear un mundo con una ambientación específica, y darle personalidad a su mundo. 
+
+Para esto, se han implementado funcionalidades de personalización de personajes, que permiten a los 
+creadores configurar la apariencia de todos los \textit{NPCs}, pudiendo elegir entre distintas opciones de 
+ropa, accesorios y colores para cada parte del cuerpo.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/08-implemented-solution/product/npc-editor.jpg}
+  \caption{Opciones de personalización de la apariencia de NPCs en el editor de mundos.}
+\end{figure}
+
+A continuación se muestra una captura de pantalla del editor de mundos para la creación de \textit{NPCs} pasivos. 
+En ellos se pueden configurar su apariencia y los diálogos mediante los cuales el jugador interactúa con ellos.
+El sistema de interaccion con ellos se verá con mayor detalle en la siguiente sección.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/08-implemented-solution/product/npc-creation.jpg}
+  \caption{Editor de mundos para la creación de NPCs pasivos.}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/08-implemented-solution/product/npc-in-game.jpg}
+  \caption{NPC en el juego.}
+\end{figure}
+
+
+\subsubsection{NPCs Agresivos}
+
+Los \textit{NPCs} agresivos representan una amenaza para los jugadores. 
+Se les puede asignar un arma específica, lo que afecta su comportamiento de ataque. 
+La estadística del arma está ligada a la dificultad del enemigo, 
+por lo que un enemigo con un arma de mayor daño será más difícil de derrotar. Esto permite a los 
+creadores, si lo desean, diseñar enemigos con diferentes niveles de dificultad, y crear una experiencia de juego 
+más variada, progresiva y desafiante para los jugadores. También, como se nombró en secciones anteriores, a los 
+enemigos se les puede asignar una tabla de botín que se recompensan al ser derrotados.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/08-implemented-solution/product/agresive-npc-creation.jpg}
+  \caption{Editor de mundos para la creación de NPCs agresivos.}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/08-implemented-solution/product/agresive-npc-in-game.jpg}
+  \caption{NPC agresivo en el juego.}
+\end{figure}
+
+\subsubsection{Generadores de Personajes}
+
+Por último, como característica de personalización del mundo, se ha diseñado un sistema de generación de 
+personajes, que permite a los creadores colocar generadores dentro de su mundo. Los 
+\textbf{Generadores (\textit{Spawners})} son objetos que crean personajes en tiempo de ejecución y 
+pueden configurarse con parámetros como frecuencia de aparición, rango y tipo de entidad a generar. 
+Actualmente, se encuentran disponibles tres tipos: generador de enemigos (\textit{Enemy Spawner}), 
+generador de \textit{NPCs} (\textit{NPC Spawner}) y generador de jugadores (\textit{Player Spawner}).
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{img/08-implemented-solution/product/spawners.jpg}
+  \caption{Todos los tipos de generadores colocados en la escena.}
+\end{figure}

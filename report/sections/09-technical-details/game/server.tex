@@ -1,0 +1,113 @@
+\subsubsection{Server}
+
+El servidor del juego es el componente con autoridad sobre la lógica del mundo, este procesa las acciones de los jugadores, mantiene el estado de
+las entidades y distribuye las actualizaciones a los clientes conectados. Está implementado como un proyecto Unity compilado en modo
+\textit{headless} (sin interfaz gráfica) y se ejecuta dentro de contenedores Docker desplegados dinámicamente por el \textit{Core Service}. Cada
+instancia es responsable de una única zona del mundo, por lo que un mundo con múltiples zonas implica que se ejecuten varias instancias de servidor en paralelo, 
+cada una gestionando su propia zona y los jugadores que se encuentren en ella.
+
+\paragraph{Inicializacion}
+Cada instancia de zona del servidor se ejecuta dentro de un contenedor Docker. La imagen se construye a partir de una base de Debian mínima
+sobre la cual se instalan las dependencias necesarias para ejecutar el binario del servidor de Unity en modo \textit{headless},
+junto con las credenciales requeridas (inyectadas vía variable de entorno) para obtener recursos desde el \textit{Core Service} en el momento del arranque.
+La imagen expone dos puertos, uno es el 7777/udp para el tráfico del juego y otro es el 7778/tcp para el
+\textit{healthcheck}. Al iniciar el contenedor, el servidor recibe como argumentos el identificador del mundo (\texttt{world-id}) y de la zona
+ (\texttt{zone-id}) que debe cargar.
+
+\vspace{0.25cm}
+
+Con esos parámetros, el servidor inicia una secuencia de inicialización mediante varios \textit{Loaders}. 
+Primero consulta al \textit{Core Service} la información de la zona, por ejemplo, los elementos colocables 
+(\textit{Placeables}) y los no colocables (\textit{Creatables}), y la utiliza para cargar los registros y crear los colisionadores.
+
+\vspace{0.25cm}
+
+Una vez completada la carga, el servidor establece conexión con la base de datos no relacional encargada de persistir 
+la información del jugador dentro del mundo (última posición en la zona, inventario, cantidad de oro, entre otros datos).
+
+Si dicha base de datos exclusiva para este mundo no existe previamente, se crea dentro del mismo clúster de Mongo
+con el correspondiente identificador de mundo.
+
+Luego, inicializa el servicio de \textit{healthcheck}, utilizado por los \textit{Nomad Clients} para verificar el 
+estado operativo de la instancia cuyo funcionamiento e integración se describen con mayor detalle en la sección de \nameref{sec:infrastructure}.
+
+\vspace{0.25cm}
+
+Finalizada esta etapa, el servidor notifica al \textit{Core Service} que la zona se encuentra activa y lista para recibir jugadores.
+Si ocurre un fallo en cualquiera de las fases del proceso, la inicialización se cancela y el servidor informa al \textit{Core Service}
+el estado fallido de la instancia.
+
+De forma análoga, durante el servidor notifica al \textit{Core Service} que la zona ha 
+pasado al estado \textit{offline}.
+
+\paragraph{Game Tick \& Game Loop}
+
+Otro elemento primordial en la capa de \textit{Core} es la implementación del sistema del \textit{GameLoop}.
+Este sistema se encarga de manejar el ciclo de actualización del juego, procesamiento de
+comandos y encolado de eventos.
+
+\vspace{0.25cm}
+
+Si bien Unity provee un ciclo de actualización mediante funciones como \texttt{Update()} y \texttt{FixedUpdate()}, estas no ofrecen control
+suficiente sobre el orden y la sincronización de los sistemas del juego, y generan \textit{overhead} innecesario.
+En su lugar, se desactiva la física automática de Unity y se delega
+su ejecución al \textit{Game Loop}, que la invoca manualmente en cada \textit{Physics Update} junto con el resto de la lógica del servidor.
+
+Para esto se desarrolló un \textit{Tick Driver}, que se encarga de ejecutar el ciclo principal del servidor y realizar llamadas
+al servicio de networking o \texttt{NetworkService} (encargado del envío de eventos) a razón de $60$ ticks por segundo (tps), y al servicio de \textit{game loop}
+a razón de $30 tps$. Esto es debido a que la interacción por medio de código con los objetos manejados por Unity, solamente 
+se puede realizar desde el hilo principal del proceso (\textit{Main thread}), limitando la posibilidad de realizar un programa
+con recepciones y envíos de red en múltiples hilos.
+
+\vspace{0.25cm}
+
+Todos los sistemas que requieren actualizarse en sincronía con el ciclo de juego, como el movimiento, el combate, los \textit{spawners}, entre otros,
+se suscriben a un evento que el \textit{Game Loop} emite en cada tick para realizar las actualizaciones.
+
+\paragraph{Limitación de comandos}
+
+Para evitar que el procesamiento de comandos entrantes consuma demasiado tiempo y afecte al resto del ciclo de juego, se aplica un mecanismo
+de limitación por tick. 
+
+\vspace{0.25cm}
+
+En cada tick, el servidor procesa como máximo 100 comandos y destina no más de 10 milisegundos a esta tarea. Si se
+alcanza cualquiera de estos dos límites antes de vaciar la cola, los comandos restantes no se descartan sino que quedan en espera y se
+procesan en el tick siguiente. De esta forma, se garantiza que picos repentinos de actividad, como muchos jugadores enviando acciones al mismo
+tiempo, no interrumpan la física ni la lógica del juego, manteniendo el ciclo estable.
+
+\paragraph{Game Systems y State Storage}
+Cada entidad del mundo del juego (jugadores, bolsas de botín, NPCs) que requiera syncronizacion con el servidor está representada por un \textit{objeto de red} (\textit{Networked Object}):
+una entidad que existe simultáneamente en el servidor y en los clientes de todos los jugadores conectados, manteniéndose sincronizada entre
+ellos.
+
+\vspace{0.25cm}
+
+Sobre estos objetos se compone la lógica mediante \textit{Systems}, que son componentes modulares que se adjuntan a la entidad y son
+responsables de un aspecto específico de su comportamiento. El \textit{MovementSystem}, por ejemplo, se suscribe al evento de tick del
+\textit{Game Loop} y en cada ciclo procesa la dirección de movimiento, aplica la física correspondiente y actualiza la posición del personaje.
+Otros sistemas siguen el mismo patrón para manejar el combate, el \textit{stamina}, la salud, entre otros. Esta separación permite que
+cada sistema sea independiente y que la lógica del juego se pueda extender sin modificar el resto.
+
+\vspace{0.25cm}
+
+Para que estos sistemas puedan comunicarse y compartir el estado de la entidad, existe un componente dedicado al almacenamiento de estado llamado
+\textit{State Storage}. En el caso de los jugadores, el \textit{CharacterStateStorage} centraliza toda la información relevante de la entidad
+posición, dirección de movimiento, salud, stamina, ítem equipado, entre otros, y es la única fuente de verdad sobre su estado.
+
+\paragraph{Player Persistence}
+La persistencia del jugador es el mecanismo por el cual el estado de un jugador (inventario, oro, posición y progreso de quests) se conserva
+en la base de datos y se restaura cada vez que el jugador se conecta a una zona.
+
+\vspace{0.25cm}
+
+Cuando un jugador se une, el servidor consulta su registro en la base de datos y carga sus datos en los sistemas correspondientes. Si el
+jugador no tiene datos previos (primera vez que juega), se inicializa con valores por defecto y se crea un nuevo registro.
+
+\vspace{0.25cm}
+
+Durante la sesión, los guardados ocurren en dos modalidades: de forma \textbf{reactiva}, cuando ocurre un cambio relevante (el jugador recoge un ítem,
+gasta oro o avanza en una quest o la completa, el cambio se persiste inmediatamente); y de forma \textbf{periódica}, mediante un guardado automático que se ejecuta
+cada cierto intervalo de tiempo configurable. Al desconectarse, se realiza un guardado final de todos los datos para garantizar que ningún
+progreso reciente se pierda.
+
